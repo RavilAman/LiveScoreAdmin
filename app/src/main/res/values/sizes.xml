@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="weekdays_text">15sp</dimen>
+    <dimen name="calendar_days_text">20sp</dimen>
+    <dimen name="five">5dp</dimen>
+    <dimen name="seven">7dp</dimen>
+</resources>

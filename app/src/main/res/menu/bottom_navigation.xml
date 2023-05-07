@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_scores"
+        android:icon="@drawable/ic_baseline_sports_soccer_24"
+        android:title="@string/scores_page"/>
+
+    <item
+        android:id="@+id/nav_favourites"
+        android:icon="@drawable/ic_baseline_star_border_24"
+        android:title="@string/favourites_page"/>
+</menu>
