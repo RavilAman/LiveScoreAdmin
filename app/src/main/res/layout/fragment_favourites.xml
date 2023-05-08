@@ -5,24 +5,37 @@
     android:background="@color/app_black"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/favourites_label"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:layout_marginStart="15dp"
+        android:text="@string/favourites" />
+
     <SearchView
         android:id="@+id/search_view"
+        android:layout_below="@id/favourites_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/search_view_background"
         android:iconifiedByDefault="false"
         android:queryHint="@string/favourites_query_hint" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tournament_cards_holder"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Favourites page"
-        android:textColor="@color/white"
-        android:layout_centerInParent="true"
-        android:textSize="24dp"/>
+        android:layout_below="@+id/search_view"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@android:color/transparent"/>
 
 </RelativeLayout>

@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/five"
-        android:paddingTop="@dimen/seven"
-        android:paddingEnd="@dimen/five"
-        android:paddingBottom="@dimen/seven">
+        android:paddingStart="5dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="7dp">
 
         <ImageButton
             android:id="@+id/previous_month_button"
@@ -53,8 +53,8 @@
         android:layout_height="wrap_content"
         android:background="@color/teal_200"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/five"
-        android:paddingBottom="@dimen/five">
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <TextView
             android:layout_width="wrap_content"

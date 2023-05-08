@@ -11,4 +11,8 @@
     <string name="saturday">Sat</string>
     <string name="sunday">Sun</string>
     <string name="favourites_query_hint">Tournament name</string>
+    <string name="tournament_name">Tournament name</string>
+    <string name="tournament_location">Tournament location</string>
+    <string name="favourites">Favourites</string>
+    <string name="tournament_logo">Tournament logo</string>
 </resources>
