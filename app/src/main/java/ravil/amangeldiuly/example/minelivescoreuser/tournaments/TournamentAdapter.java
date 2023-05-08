@@ -41,6 +41,7 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
         holder.tournamentName.setText(currentTournament.getTournamentName());
         holder.tournamentLocation.setText(currentTournament.getTournamentLocation());
         holder.tournamentDto = currentTournament;
+        holder.redrawImageButtons();
 
         Glide.with(context)
                 .load(currentTournament.getTournamentLogo())

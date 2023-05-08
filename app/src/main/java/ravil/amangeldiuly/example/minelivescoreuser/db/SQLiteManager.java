@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -83,6 +82,19 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
         cursor.close();
         return favouriteTournaments;
+    }
+
+    public boolean tournamentPresents(int tournamentId) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + favouritesTable + " where tournament_id = ?",
+                new String[]{String.valueOf(tournamentId)});
+        if (cursor.moveToNext()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
     }
 
     public void addTournamentToFavourites(TournamentDto tournamentDto) {

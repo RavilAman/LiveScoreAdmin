@@ -37,7 +37,7 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
     TextView tournamentLocation;
     TournamentAdapter.OnItemListener onItemListener;
     ImageButton imageButton;
-    boolean imageButtonPressed = false;
+    boolean imageButtonPressed;
 
     Context context;
     TournamentDto tournamentDto;
@@ -70,6 +70,13 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
         notificationApi = retrofit.create(NotificationApi.class);
 
         imageButton.setOnClickListener(imageButtonListener());
+    }
+
+    public void redrawImageButtons() {
+        if (sqLiteManager.tournamentPresents(tournamentDto.getTournamentId().intValue())) {
+            imageButtonPressed = true;
+            imageButton.setImageResource(R.drawable.ic_baseline_star_24);
+        }
     }
 
     private View.OnClickListener imageButtonListener() {

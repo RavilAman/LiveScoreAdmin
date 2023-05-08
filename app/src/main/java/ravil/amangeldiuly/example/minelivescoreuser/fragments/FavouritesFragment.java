@@ -20,6 +20,7 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
@@ -35,22 +36,29 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
     private View currentView;
     private Retrofit retrofit;
     private RecyclerView tournamentsRecyclerView;
-    private List<TournamentDto> tournaments = new ArrayList<>();
+    private List<TournamentDto> favouriteTournaments = new ArrayList<>();
     private TournamentApi tournamentApi;
     private NotificationApi notificationApi;
 
+
+    private SQLiteManager sqLiteManager;
+
     // todo: add check for internet availability
 
-    // todo: сохранять и брать с бд, сделанный фунционал понадобится во время велом пейджа
-
     // todo: можно ли добавить анимацию, как все турнаменты сохраненные в бд плано по одному прорисовываются на фронте
+
+    // todo: добавть поиск
+
+    // обновить ресайклер вью после удаления, тоесть удалить с листа, и нотифицировать
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         currentView = inflater.inflate(R.layout.fragment_favourites, container, false);
-
+        favouriteTournaments.clear();
         tournamentsRecyclerView = currentView.findViewById(R.id.tournament_cards_holder);
+        sqLiteManager = SQLiteManager.getInstance(getLayoutInflater().getContext());
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -70,24 +78,14 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
     }
 
     private void getTournamentData() {
-        tournamentApi.findAllTournaments().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<List<TournamentDto>> call, Response<List<TournamentDto>> response) {
-                if (response.body() != null) {
-                    tournaments.addAll(response.body());
-                    createTournamentCards(tournaments);
-                } else {
-                    createTournamentCards(List.of(
-                            new TournamentDto(0L, "Currently, there are no tournaments", "", "", ""))
-                    );
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<TournamentDto>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+        favouriteTournaments = sqLiteManager.getAllTournaments();
+        if (!favouriteTournaments.isEmpty()) {
+            createTournamentCards(favouriteTournaments);
+        } else {
+            createTournamentCards(List.of(
+                    new TournamentDto(0L, "Currently, there are no tournaments", "https://cdn-icons-png.flaticon.com/512/1622/1622553.png", "", ""))
+            );
+        }
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {
@@ -98,20 +96,5 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
 
     @Override
     public void onItemClick(long tournamentId) {
-        Log.d("TournamentId: ", String.valueOf(tournamentId));
-        notificationApi.getTopicName(tournamentId).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.body() != null) {
-                    String topicName = response.body();
-                    Log.d("topicName: ", topicName);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
     }
 }

@@ -2,7 +2,6 @@ package ravil.amangeldiuly.example.minelivescoreuser.intro;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,24 +14,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.MainCoroutineDispatcher;
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.MainActivity;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
-import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.SharedPreferencesUtil;
-import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Call;
@@ -51,6 +40,8 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
     private Button startButton;
     private TournamentApi tournamentApi;
     private Retrofit retrofit;
+
+    // todo: добавть поиск
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,10 +146,4 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
             changeToMainActivity();
         }
     }
-
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        sqLiteManager.close();
-//    }
 }
