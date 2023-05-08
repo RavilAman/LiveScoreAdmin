@@ -8,6 +8,8 @@ public class TournamentDto {
     private String tournamentType;
     private String tournamentLocation;
 
+    public TournamentDto() {}
+
     public TournamentDto(Long tournamentId, String tournamentName, String tournamentLogo, String tournamentType, String tournamentLocation) {
         this.tournamentId = tournamentId;
         this.tournamentName = tournamentName;

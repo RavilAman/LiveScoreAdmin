@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_black"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/favourites_label"
+        android:id="@+id/intro_favourites_label"
         android:layout_marginTop="70dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="32sp"
+        android:fontFamily="@font/inter_medium"
         android:layout_marginStart="15dp"
-        android:text="@string/favourites" />
+        android:text="@string/intro_favourites" />
 
     <SearchView
-        android:id="@+id/search_view"
-        android:layout_below="@id/favourites_label"
+        android:id="@+id/intro_search_view"
+        android:layout_below="@id/intro_favourites_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -29,10 +29,10 @@
         android:queryHint="@string/favourites_query_hint" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tournament_cards_holder"
+        android:id="@+id/intro_tournament_cards_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/search_view"
+        android:layout_below="@+id/intro_search_view"
         android:layout_marginTop="5dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"

@@ -1,5 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.tournaments;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -8,8 +10,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TournamentViewHolder extends RecyclerView.ViewHolder {
 
@@ -17,27 +36,83 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
     TextView tournamentName;
     TextView tournamentLocation;
     TournamentAdapter.OnItemListener onItemListener;
-    long tournamentId;
     ImageButton imageButton;
     boolean imageButtonPressed = false;
 
-    public TournamentViewHolder(@NonNull View itemView, TournamentAdapter.OnItemListener onItemListener) {
+    Context context;
+    TournamentDto tournamentDto;
+
+    private NotificationApi notificationApi;
+    private SQLiteManager sqLiteManager;
+    private Retrofit retrofit;
+
+    public TournamentViewHolder(@NonNull View itemView, TournamentAdapter.OnItemListener onItemListener, Context context) {
         super(itemView);
         this.onItemListener = onItemListener;
+        this.context = context;
 
         tournamentLogo = itemView.findViewById(R.id.card_tournament_logo);
         tournamentName = itemView.findViewById(R.id.card_tournament_name);
         tournamentLocation = itemView.findViewById(R.id.card_tournament_location);
         imageButton = itemView.findViewById(R.id.toggle_favourites_button);
 
-        imageButton.setOnClickListener(v -> {
-            onItemListener.onItemClick(tournamentId);
+        sqLiteManager = SQLiteManager.getInstance(context);
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BACKEND_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        notificationApi = retrofit.create(NotificationApi.class);
+
+        imageButton.setOnClickListener(imageButtonListener());
+    }
+
+    private View.OnClickListener imageButtonListener() {
+        return view -> {
+            onItemListener.onItemClick(tournamentDto.getTournamentId()); // todo: чекнуть работает ли без него
             imageButtonPressed = !imageButtonPressed;
-            if (imageButtonPressed) {
-                imageButton.setImageResource(R.drawable.ic_baseline_star_24);
-            } else {
-                imageButton.setImageResource(R.drawable.ic_baseline_star_border_24);
-            }
-        });
+            Executor mainExecutor = Executors.newSingleThreadExecutor();
+            notificationApi.getTopicName(tournamentDto.getTournamentId()).enqueue(new Callback<>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.body() != null) {
+                        String topicName = response.body();
+                        if (imageButtonPressed) {
+                            imageButton.setImageResource(R.drawable.ic_baseline_star_24);
+                            mainExecutor.execute(() -> {
+                                try {
+                                    notificationApi.createSubscription(topicName, List.of("token")).execute(); // todo: получить токен нормально
+                                } catch (IOException e) {
+                                    Log.e("Error while executing notification api", Arrays.toString(e.getStackTrace()));
+                                }
+                            });
+                            sqLiteManager.addTournamentToFavourites(tournamentDto);
+                            sqLiteManager.addTopic(topicName);
+                        } else {
+                            imageButton.setImageResource(R.drawable.ic_baseline_star_border_24);
+                            mainExecutor.execute(() -> {
+                                try {
+                                    notificationApi.deleteSubscription(topicName, "token").execute(); // todo: получить токен нормально
+                                } catch (IOException e) {
+                                    Log.e("Error while executing notification api", Arrays.toString(e.getStackTrace()));
+                                }
+                            });
+                            sqLiteManager.deleteTournamentFromFavourites(tournamentDto.getTournamentId());
+                            sqLiteManager.deleteTopic(topicName);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
     }
 }

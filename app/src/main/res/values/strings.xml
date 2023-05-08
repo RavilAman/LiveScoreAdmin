@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">LiveScoreUser</string>
+    <string name="app_name">LiveScore</string>
+    <string name="app_label">Live Score</string>
+    <string name="welcome_label">WELCOME</string>
     <string name="scores_page">Scores</string>
     <string name="favourites_page">Favourites</string>
     <string name="current_month">January</string>
@@ -14,5 +16,10 @@
     <string name="tournament_name">Tournament name</string>
     <string name="tournament_location">Tournament location</string>
     <string name="favourites">Favourites</string>
+    <string name="intro_favourites">Follow\nTournaments</string>
     <string name="tournament_logo">Tournament logo</string>
+    <string name="next">Next</string>
+    <string name="copyright">\@2023 Arsensio_20</string>
+    <string name="start">Start</string>
+    <string name="welcome_text">Never miss a goal - Get live match alerts, fixtures and results for your favourite team and competitions</string>
 </resources>

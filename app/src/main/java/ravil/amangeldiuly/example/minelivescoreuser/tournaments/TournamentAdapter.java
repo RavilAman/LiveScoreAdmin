@@ -32,7 +32,7 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
     public TournamentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.tournament_item, parent, false);
-        return new TournamentViewHolder(view, onItemListener);
+        return new TournamentViewHolder(view, onItemListener, context);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
         TournamentDto currentTournament = tournaments.get(position);
         holder.tournamentName.setText(currentTournament.getTournamentName());
         holder.tournamentLocation.setText(currentTournament.getTournamentLocation());
-        holder.tournamentId = currentTournament.getTournamentId();
+        holder.tournamentDto = currentTournament;
 
         Glide.with(context)
                 .load(currentTournament.getTournamentLogo())

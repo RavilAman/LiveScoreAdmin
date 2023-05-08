@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/app_black"
+    android:layout_height="match_parent"
+    tools:context=".intro.IntroActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/intro_view_pager"
+        android:layout_width="wrap_content"
+        android:layout_above="@id/intro_linear_layout"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/intro_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="14dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/intro_tab_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:tabIndicatorHeight="0dp"
+            app:tabBackground="@drawable/indicator_selector">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/copyright"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_medium"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+</RelativeLayout>
