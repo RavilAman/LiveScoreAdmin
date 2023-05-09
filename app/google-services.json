@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "509297612922",
+    "project_id": "livescoresdu",
+    "storage_bucket": "livescoresdu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509297612922:android:d6e2a15fb603ba04c9c3c3",
+        "android_client_info": {
+          "package_name": "com.example.livescoresdu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509297612922-07chgrf1ahqec8398iksdv80o06fma4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZV9cW4IW9zX7kYT_WM84sQrp1U-EmlVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509297612922-07chgrf1ahqec8398iksdv80o06fma4g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "509297612922-uukebhue8liau01r5pqce4uu36alsbfi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "sdu.edu.arujan.kz.LiveScore-SDU"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509297612922:android:a0613cda9f3e7223c9c3c3",
+        "android_client_info": {
+          "package_name": "com.example.livescoreuser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509297612922-07chgrf1ahqec8398iksdv80o06fma4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZV9cW4IW9zX7kYT_WM84sQrp1U-EmlVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509297612922-07chgrf1ahqec8398iksdv80o06fma4g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "509297612922-uukebhue8liau01r5pqce4uu36alsbfi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "sdu.edu.arujan.kz.LiveScore-SDU"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509297612922:android:f816454a795f5d21c9c3c3",
+        "android_client_info": {
+          "package_name": "ravil.amangeldiuly.example.minelivescoreuser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509297612922-07chgrf1ahqec8398iksdv80o06fma4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZV9cW4IW9zX7kYT_WM84sQrp1U-EmlVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509297612922-07chgrf1ahqec8398iksdv80o06fma4g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "509297612922-uukebhue8liau01r5pqce4uu36alsbfi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "sdu.edu.arujan.kz.LiveScore-SDU"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,14 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.MainActivity;
@@ -51,13 +49,12 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
     private TournamentAdapter tournamentAdapter;
     private TextView noTournaments;
 
-    // todo: добавить поиск
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
+        getToken();
         checkIfIntroduced();
 
         tabLayout = findViewById(R.id.intro_tab_indicator);
@@ -173,5 +170,19 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
                 return true;
             }
         };
+    }
+
+    private void getToken() {
+        if (SharedPreferencesUtil.getValue(this, "fcm_token").equals("empty")) {
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Log.w("ERROR", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        SharedPreferencesUtil.putValue(this, "fcm_token", token);
+                    });
+        }
     }
 }

@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.SharedPreferencesUtil;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Call;
@@ -93,7 +94,8 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
                             imageButton.setImageResource(R.drawable.ic_baseline_star_24);
                             mainExecutor.execute(() -> {
                                 try {
-                                    notificationApi.createSubscription(topicName, List.of("token")).execute(); // todo: получить токен нормально
+                                    Log.d("token from prefs", SharedPreferencesUtil.getValue(context, "fcm_token"));
+                                    notificationApi.createSubscription(topicName, List.of(SharedPreferencesUtil.getValue(context, "fcm_token"))).execute();
                                 } catch (IOException e) {
                                     Log.e("Error while executing notification api", Arrays.toString(e.getStackTrace()));
                                 }
@@ -104,7 +106,8 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
                             imageButton.setImageResource(R.drawable.ic_baseline_star_border_24);
                             mainExecutor.execute(() -> {
                                 try {
-                                    notificationApi.deleteSubscription(topicName, "token").execute(); // todo: получить токен нормально
+                                    Log.d("token from prefs", SharedPreferencesUtil.getValue(context, "fcm_token"));
+                                    notificationApi.deleteSubscription(topicName, SharedPreferencesUtil.getValue(context, "fcm_token")).execute();
                                 } catch (IOException e) {
                                     Log.e("Error while executing notification api", Arrays.toString(e.getStackTrace()));
                                 }

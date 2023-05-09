@@ -16,6 +16,8 @@ import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    // todo: как нибудь добавить чек на токен, если заекспайрился, взять новый, и переподписаться на все топики в базе локальной
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
