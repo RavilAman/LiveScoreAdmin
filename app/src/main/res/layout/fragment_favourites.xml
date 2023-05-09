@@ -16,7 +16,7 @@
         android:text="@string/favourites" />
 
     <SearchView
-        android:id="@+id/search_view"
+        android:id="@+id/favourites_search_view"
         android:layout_below="@id/favourites_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,11 +28,23 @@
         android:iconifiedByDefault="false"
         android:queryHint="@string/favourites_query_hint" />
 
+    <TextView
+        android:id="@+id/favourites_no_tournaments_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/favourites_search_view"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/inter_medium"
+        android:paddingTop="20dp"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tournament_cards_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/search_view"
+        android:layout_below="@+id/favourites_search_view"
         android:layout_marginTop="5dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"

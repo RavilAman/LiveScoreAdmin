@@ -2,8 +2,11 @@ package ravil.amangeldiuly.example.minelivescoreuser.intro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,12 +18,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.MainActivity;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.SharedPreferencesUtil;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
@@ -40,15 +47,17 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
     private Button startButton;
     private TournamentApi tournamentApi;
     private Retrofit retrofit;
+    private SearchView introSearchView;
+    private TournamentAdapter tournamentAdapter;
+    private TextView noTournaments;
 
-    // todo: добавть поиск
+    // todo: добавить поиск
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        // todo: раскоментировать когда закончу
         checkIfIntroduced();
 
         tabLayout = findViewById(R.id.intro_tab_indicator);
@@ -77,7 +86,10 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
                 switch (tab.getPosition()) {
                     case 1:
                         tournamentsRecyclerView = findViewById(R.id.intro_tournament_cards_holder);
+                        noTournaments = findViewById(R.id.intro_no_tournaments_label);
                         getTournamentData();
+                        introSearchView = findViewById(R.id.intro_search_view);
+                        introSearchView.setOnQueryTextListener(introQueryTextListener());
                         break;
                     case 2:
                         startButton = findViewById(R.id.intro_start_button);
@@ -105,9 +117,7 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
                     tournaments.addAll(response.body());
                     createTournamentCards(tournaments);
                 } else {
-                    createTournamentCards(List.of(
-                            new TournamentDto(0L, "Currently, there are no tournaments", "", "", ""))
-                    );
+                    noTournaments.setText(R.string.no_tournaments);
                 }
             }
 
@@ -119,7 +129,7 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {
-        TournamentAdapter tournamentAdapter = new TournamentAdapter(this, tournaments, this);
+        tournamentAdapter = new TournamentAdapter(this, tournaments, this);
         tournamentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tournamentsRecyclerView.setAdapter(tournamentAdapter);
     }
@@ -145,5 +155,23 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
         if (SharedPreferencesUtil.getValue(this, "introduced").equals("true")) {
             changeToMainActivity();
         }
+    }
+
+    private SearchView.OnQueryTextListener introQueryTextListener() {
+        return new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                createTournamentCards(GeneralUtils.getTournamentsByName(tournaments, s));
+                if (GeneralUtils.getTournamentsByName(tournaments, s).isEmpty()) {
+                    noTournaments.setText(R.string.no_tournaments_with_name);
+                }
+                return true;
+            }
+        };
     }
 }

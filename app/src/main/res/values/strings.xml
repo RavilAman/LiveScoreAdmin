@@ -22,4 +22,6 @@
     <string name="copyright">\@2023 Arsensio_20</string>
     <string name="start">Start</string>
     <string name="welcome_text">Never miss a goal - Get live match alerts, fixtures and results for your favourite team and competitions</string>
+    <string name="no_tournaments">Currently there are no tournaments</string>
+    <string name="no_tournaments_with_name">No tournaments with such name</string>
 </resources>

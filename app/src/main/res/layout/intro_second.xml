@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/app_black"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/app_black">
 
     <TextView
         android:id="@+id/intro_favourites_label"
-        android:layout_marginTop="70dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="32sp"
-        android:fontFamily="@font/inter_medium"
         android:layout_marginStart="15dp"
-        android:text="@string/intro_favourites" />
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/intro_favourites"
+        android:textColor="@color/white"
+        android:textSize="32sp" />
 
     <SearchView
         android:id="@+id/intro_search_view"
-        android:layout_below="@id/intro_favourites_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/intro_favourites_label"
         android:layout_marginStart="15dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="15dp"
@@ -28,14 +28,31 @@
         android:iconifiedByDefault="false"
         android:queryHint="@string/favourites_query_hint" />
 
+    <TextView
+        android:id="@+id/intro_no_tournaments_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_search_view"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/inter_medium"
+        android:paddingTop="20dp"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/intro_tournament_cards_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/intro_search_view"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/asdc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
