@@ -42,6 +42,7 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
         holder.tournamentLocation.setText(currentTournament.getTournamentLocation());
         holder.tournamentDto = currentTournament;
         holder.redrawImageButtons();
+//        holder.imageButton.setOnClickListener(imageButtonOnClick(position));
 
         Glide.with(context)
                 .load(currentTournament.getTournamentLogo())
@@ -56,4 +57,12 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
     public interface OnItemListener {
         void onItemClick(long tournamentId);
     }
+
+//    private View.OnClickListener imageButtonOnClick(int position) {
+//        System.out.println("+++++++++++++ position: " + position);
+//        return view -> {
+//            tournaments.remove(position);
+//            notifyItemRemoved(position);
+//        };
+//    }
 }
