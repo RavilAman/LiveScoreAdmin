@@ -10,4 +10,5 @@
     <color name="app_orange">#FFD85D02</color>
     <color name="black">#000000</color>
     <color name="grey">#FF757575</color>
+    <color name="text_grey">#FFA3A3A3</color>
 </resources>

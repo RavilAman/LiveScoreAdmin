@@ -1,39 +1,145 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
+import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
-import ravil.amangeldiuly.example.minelivescoreuser.calendar.CalendarAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.NewGameDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScoresFragment extends Fragment {
 
     private View currentView;
+    private Retrofit retrofit;
+    private Button liveButton;
+    private Button dateButton1;
+    private Button dateButton2;
+    private Button dateButton3;
+    private Button dateButton4;
+    private Button dateButton5;
+    private List<String> daysButtonsText;
+    private List<Button> daysButtons;
+    private GameApi gameApi;
+    private String selectedDate;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         currentView = inflater.inflate(R.layout.fragment_scores, container, false);
 
+        daysButtonsText = new ArrayList<>();
+        daysButtons = new ArrayList<>();
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .create();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BACKEND_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        gameApi = retrofit.create(GameApi.class);
+
+        dateButton1 = currentView.findViewById(R.id.scores_page_button_1);
+        dateButton2 = currentView.findViewById(R.id.scores_page_button_2);
+        dateButton3 = currentView.findViewById(R.id.scores_page_button_3);
+        dateButton4 = currentView.findViewById(R.id.scores_page_button_4);
+        dateButton5 = currentView.findViewById(R.id.scores_page_button_5);
+
+        daysButtons.add(dateButton1);
+        daysButtons.add(dateButton2);
+        daysButtons.add(dateButton3);
+        daysButtons.add(dateButton4);
+        daysButtons.add(dateButton5);
+
+        dateButton1.setOnClickListener(daysButtonsClickListener());
+
+        getCurrentDate(LocalDate.now());
+        setDaysButtonText();
+
         return currentView;
     }
+
+    private void getCurrentDate(LocalDate date) {
+        StringBuilder buttonDateText = new StringBuilder();
+        LocalDate forSave = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
+        for (int i = -2; i < 3; i++) {
+            buttonDateText.setLength(0);
+            date = date.plusDays(i);
+            buttonDateText.append(date.format(DateTimeFormatter.ofPattern("EEE")).toUpperCase());
+            buttonDateText.append("\n");
+            buttonDateText.append(date.getDayOfMonth());
+            buttonDateText.append(" ");
+            buttonDateText.append(date.format(DateTimeFormatter.ofPattern("MMM")).toUpperCase());
+            daysButtonsText.add(buttonDateText.toString());
+            date = forSave;
+        }
+    }
+
+    private void setDaysButtonText() {
+        for (int i = 0; i < daysButtons.size(); i++) {
+            daysButtons.get(i)
+                    .setText(daysButtonsText.get(i));
+        }
+    }
+
+    private View.OnClickListener daysButtonsClickListener() {
+        return view -> {
+            gameApi.getGamesByDate(selectedDate).enqueue(new Callback<>() {
+                @Override
+                public void onResponse(Call<List<NewGameDTO>> call, Response<List<NewGameDTO>> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<List<NewGameDTO>> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        };
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
