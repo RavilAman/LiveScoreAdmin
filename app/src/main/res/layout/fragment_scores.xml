@@ -6,15 +6,15 @@
     android:background="@color/app_black">
 
     <LinearLayout
-        android:id="@+id/scores_page_buttons"
+        android:id="@+id/scores_page_buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingEnd="10dp">
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp">
 
         <Button
             android:id="@+id/scores_page_live_button"
@@ -24,80 +24,89 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:text="@string/live"
-            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="@dimen/scores_page_button_size" />
+            android:textSize="@dimen/scores_page_button_size"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/scores_page_button_1"
-            android:layout_width="0dp"
+        <RadioGroup
+            android:id="@+id/scores_page_days_button_radio_group"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/inter_medium"
-            android:text="@string/days_button_example"
-            android:textColor="@color/white"
-            android:textSize="@dimen/scores_page_button_size" />
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
-        <Button
-            android:id="@+id/scores_page_button_2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/inter_medium"
-            android:text="@string/days_button_example"
-            android:textColor="@color/white"
-            android:textSize="@dimen/scores_page_button_size" />
+            <RadioButton
+                android:id="@+id/scores_page_radio_button_1"
+                style="@style/RadioButtonNoIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:text="@string/days_button_example"
+                android:textColor="@drawable/days_button_selector"
+                android:textSize="@dimen/scores_page_button_size" />
 
-        <Button
-            android:id="@+id/scores_page_button_3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/inter_medium"
-            android:text="@string/days_button_example"
-            android:textColor="@color/white"
-            android:textSize="@dimen/scores_page_button_size" />
+            <RadioButton
+                android:id="@+id/scores_page_radio_button_2"
+                style="@style/RadioButtonNoIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:text="@string/days_button_example"
+                android:textColor="@drawable/days_button_selector"
+                android:textSize="@dimen/scores_page_button_size" />
 
-        <Button
-            android:id="@+id/scores_page_button_4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/inter_medium"
-            android:text="@string/days_button_example"
-            android:textColor="@color/white"
-            android:textSize="@dimen/scores_page_button_size" />
+            <RadioButton
+                android:id="@+id/scores_page_radio_button_3"
+                style="@style/RadioButtonNoIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:text="@string/days_button_example"
+                android:textColor="@drawable/days_button_selector"
+                android:textSize="@dimen/scores_page_button_size" />
 
-        <Button
-            android:id="@+id/scores_page_button_5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/inter_medium"
-            android:text="@string/days_button_example"
-            android:textColor="@color/white"
-            android:textSize="@dimen/scores_page_button_size" />
+            <RadioButton
+                android:id="@+id/scores_page_radio_button_4"
+                style="@style/RadioButtonNoIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:text="@string/days_button_example"
+                android:textColor="@drawable/days_button_selector"
+                android:textSize="@dimen/scores_page_button_size" />
+
+            <RadioButton
+                android:id="@+id/scores_page_radio_button_5"
+                style="@style/RadioButtonNoIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:text="@string/days_button_example"
+                android:textColor="@drawable/days_button_selector"
+                android:textSize="@dimen/scores_page_button_size" />
+        </RadioGroup>
 
         <ImageButton
             android:id="@+id/scores_page_calendar_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="7dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             android:src="@drawable/ic_baseline_calendar_today_24"
             app:tint="@color/white" />
-
     </LinearLayout>
 
 </RelativeLayout>
