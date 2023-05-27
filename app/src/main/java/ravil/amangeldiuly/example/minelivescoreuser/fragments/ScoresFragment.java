@@ -107,17 +107,8 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     private RadioGroup.OnCheckedChangeListener radioGroupListener() {
         return (group, checkedId) -> {
-            RadioButton radioButton = currentView.findViewById(checkedId);
-            setData(formatDateForRequest(
-                    daysButtonsText.get(
-                            getCheckedRadioButtonPosition(checkedId)
-                    )
-            ));
-
-            Toast.makeText(context, "Selected date for request: " + formatDateForRequest(
-                    daysButtonsText.get(
-                            getCheckedRadioButtonPosition(radioButton.getId()))
-            ), Toast.LENGTH_SHORT).show();
+            lastSelectedDate = daysButtonsText.get(getCheckedRadioButtonPosition(checkedId));
+            setData(formatDateForRequest(lastSelectedDate));
         };
     }
 
@@ -253,6 +244,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         LocalDate selectedDate = LocalDate.of(lastSelectedDate.getYear(), lastSelectedDate.getMonth(), day);
         getDays(selectedDate);
         setDaysToButtons();
-        setData(formatDateForRequest(selectedDate));
+        lastSelectedDate = selectedDate;
+        centerRadioButton.setChecked(true);
     }
 }
