@@ -1,47 +1,50 @@
 package ravil.amangeldiuly.example.minelivescoreuser.calendar;
 
+import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
-    private final ArrayList<String> daysOfMonth;
-    private final OnItemListener onItemListener;
+    private Context context;
+    private List<Integer> days;
 
-    public CalendarAdapter(ArrayList<String> daysOfMonth, OnItemListener onItemListener) {
-        this.daysOfMonth = daysOfMonth;
-        this.onItemListener = onItemListener;
+    public CalendarAdapter(Context context, List<Integer> days) {
+        this.context = context;
+        this.days = days;
     }
 
     @NonNull
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.calendar_cell, parent, false);
-        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.height = (int) (parent.getHeight() * 0.166666666);
-        return new CalendarViewHolder(view, onItemListener);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View view = layoutInflater.inflate(R.layout.calendar_cell, parent, false);
+        return new CalendarViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
-        holder.dayOfMonth.setText(daysOfMonth.get(position));
+        if (days.get(position) != 0) {
+            holder.cellDayText.setText(
+                    String.valueOf(days.get(position))
+            );
+        } else {
+            holder.cellDayText.setText("");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return daysOfMonth.size();
-    }
-
-    public interface OnItemListener {
-        void onItemClick(int position, String dayText);
+        return days.size();
     }
 }

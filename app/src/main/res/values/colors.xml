@@ -11,4 +11,13 @@
     <color name="black">#000000</color>
     <color name="grey">#FF757575</color>
     <color name="text_grey">#FFA3A3A3</color>
+    <color name="rainbow6">#FF000084</color>
+    <color name="rainbow7">#FF2C009C</color>
+    <color name="rainbow5">#FF009CFE</color>
+    <color name="rainbow4">#FF00BC00</color>
+    <color name="rainbow3">#FFFEF600</color>
+    <color name="rainbow2">#FFFE622C</color>
+    <color name="rainbow1">#FFDE0000</color>
+    <color name="pink">#FFD90B91</color>
+    <color name="light_grey">#FFC4C4C4</color>
 </resources>

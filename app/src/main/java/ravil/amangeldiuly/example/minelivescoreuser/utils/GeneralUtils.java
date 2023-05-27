@@ -19,4 +19,13 @@ public class GeneralUtils {
                         .contains(subName.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
+    public static String titleCaseWord(String word) {
+        char[] wordChars = word.toCharArray();
+        wordChars[0] = Character.toUpperCase(wordChars[0]);
+        for (int n = wordChars.length, i = 1; i < n; i++) {
+            wordChars[i] = Character.toLowerCase(wordChars[i]);
+        }
+        return String.valueOf(wordChars);
+    }
 }
