@@ -51,9 +51,10 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private GameApi gameApi;
     private Context context;
     private RadioGroup radioGroup;
-    private RadioButton radioButton;
+    private RadioButton centerRadioButton;
     private List<Integer> currentMonthDays;
     private TextView currentMonthText;
+    private TextView currentYearText;
     private ImageButton calendarButton;
     private LinearLayout calendarHolderLayout;
     private LocalDate lastSelectedDate;
@@ -77,6 +78,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         calendarButton.setOnClickListener(calendarButtonOnClickListener());
         calendarHolderLayout = currentView.findViewById(R.id.calendar_holder_linear_layout);
         currentMonthText = currentView.findViewById(R.id.current_month_text);
+        currentYearText = currentView.findViewById(R.id.current_year_text);
         previousMonthButton = currentView.findViewById(R.id.previous_month_button);
         nextMonthButton = currentView.findViewById(R.id.next_month_button);
 
@@ -97,8 +99,8 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         setDaysToButtons();
 
         radioGroup.setOnCheckedChangeListener(radioGroupListener());
-        radioButton = currentView.findViewById(R.id.scores_page_radio_button_3);
-        radioButton.setChecked(true);
+        centerRadioButton = currentView.findViewById(R.id.scores_page_radio_button_3);
+        centerRadioButton.setChecked(true);
 
         return currentView;
     }
@@ -116,7 +118,6 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
                     daysButtonsText.get(
                             getCheckedRadioButtonPosition(radioButton.getId()))
             ), Toast.LENGTH_SHORT).show();
-            Toast.makeText(context, "Selected date: " + radioButton.getText(), Toast.LENGTH_SHORT).show();
         };
     }
 
@@ -177,9 +178,12 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         }
     }
 
-    private void loadAndSetMonth(LocalDate date) {
+    private void loadAndSetMonthAndYear(LocalDate date) {
         currentMonthText.setText(titleCaseWord(
                 date.getMonth().toString()
+        ));
+        currentYearText.setText(titleCaseWord(
+                String.valueOf(date.getYear())
         ));
     }
 
@@ -199,7 +203,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         return view -> {
             if (calendarButtonClicked) {
                 calendarHolderLayout.setVisibility(View.VISIBLE);
-                loadAndSetMonth(lastSelectedDate);
+                loadAndSetMonthAndYear(lastSelectedDate);
                 loadMonthDays(lastSelectedDate);
                 setCalendar(currentMonthDays);
             } else {
@@ -219,7 +223,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private View.OnClickListener previousMonthButtonOnClick() {
         return view -> {
             lastSelectedDate = lastSelectedDate.minusMonths(1);
-            loadAndSetMonth(lastSelectedDate);
+            loadAndSetMonthAndYear(lastSelectedDate);
             loadMonthDays(lastSelectedDate);
             setCalendar(currentMonthDays);
         };
@@ -228,7 +232,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private View.OnClickListener nextMonthButtonOnClick() {
         return view -> {
             lastSelectedDate = lastSelectedDate.plusMonths(1);
-            loadAndSetMonth(lastSelectedDate);
+            loadAndSetMonthAndYear(lastSelectedDate);
             loadMonthDays(lastSelectedDate);
             setCalendar(currentMonthDays);
         };
@@ -245,11 +249,10 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     @Override
     public void onItemClick(int day) {
-        System.out.println("Vyzvaly Fragment");
         calendarHolderLayout.setVisibility(View.GONE);
         LocalDate selectedDate = LocalDate.of(lastSelectedDate.getYear(), lastSelectedDate.getMonth(), day);
         getDays(selectedDate);
         setDaysToButtons();
-        Toast.makeText(context, "Day selected: " + String.valueOf(day), Toast.LENGTH_SHORT);
+        setData(formatDateForRequest(selectedDate));
     }
 }

@@ -21,8 +21,11 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
     }
 
     private View.OnClickListener calendarDayClickListener() {
-        return view -> onItemListener.onItemClick(
-                Integer.parseInt(cellDayText.getText().toString())
-        );
+        return view -> {
+            String day = cellDayText.getText().toString();
+            if (!day.isEmpty()) {
+                onItemListener.onItemClick(Integer.parseInt(day));
+            }
+        };
     }
 }

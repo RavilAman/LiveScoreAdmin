@@ -115,6 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/scores_page_buttons_layout"
         android:background="@drawable/calendar_background"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <LinearLayout
@@ -126,24 +127,24 @@
             android:paddingEnd="5dp"
             android:paddingBottom="7dp">
 
-            <ImageButton
-                android:id="@+id/previous_month_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:src="@drawable/ic_baseline_chevron_left_24" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
             <TextView
                 android:id="@+id/current_month_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/current_month"
                 android:textColor="@color/white"
+                android:layout_marginStart="9dp"
+                android:fontFamily="@font/inter_medium"
+                android:layout_marginEnd="5dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/current_year_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2020"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/light_grey"
                 android:textSize="18sp" />
 
             <View
@@ -152,17 +153,27 @@
                 android:layout_weight="1" />
 
             <ImageButton
+                android:id="@+id/previous_month_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/calendar_black"
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/ic_baseline_chevron_left_24"
+                app:tint="@color/white"/>
+
+            <ImageButton
                 android:id="@+id/next_month_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:src="@drawable/ic_baseline_chevron_right_24" />
+                android:background="@color/calendar_black"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_baseline_chevron_right_24"
+                app:tint="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/teal_200"
             android:orientation="horizontal"
             android:paddingTop="5dp"
             android:paddingBottom="5dp">
@@ -171,7 +182,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow1"
                 android:text="@string/monday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -181,7 +191,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow2"
                 android:text="@string/tuesday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -191,7 +200,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow3"
                 android:text="@string/wednesday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -201,7 +209,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow4"
                 android:text="@string/thursday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -211,7 +218,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow5"
                 android:text="@string/friday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -221,7 +227,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow6"
                 android:text="@string/saturday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -231,7 +236,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/rainbow7"
                 android:text="@string/sunday"
                 android:textAlignment="center"
                 android:textColor="@color/white"
@@ -242,7 +246,6 @@
             android:id="@+id/calendar_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:orientation="vertical"
             android:paddingBottom="5dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
@@ -250,6 +253,3 @@
     </LinearLayout>
 
 </RelativeLayout>
-
-    <!--        android:visibility="gone"
-    -->
