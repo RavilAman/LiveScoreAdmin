@@ -20,4 +20,5 @@
     <color name="rainbow1">#FFDE0000</color>
     <color name="pink">#FFD90B91</color>
     <color name="light_grey">#FFC4C4C4</color>
+    <color name="calendar_black">#FF222222</color>
 </resources>

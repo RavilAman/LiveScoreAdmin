@@ -10,6 +10,7 @@ import android.widget.GridLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
@@ -18,10 +19,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     private Context context;
     private List<Integer> days;
+    private final OnItemListener onItemListener;
 
-    public CalendarAdapter(Context context, List<Integer> days) {
+    public CalendarAdapter(Context context, List<Integer> days, OnItemListener onItemListener) {
         this.context = context;
         this.days = days;
+        this.onItemListener = onItemListener;
     }
 
     @NonNull
@@ -29,7 +32,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.calendar_cell, parent, false);
-        return new CalendarViewHolder(view);
+        return new CalendarViewHolder(view, onItemListener);
     }
 
     @Override
@@ -46,5 +49,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     @Override
     public int getItemCount() {
         return days.size();
+    }
+
+    public interface OnItemListener {
+        void onItemClick(int day);
     }
 }

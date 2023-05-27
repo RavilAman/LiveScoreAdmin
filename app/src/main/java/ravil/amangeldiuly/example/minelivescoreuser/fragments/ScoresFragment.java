@@ -43,7 +43,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScoresFragment extends Fragment {
+public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener {
 
     private View currentView;
     private Retrofit retrofit;
@@ -159,6 +159,7 @@ public class ScoresFragment extends Fragment {
     }
 
     private void getDays(LocalDate date) {
+        daysButtonsText.clear();
         LocalDate forSave = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
         for (int i = -2; i < 3; i++) {
             date = date.plusDays(i);
@@ -210,7 +211,7 @@ public class ScoresFragment extends Fragment {
 
     private void setCalendar(List<Integer> currentMonthDays) {
         GridLayoutManager calendarLayoutManager = new GridLayoutManager(context, 7);
-        CalendarAdapter calendarAdapter = new CalendarAdapter(context, currentMonthDays);
+        CalendarAdapter calendarAdapter = new CalendarAdapter(context, currentMonthDays, this);
         calendarRecyclerView.setLayoutManager(calendarLayoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
@@ -240,5 +241,15 @@ public class ScoresFragment extends Fragment {
         for (int i = 0; i < startingWeekDay; i++) {
             currentMonthDays.add(0);
         }
+    }
+
+    @Override
+    public void onItemClick(int day) {
+        System.out.println("Vyzvaly Fragment");
+        calendarHolderLayout.setVisibility(View.GONE);
+        LocalDate selectedDate = LocalDate.of(lastSelectedDate.getYear(), lastSelectedDate.getMonth(), day);
+        getDays(selectedDate);
+        setDaysToButtons();
+        Toast.makeText(context, "Day selected: " + String.valueOf(day), Toast.LENGTH_SHORT);
     }
 }
