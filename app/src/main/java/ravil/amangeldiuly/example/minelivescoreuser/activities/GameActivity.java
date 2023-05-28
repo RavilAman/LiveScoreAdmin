@@ -1,8 +1,10 @@
-package ravil.amangeldiuly.example.minelivescoreuser;
+package ravil.amangeldiuly.example.minelivescoreuser.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import ravil.amangeldiuly.example.minelivescoreuser.R;
 
 public class GameActivity extends AppCompatActivity {
 

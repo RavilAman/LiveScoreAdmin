@@ -9,4 +9,5 @@
     <dimen name="scores_page_button_size">9sp</dimen>
     <dimen name="calendar_button_size">30dp</dimen>
     <dimen name="game_team_logo_size">25dp</dimen>
+    <dimen name="game_activity_tournament_logo_size">65dp</dimen>
 </resources>
