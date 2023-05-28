@@ -43,12 +43,7 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
     private SearchView searchView;
     private List<TournamentDto> tournamentByNames;
 
-    // todo: add check for internet availability
-
     // todo: можно ли добавить анимацию, как все турнаменты сохраненные в бд плано по одному прорисовываются на фронте
-
-    // todo: обновить ресайклер вью после удаления, тоесть удалить с листа, и нотифицировать
-
 
     @Nullable
     @Override

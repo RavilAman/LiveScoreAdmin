@@ -13,12 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -34,6 +34,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.calendar.CalendarAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.groups.GroupAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.NewGameDTO;
@@ -44,47 +45,64 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener {
+    
+    private Context context;
 
     private View currentView;
-    private Retrofit retrofit;
-    private List<LocalDate> daysButtonsText;
-    private GameApi gameApi;
-    private Context context;
     private RadioGroup radioGroup;
     private RadioButton centerRadioButton;
-    private List<Integer> currentMonthDays;
     private TextView currentMonthText;
     private TextView currentYearText;
+    TextView noGamesText;
     private ImageButton calendarButton;
     private LinearLayout calendarHolderLayout;
-    private LocalDate lastSelectedDate;
-    private boolean calendarButtonClicked = true;
     private RecyclerView calendarRecyclerView;
+    private RecyclerView groupRecyclerView;
     private ImageButton previousMonthButton;
     private ImageButton nextMonthButton;
-    private int startingWeekDay;
+    
+    private Retrofit retrofit;
+    private GameApi gameApi;
+
+    private List<LocalDate> fiveDays;
+    private List<Integer> currentMonthDays;
+    private LocalDate lastSelectedDate;
+    private int monthFirstWeekDay;
+    private boolean calendarButtonClicked = true;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        lastSelectedDate = LocalDate.now();
         currentView = inflater.inflate(R.layout.fragment_scores, container, false);
-        calendarRecyclerView = currentView.findViewById(R.id.calendar_recycler_view);
-        radioGroup = currentView.findViewById(R.id.scores_page_days_button_radio_group);
+        initializeObjects();
+        initializeRetrofit();
+        initializeViews();
+        setListeners();
+
+        getDays(LocalDate.now());
+        setDaysToButtons();
+
+        centerRadioButton.setChecked(true);
+
+        return currentView;
+    }
+
+    private void initializeViews() {
         context = getContext();
-        daysButtonsText = new ArrayList<>();
-        currentMonthDays = new ArrayList<>();
+        calendarRecyclerView = currentView.findViewById(R.id.calendar_recycler_view);
+        groupRecyclerView = currentView.findViewById(R.id.group_recycler_view);
+        radioGroup = currentView.findViewById(R.id.scores_page_days_button_radio_group);
         calendarButton = currentView.findViewById(R.id.scores_page_calendar_button);
-        calendarButton.setOnClickListener(calendarButtonOnClickListener());
         calendarHolderLayout = currentView.findViewById(R.id.calendar_holder_linear_layout);
         currentMonthText = currentView.findViewById(R.id.current_month_text);
         currentYearText = currentView.findViewById(R.id.current_year_text);
+        noGamesText = currentView.findViewById(R.id.no_games_text_view);
         previousMonthButton = currentView.findViewById(R.id.previous_month_button);
         nextMonthButton = currentView.findViewById(R.id.next_month_button);
+        centerRadioButton = currentView.findViewById(R.id.scores_page_radio_button_3);
+    }
 
-        previousMonthButton.setOnClickListener(previousMonthButtonOnClick());
-        nextMonthButton.setOnClickListener(nextMonthButtonOnClick());
-
+    private void initializeRetrofit() {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
@@ -94,30 +112,40 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         gameApi = retrofit.create(GameApi.class);
+    }
 
-        getDays(LocalDate.now());
-        setDaysToButtons();
+    private void initializeObjects() {
+        lastSelectedDate = LocalDate.now();
+        fiveDays = new ArrayList<>();
+        currentMonthDays = new ArrayList<>();
+    }
 
+    private void setListeners() {
+        calendarButton.setOnClickListener(calendarButtonOnClickListener());
+        previousMonthButton.setOnClickListener(previousMonthButtonOnClick());
+        nextMonthButton.setOnClickListener(nextMonthButtonOnClick());
         radioGroup.setOnCheckedChangeListener(radioGroupListener());
-        centerRadioButton = currentView.findViewById(R.id.scores_page_radio_button_3);
-        centerRadioButton.setChecked(true);
-
-        return currentView;
     }
 
     private RadioGroup.OnCheckedChangeListener radioGroupListener() {
         return (group, checkedId) -> {
-            lastSelectedDate = daysButtonsText.get(getCheckedRadioButtonPosition(checkedId));
+            lastSelectedDate = fiveDays.get(getCheckedRadioButtonPosition(checkedId));
             setData(formatDateForRequest(lastSelectedDate));
         };
     }
 
-
     private void setData(String requestedDate) {
+        noGamesText.setVisibility(View.GONE);
         gameApi.getGamesByDate(requestedDate).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<NewGameDTO>> call, Response<List<NewGameDTO>> response) {
                 Log.d("Retrieved data", response.toString());
+                if (response.isSuccessful() && response.body() != null) {
+                    setGames(response.body());
+                }
+                if (response.body().isEmpty()) {
+                    noGamesText.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -151,11 +179,11 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     }
 
     private void getDays(LocalDate date) {
-        daysButtonsText.clear();
+        fiveDays.clear();
         LocalDate forSave = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
         for (int i = -2; i < 3; i++) {
             date = date.plusDays(i);
-            daysButtonsText.add(date);
+            fiveDays.add(date);
             date = forSave;
         }
     }
@@ -164,7 +192,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         for (int i = 0; i < radioGroup.getChildCount(); i++) {
             RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
             radioButton.setText(
-                    formatDaysButtonText(daysButtonsText.get(i))
+                    formatDaysButtonText(fiveDays.get(i))
             );
         }
     }
@@ -180,7 +208,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     private void loadMonthDays(LocalDate date) {
         currentMonthDays.clear();
-        setStartingWeekDay(date);
+        setMonthFirstWeekDay(date);
         int year = date.getYear();
         int month = date.getMonthValue();
         YearMonth yearMonth = YearMonth.of(year, month);
@@ -211,6 +239,13 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
 
+    private void setGames(List<NewGameDTO> games) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        GroupAdapter groupAdapter = new GroupAdapter(context, games);
+        groupRecyclerView.setLayoutManager(linearLayoutManager);
+        groupRecyclerView.setAdapter(groupAdapter);
+    }
+
     private View.OnClickListener previousMonthButtonOnClick() {
         return view -> {
             lastSelectedDate = lastSelectedDate.minusMonths(1);
@@ -229,11 +264,11 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         };
     }
 
-    private void setStartingWeekDay(LocalDate date) {
-        startingWeekDay = date.withDayOfMonth(1)
+    private void setMonthFirstWeekDay(LocalDate date) {
+        monthFirstWeekDay = date.withDayOfMonth(1)
                 .getDayOfWeek()
                 .getValue() - 1;
-        for (int i = 0; i < startingWeekDay; i++) {
+        for (int i = 0; i < monthFirstWeekDay; i++) {
             currentMonthDays.add(0);
         }
     }

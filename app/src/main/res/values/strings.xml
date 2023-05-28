@@ -27,4 +27,6 @@
     <string name="live">Live</string>
     <string name="days_button_example">WEEK\n12 MON</string>
     <string name="group">Group</string>
+    <string name="no_internet">There is no internet!</string>
+    <string name="no_matches">No matches for today</string>
 </resources>

@@ -262,7 +262,24 @@
             android:orientation="vertical"
             android:paddingBottom="5dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
-
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/group_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendar_holder_linear_layout" />
+
+    <TextView
+        android:id="@+id/no_games_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/inter_medium"
+        android:gravity="center"
+        android:text="@string/no_matches"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

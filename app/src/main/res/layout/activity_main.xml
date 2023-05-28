@@ -7,11 +7,22 @@
     android:background="@color/app_black"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/no_internet_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/no_internet"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation_bar"/>
+        android:layout_above="@id/bottom_navigation_bar"
+        android:layout_below="@id/no_internet_text_view" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_bar"
@@ -19,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/app_black"
-        app:itemTextColor="@drawable/bottom_nav_item_color_selector"
         app:itemIconTint="@drawable/bottom_nav_item_color_selector"
+        app:itemTextColor="@drawable/bottom_nav_item_color_selector"
         app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>

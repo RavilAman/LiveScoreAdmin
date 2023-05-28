@@ -1,10 +1,13 @@
 package ravil.amangeldiuly.example.minelivescoreuser.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import androidx.fragment.app.FragmentActivity;
+
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 
@@ -28,4 +31,23 @@ public class GeneralUtils {
         }
         return String.valueOf(wordChars);
     }
+
+    public static String getGameScoreForTeam(String gameScore, int teamNumber) {
+        if (teamNumber == 1) {
+            return gameScore.substring(0, gameScore.indexOf(":"));
+        } else if (teamNumber == 2) {
+            return gameScore.substring(gameScore.indexOf(":") + 1);
+        }
+        return "";
+    }
+
+    // todo: починить, не работает
+//    public static boolean isConnected(FragmentActivity fragmentActivity) {
+//        ConnectivityManager connectivityManager = (ConnectivityManager) fragmentActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (connectivityManager != null) {
+//            NetworkInfo connection = connectivityManager.getActiveNetworkInfo();
+//            return connection != null && connection.isConnected();
+//        }
+//        return true;
+//    }
 }
