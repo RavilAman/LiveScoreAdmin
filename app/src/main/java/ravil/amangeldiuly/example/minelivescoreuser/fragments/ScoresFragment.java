@@ -2,12 +2,17 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.titleCaseWord;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -16,6 +21,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,13 +60,15 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private RadioButton centerRadioButton;
     private TextView currentMonthText;
     private TextView currentYearText;
-    TextView noGamesText;
+    private TextView noGamesText;
     private ImageButton calendarButton;
     private LinearLayout calendarHolderLayout;
     private RecyclerView calendarRecyclerView;
     private RecyclerView groupRecyclerView;
     private ImageButton previousMonthButton;
     private ImageButton nextMonthButton;
+    private Button liveButton;
+    private Drawable liveButtonBackground;
     
     private Retrofit retrofit;
     private GameApi gameApi;
@@ -69,6 +78,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private LocalDate lastSelectedDate;
     private int monthFirstWeekDay;
     private boolean calendarButtonClicked = true;
+    private int lastCheckedRadioButtonId;
 
     @Nullable
     @Override
@@ -100,6 +110,8 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         previousMonthButton = currentView.findViewById(R.id.previous_month_button);
         nextMonthButton = currentView.findViewById(R.id.next_month_button);
         centerRadioButton = currentView.findViewById(R.id.scores_page_radio_button_3);
+        liveButton = currentView.findViewById(R.id.scores_page_live_button);
+        liveButtonBackground = liveButton.getBackground();
     }
 
     private void initializeRetrofit() {
@@ -125,26 +137,64 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         previousMonthButton.setOnClickListener(previousMonthButtonOnClick());
         nextMonthButton.setOnClickListener(nextMonthButtonOnClick());
         radioGroup.setOnCheckedChangeListener(radioGroupListener());
+        liveButton.setOnClickListener(liveButtonListener());
     }
 
     private RadioGroup.OnCheckedChangeListener radioGroupListener() {
         return (group, checkedId) -> {
             lastSelectedDate = fiveDays.get(getCheckedRadioButtonPosition(checkedId));
-            setData(formatDateForRequest(lastSelectedDate));
+            setGamesForSelectedDate(formatDateForRequest(lastSelectedDate));
+            lastCheckedRadioButtonId = checkedId;
+            changeLiveButtonColor(R.color.button_grey);
         };
     }
 
-    private void setData(String requestedDate) {
+    private View.OnClickListener liveButtonListener() {
+        return view -> {
+            RadioButton lastCheckedButton = currentView.findViewById(lastCheckedRadioButtonId);
+            lastCheckedButton.setChecked(false);
+            changeLiveButtonColor(R.color.app_orange);
+            setGamesLive();
+        };
+    }
+
+    private void changeLiveButtonColor(int color) {
+        ColorStateList colorStateList = ContextCompat.getColorStateList(context, color);
+        Drawable wrappedDrawable = DrawableCompat.wrap(liveButtonBackground);
+        DrawableCompat.setTintList(wrappedDrawable, colorStateList);
+        liveButton.setBackground(wrappedDrawable);
+    }
+
+    private void setGamesLive() {
+        noGamesText.setVisibility(View.GONE);
+        gameApi.getLiveGames().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<NewGameDTO>> call, Response<List<NewGameDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    setGames(response.body());
+                    if (response.body().isEmpty()) {
+                        noGamesText.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<NewGameDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void setGamesForSelectedDate(String requestedDate) {
         noGamesText.setVisibility(View.GONE);
         gameApi.getGamesByDate(requestedDate).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<NewGameDTO>> call, Response<List<NewGameDTO>> response) {
-                Log.d("Retrieved data", response.toString());
                 if (response.isSuccessful() && response.body() != null) {
                     setGames(response.body());
-                }
-                if (response.body().isEmpty()) {
-                    noGamesText.setVisibility(View.VISIBLE);
+                    if (response.body().isEmpty()) {
+                        noGamesText.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 

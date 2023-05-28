@@ -12,4 +12,7 @@ public interface GameApi {
 
     @GET(Constants.GAME_BY_DATE)
     Call<List<NewGameDTO>> getGamesByDate(@Query("date") String date);
+
+    @GET(Constants.GAME_LIVE)
+    Call<List<NewGameDTO>> getLiveGames();
 }

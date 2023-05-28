@@ -4,8 +4,8 @@
     <dimen name="calendar_days_text">16sp</dimen>
     <dimen name="tournament_logo_size">50dp</dimen>
     <dimen name="favourites_button_size">50dp</dimen>
-    <dimen name="tournament_name_text_size">18sp</dimen>
-    <dimen name="tournament_location_text_size">14sp</dimen>
+    <dimen name="tournament_name_text_size">14sp</dimen>
+    <dimen name="tournament_location_text_size">10sp</dimen>
     <dimen name="scores_page_button_size">9sp</dimen>
     <dimen name="calendar_button_size">30dp</dimen>
     <dimen name="game_team_logo_size">25dp</dimen>

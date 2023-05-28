@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/app_black"
-    android:paddingBottom="10dp">
+    android:layout_marginBottom="15dp">
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/group_item_layout"
@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/group_card_tournament_logo"

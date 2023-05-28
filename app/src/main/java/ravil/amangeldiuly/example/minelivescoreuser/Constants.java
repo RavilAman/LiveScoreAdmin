@@ -12,4 +12,5 @@ public class Constants {
     public static final String DELETE_SUBSCRIPTION = "notification/subscriptions/{topic}/{registrationToken}";
 
     public static final String GAME_BY_DATE = "game/new/date";
+    public static final String GAME_LIVE = "game/live";
 }

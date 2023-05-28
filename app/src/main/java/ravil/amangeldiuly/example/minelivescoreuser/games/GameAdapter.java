@@ -48,7 +48,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameViewHolder> {
                 .into(holder.team2Logo);
         holder.gameTime.setText(
                 game.getGameDateTime()
-                        .format(DateTimeFormatter.ofPattern("HH-mm"))
+                        .format(DateTimeFormatter.ofPattern("HH:mm"))
         );
         holder.team1Name.setText(game.getTeam1Name());
         holder.team2Name.setText(game.getTeam2Name());
