@@ -2,7 +2,6 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.titleCaseWord;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -166,10 +164,10 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     }
 
     private void setGamesLive() {
-        noGamesText.setVisibility(View.GONE);
         gameApi.getLiveGames().enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<NewGameDTO>> call, Response<List<NewGameDTO>> response) {
+                noGamesText.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
                     setGames(response.body());
                     if (response.body().isEmpty()) {
@@ -186,6 +184,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     }
 
     private void setGamesForSelectedDate(String requestedDate) {
+        Log.d("requested date", requestedDate);
         noGamesText.setVisibility(View.GONE);
         gameApi.getGamesByDate(requestedDate).enqueue(new Callback<>() {
             @Override
@@ -331,5 +330,6 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         setDaysToButtons();
         lastSelectedDate = selectedDate;
         centerRadioButton.setChecked(true);
+        setGamesForSelectedDate(formatDateForRequest(selectedDate));
     }
 }
