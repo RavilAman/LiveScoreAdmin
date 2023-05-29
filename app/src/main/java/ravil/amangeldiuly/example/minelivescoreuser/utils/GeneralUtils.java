@@ -41,6 +41,11 @@ public class GeneralUtils {
         return "";
     }
 
+    public static String gameScoreIntoDashFormat(String gameScore) {
+        return gameScore.substring(0, gameScore.indexOf(":")) + " - "
+                + gameScore.substring(gameScore.indexOf(":") + 1);
+    }
+
     // todo: починить, не работает
 //    public static boolean isConnected(FragmentActivity fragmentActivity) {
 //        ConnectivityManager connectivityManager = (ConnectivityManager) fragmentActivity.getSystemService(Context.CONNECTIVITY_SERVICE);

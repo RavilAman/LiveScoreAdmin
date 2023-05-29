@@ -13,4 +13,6 @@ public class Constants {
 
     public static final String GAME_BY_DATE = "game/new/date";
     public static final String GAME_LIVE = "game/live";
+
+    public static final String PROTOCOL_BY_ID = "protocol/{id}";
 }

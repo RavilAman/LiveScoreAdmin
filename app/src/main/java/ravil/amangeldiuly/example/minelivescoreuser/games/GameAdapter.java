@@ -61,6 +61,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameViewHolder> {
             holder.team2Score.setText(
                     getGameScoreForTeam(game.getGameScore(), 2));
         }
+        holder.protocolId = game.getProtocolId();
+        holder.context = context;
     }
 
     @Override

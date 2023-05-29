@@ -2,8 +2,10 @@ package ravil.amangeldiuly.example.minelivescoreuser.games;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,8 @@ import ravil.amangeldiuly.example.minelivescoreuser.activities.GameActivity;
 
 public class GameViewHolder extends RecyclerView.ViewHolder {
 
+    private LinearLayout gameItemLayout;
+    Context context;
     TextView gameTime;
     TextView team1Name;
     TextView team2Name;
@@ -26,6 +30,7 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
     public GameViewHolder(@NonNull View itemView) {
         super(itemView);
 
+        gameItemLayout = itemView.findViewById(R.id.game_item_layout);
         gameTime = itemView.findViewById(R.id.game_item_time);
         team1Name = itemView.findViewById(R.id.game_item_team_1_name);
         team2Name = itemView.findViewById(R.id.game_item_team_2_name);
@@ -33,5 +38,16 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
         team2Score = itemView.findViewById(R.id.game_item_team_2_score);
         team1Logo = itemView.findViewById(R.id.game_item_team_1_logo);
         team2Logo = itemView.findViewById(R.id.game_item_team_2_logo);
+
+        gameItemLayout.setOnClickListener(gameItemLayoutListener());
+    }
+
+    private View.OnClickListener gameItemLayoutListener() {
+        return view -> {
+            Log.d("Protocol ID", String.valueOf(protocolId));
+            Intent gameIntent = new Intent(context, GameActivity.class);
+            gameIntent.putExtra("protocolId", protocolId);
+            context.startActivity(gameIntent);
+        };
     }
 }
