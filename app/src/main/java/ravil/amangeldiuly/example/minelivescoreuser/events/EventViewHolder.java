@@ -14,11 +14,11 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
     TextView time;
     TextView team1Player;
     TextView team2Player;
-    TextView team1Score;
-    TextView team2Score;
+    TextView gameScore;
     TextView team1Assist;
     TextView team2Assist;
-    ImageView eventLogo;
+    ImageView eventLogoTeam1;
+    ImageView eventLogoTeam2;
 
     public EventViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -26,10 +26,10 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
         time = itemView.findViewById(R.id.event_item_time);
         team1Player = itemView.findViewById(R.id.event_item_player_team_1);
         team2Player = itemView.findViewById(R.id.event_item_player_team_2);
-        team1Score = itemView.findViewById(R.id.event_item_score_team_1);
-        team2Score = itemView.findViewById(R.id.event_item_score_team_2);
+        gameScore = itemView.findViewById(R.id.event_item_game_score);
         team1Assist = itemView.findViewById(R.id.event_item_assist_team_1);
         team2Assist = itemView.findViewById(R.id.event_item_assist_team_2);
-        eventLogo = itemView.findViewById(R.id.event_item_event_logo);
+        eventLogoTeam1 = itemView.findViewById(R.id.event_item_event_logo_team_1);
+        eventLogoTeam2 = itemView.findViewById(R.id.event_item_event_logo_team_2);
     }
 }

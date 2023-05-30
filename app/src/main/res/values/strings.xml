@@ -31,4 +31,5 @@
     <string name="no_matches">No matches for today</string>
     <string name="full_time">Full Time</string>
     <string name="summary">Summary</string>
+    <string name="ft">FT</string>
 </resources>

@@ -44,55 +44,59 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         holder.time.setText(eventDTO.getMinute() + "°");
         switch (eventDTO.getEventName()) {
             case "GOAL":
-                holder.eventLogo.setImageResource(R.drawable.soccer_ball);
+                holder.gameScore.setText(gameScoreIntoDashFormat(eventDTO.getGameScore()));
                 if (Objects.equals(team1Id, eventDTO.getTeamId())) {
+                    holder.eventLogoTeam1.setImageResource(R.drawable.soccer_ball);
+                    holder.eventLogoTeam2.setVisibility(View.GONE);
                     holder.team1Player.setText(eventDTO.getPlayerName());
                     if (eventDTO.getAssist() != null) {
                         holder.team1Assist.setText(eventDTO.getAssist().getAssistPlayer());
                     } else {
                         holder.team1Assist.setVisibility(View.GONE);
                     }
-                    holder.team1Score.setText(gameScoreIntoDashFormat(eventDTO.getGameScore()));
                     holder.team2Player.setVisibility(View.GONE);
                     holder.team2Assist.setVisibility(View.GONE);
-                    holder.team2Score.setVisibility(View.GONE);
                 } else {
+                    holder.eventLogoTeam1.setVisibility(View.GONE);
+                    holder.eventLogoTeam2.setImageResource(R.drawable.soccer_ball);
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     if (eventDTO.getAssist() != null) {
                         holder.team2Assist.setText(eventDTO.getAssist().getAssistPlayer());
                     } else {
                         holder.team2Assist.setVisibility(View.GONE);
                     }
-                    holder.team2Score.setText(gameScoreIntoDashFormat(eventDTO.getGameScore()));
                     holder.team1Player.setVisibility(View.GONE);
                     holder.team1Assist.setVisibility(View.GONE);
-                    holder.team1Score.setVisibility(View.GONE);
                 }
                 break;
             case "YELLOW_CARD":
-                holder.eventLogo.setImageResource(R.drawable.yellow_card);
                 holder.team1Assist.setVisibility(View.GONE);
-                holder.team1Score.setVisibility(View.GONE);
                 holder.team2Assist.setVisibility(View.GONE);
-                holder.team2Score.setVisibility(View.GONE);
+                holder.gameScore.setText("     ");
                 if (Objects.equals(team1Id, eventDTO.getTeamId())) {
+                    holder.eventLogoTeam1.setImageResource(R.drawable.yellow_card);
+                    holder.eventLogoTeam2.setVisibility(View.GONE);
                     holder.team1Player.setText(eventDTO.getPlayerName());
                     holder.team2Player.setVisibility(View.GONE);
                 } else {
+                    holder.eventLogoTeam2.setImageResource(R.drawable.yellow_card);
+                    holder.eventLogoTeam1.setVisibility(View.GONE);
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     holder.team1Player.setVisibility(View.GONE);
                 }
                 break;
             case "RED_CARD":
-                holder.eventLogo.setImageResource(R.drawable.red_card);
                 holder.team1Assist.setVisibility(View.GONE);
-                holder.team1Score.setVisibility(View.GONE);
                 holder.team2Assist.setVisibility(View.GONE);
-                holder.team2Score.setVisibility(View.GONE);
+                holder.gameScore.setText("     ");
                 if (Objects.equals(team1Id, eventDTO.getTeamId())) {
+                    holder.eventLogoTeam1.setImageResource(R.drawable.red_card);
+                    holder.eventLogoTeam2.setVisibility(View.GONE);
                     holder.team1Player.setText(eventDTO.getPlayerName());
                     holder.team2Player.setVisibility(View.GONE);
                 } else {
+                    holder.eventLogoTeam2.setImageResource(R.drawable.red_card);
+                    holder.eventLogoTeam1.setVisibility(View.GONE);
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     holder.team1Player.setVisibility(View.GONE);
                 }

@@ -3,6 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreuser.games;
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.getGameScoreForTeam;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,16 +47,22 @@ public class GameAdapter extends RecyclerView.Adapter<GameViewHolder> {
         Glide.with(context)
                 .load(game.getTeam2Logo())
                 .into(holder.team2Logo);
-        holder.gameTime.setText(
-                game.getGameDateTime()
-                        .format(DateTimeFormatter.ofPattern("HH:mm"))
-        );
         holder.team1Name.setText(game.getTeam1Name());
         holder.team2Name.setText(game.getTeam2Name());
         if (game.getGameState() == GameState.NOT_STARTED) {
             holder.team1Score.setText("");
             holder.team2Score.setText("");
+            holder.gameTime.setText(
+                    game.getGameDateTime()
+                            .format(DateTimeFormatter.ofPattern("HH:mm"))
+            );
         } else {
+            if (game.getGameState() == GameState.STARTED) {
+                holder.gameTime.setText(R.string.live);
+                holder.gameTime.setTextColor(Color.parseColor("#FFF76D09"));
+            } else if (game.getGameState() == GameState.ENDED) {
+                holder.gameTime.setText(R.string.ft);
+            }
             holder.team1Score.setText(
                     getGameScoreForTeam(game.getGameScore(), 1));
             holder.team2Score.setText(
