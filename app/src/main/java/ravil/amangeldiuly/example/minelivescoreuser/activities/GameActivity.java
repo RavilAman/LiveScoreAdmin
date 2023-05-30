@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,13 +22,16 @@ import com.google.gson.GsonBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.events.EventAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.ProtocolDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,8 +53,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView team2Name;
     private TextView gameScore;
     private TextView fullTime;
-
     private RecyclerView eventsRecyclerView;
+
+    private List<EventDTO> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,7 @@ public class GameActivity extends AppCompatActivity {
 
         initializeRetrofit();
         initializeViews();
+        initializeObjects();
         setOnClickListeners();
 
         Intent intent = getIntent();
@@ -88,6 +94,10 @@ public class GameActivity extends AppCompatActivity {
         gameScore = findViewById(R.id.game_activity_game_score);
         fullTime = findViewById(R.id.game_activity_full_time);
         eventsRecyclerView = findViewById(R.id.game_activity_events_recycler_view);
+    }
+
+    private void initializeObjects() {
+        events = new ArrayList<>();
     }
 
     private void setData(long protocolId) {
@@ -120,12 +130,14 @@ public class GameActivity extends AppCompatActivity {
                             gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
                             break;
                     }
+                    events = response.body().getEvents();
+                    setEvents(protocolDTO.getTeam1Id());
                 }
             }
 
             @Override
             public void onFailure(Call<ProtocolDTO> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -136,5 +148,11 @@ public class GameActivity extends AppCompatActivity {
 
     private View.OnClickListener backButtonOnClickListener() {
         return view -> finish();
+    }
+
+    private void setEvents(Long team1Id) {
+        EventAdapter eventAdapter = new EventAdapter(context, events, team1Id);
+        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        eventsRecyclerView.setAdapter(eventAdapter);
     }
 }

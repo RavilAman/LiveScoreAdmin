@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/event_item_background"
+    android:background="@color/app_black"
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingStart="10dp"
@@ -14,30 +14,51 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="end"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/event_item_time"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
+            android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:text="Time"
             android:textColor="@color/text_grey"
             android:textSize="@dimen/event_item_text_size"
             android:textStyle="bold" />
 
-        <TextView
+        <LinearLayout
+            android:layout_marginEnd="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:fontFamily="@font/inter_medium"
-            android:text="Player name"
-            android:textColor="@color/text_grey"
-            android:textSize="@dimen/event_item_text_size"
-            android:textStyle="bold" />
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/event_item_player_team_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_medium"
+                android:text="Player name"
+                android:textColor="@color/text_grey"
+                android:textSize="@dimen/event_item_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/event_item_assist_team_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_medium"
+                android:text="Assist name"
+                android:textColor="@color/text_grey"
+                android:textSize="10sp" />
+
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/event_item_score_team_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
@@ -49,6 +70,7 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/event_item_event_logo"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginStart="10dp"
@@ -63,9 +85,11 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/event_item_score_team_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:layout_gravity="center"
             android:fontFamily="@font/inter_medium"
             android:text="Score"
             android:textColor="@color/text_grey"
@@ -75,9 +99,11 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/event_item_player_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
@@ -87,6 +113,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/event_item_assist_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
