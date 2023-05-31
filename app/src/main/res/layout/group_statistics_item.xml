@@ -16,6 +16,7 @@
         android:textColor="@color/white" />
 
     <LinearLayout
+        android:id="@+id/group_statistics_item_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -85,9 +86,18 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/group_statistics_item_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/group_statistics_item_label"
+        android:layout_marginTop="5dp"
+        android:background="@color/divider_dark_grey" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_statistics_item_table_item_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_statistics_item_divider" />
 
 </LinearLayout>
