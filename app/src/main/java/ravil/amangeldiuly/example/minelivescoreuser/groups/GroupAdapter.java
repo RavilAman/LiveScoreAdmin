@@ -1,6 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.groups;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     private Context context;
     private RecyclerView.RecycledViewPool recycledViewPool;
     private List<NewGameDTO> gamesInGroups;
+    private GroupAdapter.OnItemListener onItemListener;
 
-    public GroupAdapter(Context context, List<NewGameDTO> gamesInGroups) {
+    public GroupAdapter(Context context, List<NewGameDTO> gamesInGroups, GroupAdapter.OnItemListener onItemListener) {
         recycledViewPool = new RecyclerView.RecycledViewPool();
         this.gamesInGroups = gamesInGroups;
         this.context = context;
+        this.onItemListener = onItemListener;
     }
 
     @NonNull
@@ -34,7 +37,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.group_item, parent, false);
-        return new GroupViewHolder(view);
+        return new GroupViewHolder(view, onItemListener);
     }
 
     @Override
@@ -56,10 +59,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
         holder.gamesRecyclerView.setLayoutManager(linearLayoutManager);
         holder.gamesRecyclerView.setAdapter(gameAdapter);
         holder.gamesRecyclerView.setRecycledViewPool(recycledViewPool);
+        holder.tournamentId = newGameDTO.getTournamentId();
+        holder.groupId = newGameDTO.getGroupId();
     }
 
     @Override
     public int getItemCount() {
         return gamesInGroups.size();
+    }
+
+    public interface OnItemListener {
+        void onItemClick(Bundle data);
     }
 }

@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +37,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
@@ -49,8 +52,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener {
-    
+public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, GroupAdapter.OnItemListener {
+
     private Context context;
 
     private View currentView;
@@ -67,7 +70,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private ImageButton nextMonthButton;
     private Button liveButton;
     private Drawable liveButtonBackground;
-    
+
     private Retrofit retrofit;
     private GameApi gameApi;
 
@@ -290,7 +293,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     private void setGames(List<NewGameDTO> games) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        GroupAdapter groupAdapter = new GroupAdapter(context, games);
+        GroupAdapter groupAdapter = new GroupAdapter(context, games, this);
         groupRecyclerView.setLayoutManager(linearLayoutManager);
         groupRecyclerView.setAdapter(groupAdapter);
     }
@@ -331,5 +334,17 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         lastSelectedDate = selectedDate;
         centerRadioButton.setChecked(true);
         setGamesForSelectedDate(formatDateForRequest(selectedDate));
+    }
+
+    @Override
+    public void onItemClick(Bundle data) {
+        FragmentStatistics fragmentStatistics = new FragmentStatistics();
+        fragmentStatistics.setArguments(data);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragmentStatistics);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

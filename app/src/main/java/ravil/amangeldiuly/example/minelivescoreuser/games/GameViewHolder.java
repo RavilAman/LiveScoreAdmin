@@ -44,7 +44,6 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
 
     private View.OnClickListener gameItemLayoutListener() {
         return view -> {
-            Log.d("Protocol ID", String.valueOf(protocolId));
             Intent gameIntent = new Intent(context, GameActivity.class);
             gameIntent.putExtra("protocolId", protocolId);
             context.startActivity(gameIntent);

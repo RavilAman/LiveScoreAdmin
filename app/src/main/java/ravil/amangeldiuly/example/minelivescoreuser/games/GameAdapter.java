@@ -58,10 +58,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameViewHolder> {
             );
         } else {
             if (game.getGameState() == GameState.STARTED) {
-                holder.gameTime.setText(R.string.live);
+                holder.gameTime.setText(R.string.game_item_live);
                 holder.gameTime.setTextColor(Color.parseColor("#FFF76D09"));
             } else if (game.getGameState() == GameState.ENDED) {
-                holder.gameTime.setText(R.string.ft);
+                holder.gameTime.setText(R.string.game_item_ft);
             }
             holder.team1Score.setText(
                     getGameScoreForTeam(game.getGameScore(), 1));
