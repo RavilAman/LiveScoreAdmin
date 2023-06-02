@@ -21,7 +21,7 @@
             android:id="@+id/event_item_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:text="Time"
@@ -32,7 +32,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:gravity="end"
             android:orientation="vertical">
 
