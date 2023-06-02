@@ -19,10 +19,9 @@
 
         <TextView
             android:id="@+id/event_item_time"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
+            android:ems="2"
             android:fontFamily="@font/inter_medium"
             android:text="Time"
             android:textColor="@color/text_grey"
@@ -32,6 +31,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="end"
             android:orientation="vertical">
 
@@ -39,7 +39,9 @@
                 android:id="@+id/event_item_player_team_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="@font/inter_medium"
+                android:maxLines="1"
                 android:text="Player name"
                 android:textColor="@color/text_grey"
                 android:textSize="@dimen/event_item_text_size"
@@ -49,7 +51,9 @@
                 android:id="@+id/event_item_assist_team_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="@font/inter_medium"
+                android:maxLines="1"
                 android:text="Assist name"
                 android:textColor="@color/text_grey"
                 android:textSize="10sp" />
@@ -102,7 +106,9 @@
                 android:id="@+id/event_item_player_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="@font/inter_medium"
+                android:maxLines="1"
                 android:text="Player name"
                 android:textColor="@color/text_grey"
                 android:textSize="@dimen/event_item_text_size"
@@ -112,7 +118,9 @@
                 android:id="@+id/event_item_assist_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="@font/inter_medium"
+                android:maxLines="1"
                 android:text="Assist name"
                 android:textColor="@color/text_grey"
                 android:textSize="10sp" />
