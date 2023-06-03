@@ -18,4 +18,9 @@ public class UrlConstants {
 
     public static final String GROUP_STATISTIC = "group_info/group/points";
     public static final String STATISTICS_FOR_TOURNAMENT = "group_info/all_group/points";
+
+    public static final String PLAYER_STATISTIC_ASSISTS = "player_statistics/assists";
+    public static final String PLAYER_STATISTIC_GOALS = "player_statistics/goals";
+    public static final String PLAYER_STATISTIC_RED_CARD = "player_statistics/red_card";
+    public static final String PLAYER_STATISTIC_YELLOW_CARD = "player_statistics/yellow_card";
 }

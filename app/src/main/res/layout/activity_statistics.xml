@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal">
 
         <ImageButton
@@ -80,6 +80,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/matches"
             android:textColor="@color/white"
             android:textSize="@dimen/statistics_label_sizes" />
@@ -91,6 +92,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/table"
             android:textColor="@color/white"
             android:textSize="@dimen/statistics_label_sizes" />
@@ -102,6 +104,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/player_stats"
             android:textColor="@color/white"
             android:textSize="@dimen/statistics_label_sizes" />
@@ -113,6 +116,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/team_stats"
             android:textColor="@color/white"
             android:textSize="@dimen/statistics_label_sizes" />
@@ -124,11 +128,10 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/activity_statistics_tabs_container"
-        android:layout_marginTop="5dp"
         android:background="@color/divider_dark_grey" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_statistics_group_statistics_recycler_vew"
+        android:id="@+id/activity_statistics_statistics_recycler_vew"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/activity_statistics_divider"

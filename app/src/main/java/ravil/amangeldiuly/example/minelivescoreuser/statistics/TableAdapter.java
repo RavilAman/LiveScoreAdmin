@@ -13,16 +13,21 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoDTO;
 
 public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
 
     private Context context;
+    private final StatisticsType statisticsType;
     private List<GroupInfoDTO> groupStatistics;
+    private List<DistinctPlayerStatisticsDTO> individualStatistics;
+    private List<DistinctPlayerStatisticsDTO> generalStatistics;
 
-    public TableAdapter(Context context, List<GroupInfoDTO> groupStatistics) {
+    public TableAdapter(Context context, StatisticsType statisticsType) {
         this.context = context;
-        this.groupStatistics = groupStatistics;
+        this.statisticsType = statisticsType;
     }
 
     @NonNull
@@ -35,22 +40,70 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TableViewHolder holder, int position) {
-        GroupInfoDTO groupStatisticsItem = groupStatistics.get(position);
         holder.count.setText(String.valueOf(position + 1));
-        Glide.with(context)
-                .load(groupStatisticsItem.getTeamLogo())
-                .into(holder.teamLogo);
-        holder.teamName.setText(groupStatisticsItem.getTeamName());
-        holder.points.setText(String.valueOf(groupStatisticsItem.getPoints()));
-        holder.goalDifference.setText(
-                String.valueOf(groupStatisticsItem.getGoalCount() - groupStatisticsItem.getGoalMissed())
-        );
-        holder.points.setText(String.valueOf(groupStatisticsItem.getPoints()));
-        holder.playedGames.setText(String.valueOf(groupStatisticsItem.getGamePlayed()));
+        DistinctPlayerStatisticsDTO distinctPlayerStatistics;
+        switch (statisticsType) {
+            case GROUP:
+                holder.specificPoints.setVisibility(View.GONE);
+                GroupInfoDTO groupStatisticsItem = groupStatistics.get(position);
+                Glide.with(context)
+                        .load(groupStatisticsItem.getTeamLogo())
+                        .into(holder.teamLogo);
+                holder.name.setText(groupStatisticsItem.getTeamName());
+                holder.points.setText(String.valueOf(groupStatisticsItem.getPoints()));
+                holder.goalDifference.setText(
+                        String.valueOf(groupStatisticsItem.getGoalCount() - groupStatisticsItem.getGoalMissed())
+                );
+                holder.playedGames.setText(String.valueOf(groupStatisticsItem.getGamePlayed()));
+                break;
+            case PLAYER:
+                distinctPlayerStatistics = generalStatistics.get(position);
+                Glide.with(context)
+                        .load(distinctPlayerStatistics.getTeamLogo())
+                        .into(holder.teamLogo);
+                holder.name.setText(distinctPlayerStatistics.getPlayerName());
+                holder.points.setVisibility(View.GONE);
+                holder.goalDifference.setVisibility(View.GONE);
+                holder.playedGames.setVisibility(View.GONE);
+                holder.specificPoints.setText(distinctPlayerStatistics.getPerGame());
+                break;
+            case INDIVIDUAL:
+                System.out.println("dnjsvjbdsvkjdvs");
+                distinctPlayerStatistics = individualStatistics.get(position);
+                Glide.with(context)
+                        .load(distinctPlayerStatistics.getTeamLogo())
+                        .into(holder.teamLogo);
+                holder.name.setText(distinctPlayerStatistics.getPlayerName());
+                holder.points.setVisibility(View.GONE);
+                holder.goalDifference.setVisibility(View.GONE);
+                holder.playedGames.setVisibility(View.GONE);
+                holder.specificPoints.setText(distinctPlayerStatistics.getPerGame());
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return groupStatistics.size();
+        switch (statisticsType) {
+            case GROUP:
+                return groupStatistics.size();
+            case PLAYER:
+                return generalStatistics.size();
+            case INDIVIDUAL:
+                return individualStatistics.size();
+        }
+        return 0;
+    }
+
+    public void setGroupStatistics(List<GroupInfoDTO> groupStatistics) {
+        this.groupStatistics = groupStatistics;
+    }
+
+    public void setGeneralStatistics(List<DistinctPlayerStatisticsDTO> generalStatistics) {
+        this.generalStatistics = generalStatistics;
+    }
+
+    public void setIndividualStatistics(List<DistinctPlayerStatisticsDTO> individualStatistics) {
+        this.individualStatistics = individualStatistics;
     }
 }

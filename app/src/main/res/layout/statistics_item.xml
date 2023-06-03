@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/group_statistics_item_group_name"
+        android:id="@+id/statistics_item_group_or_category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -30,7 +30,7 @@
             android:layout_marginEnd="30dp"
             android:ems="1"
             android:fontFamily="@font/inter_medium"
-            android:text="#"
+            android:text="@string/number_symbol"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -96,13 +96,11 @@
         android:id="@+id/group_statistics_item_divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/group_statistics_item_label"
         android:background="@color/divider_dark_grey" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/group_statistics_item_table_item_recycler_view"
+        android:id="@+id/statistics_item_table_item_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/group_statistics_item_divider" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

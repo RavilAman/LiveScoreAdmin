@@ -40,18 +40,6 @@ public class GeneralUtils {
                 + gameScore.substring(gameScore.indexOf(":") + 1);
     }
 
-//    public static<T> initializeRetrofit() {
-//        Gson gson = new GsonBuilder()
-//                .setLenient()
-//                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-//                .create();
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(UrlConstants.BACKEND_URL)
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .build();
-//        groupApi = retrofit.create(GroupApi.class);
-//    }
-
     // todo: починить, не работает
 //    public static boolean isConnected(FragmentActivity fragmentActivity) {
 //        ConnectivityManager connectivityManager = (ConnectivityManager) fragmentActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
