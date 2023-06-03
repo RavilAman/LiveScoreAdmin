@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
     android:background="@color/app_black"
     android:orientation="vertical">
 
@@ -9,7 +10,7 @@
         android:id="@+id/group_statistics_item_group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/inter_medium"
         android:text="Group Name"
@@ -19,14 +20,15 @@
         android:id="@+id/group_statistics_item_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:padding="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="30dp"
+            android:ems="1"
             android:fontFamily="@font/inter_medium"
             android:text="#"
             android:textColor="@color/white"
@@ -35,7 +37,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:ems="9"
             android:fontFamily="@font/inter_medium"
             android:text="@string/team"
             android:textColor="@color/white"
@@ -49,8 +52,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:ems="2"
             android:fontFamily="@font/inter_medium"
+            android:gravity="center"
             android:text="@string/played_match_count"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -63,8 +67,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:ems="2"
             android:fontFamily="@font/inter_medium"
+            android:gravity="center"
             android:text="@string/goal_difference"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -77,9 +82,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="10dp"
+            android:ems="2"
             android:fontFamily="@font/inter_medium"
+            android:gravity="center"
             android:text="@string/points"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -91,7 +97,6 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/group_statistics_item_label"
-        android:layout_marginTop="5dp"
         android:background="@color/divider_dark_grey" />
 
     <androidx.recyclerview.widget.RecyclerView

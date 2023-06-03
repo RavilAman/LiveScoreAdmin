@@ -46,6 +46,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                 String.valueOf(groupStatisticsItem.getGoalCount() - groupStatisticsItem.getGoalMissed())
         );
         holder.points.setText(String.valueOf(groupStatisticsItem.getPoints()));
+        holder.playedGames.setText(String.valueOf(groupStatisticsItem.getGamePlayed()));
     }
 
     @Override
