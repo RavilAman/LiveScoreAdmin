@@ -1,14 +1,18 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FragmentStatistics extends Fragment {
 
     private Context context;
+    private FragmentManager fragmentManager;
 
     private Retrofit retrofit;
     private GroupApi groupApi;
@@ -42,20 +47,26 @@ public class FragmentStatistics extends Fragment {
     private ImageView tournamentLogo;
     private TextView tournamentName;
     private TextView groupName;
+    private TextView matches;
+    private TextView table;
+    private TextView playerStatistics;
+    private TextView teamStatistics;
+    private ImageButton backButton;
     private RecyclerView groupStatisticsRecyclerView;
-    private Bundle data;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         currentView = inflater.inflate(R.layout.fragment_statistics, container, false);
         initializeRetrofit();
         initializeViews();
-        data = getArguments();
+        setOnClickListeners();
+        Bundle data = getArguments();
         assert data != null;
-        getStatistics(
+        getAndSetStatistics(
                 (int) data.getLong("tournamentId"),
                 (int) data.getLong("groupId")
         );
+        table.setTextColor(Color.parseColor("#FFF76D09"));
         return currentView;
     }
 
@@ -73,10 +84,16 @@ public class FragmentStatistics extends Fragment {
 
     private void initializeViews() {
         context = getContext();
+        fragmentManager = requireActivity().getSupportFragmentManager();
         tournamentLogo = currentView.findViewById(R.id.fragment_statistics_tournament_logo);
         tournamentName = currentView.findViewById(R.id.fragment_statistics_tournament_name);
         groupName = currentView.findViewById(R.id.fragment_statistics_group_name);
         groupStatisticsRecyclerView = currentView.findViewById(R.id.fragment_statistics_group_statistics_recycler_vew);
+        matches = currentView.findViewById(R.id.fragment_statistics_matches);
+        table = currentView.findViewById(R.id.fragment_statistics_table);
+        playerStatistics = currentView.findViewById(R.id.fragment_statistics_player_statistics);
+        teamStatistics = currentView.findViewById(R.id.fragment_statistics_team_statistics);
+        backButton = currentView.findViewById(R.id.fragment_statistics_back_button);
     }
 
     private void setStatistics(List<GroupInfoListDTO> statistics) {
@@ -85,7 +102,7 @@ public class FragmentStatistics extends Fragment {
         groupStatisticsRecyclerView.setAdapter(groupsStatisticsAdapter);
     }
 
-    private void getStatistics(int tournamentId, int groupId) {
+    private void getAndSetStatistics(int tournamentId, int groupId) {
         groupApi.getGroupStatistics(groupId, tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<GroupInfoListDTO>> call, Response<List<GroupInfoListDTO>> response) {
@@ -113,5 +130,23 @@ public class FragmentStatistics extends Fragment {
                 .into(this.tournamentLogo);
         this.tournamentName.setText(tournamentName);
         this.groupName.setText(groupName);
+    }
+
+    private void setOnClickListeners() {
+        backButton.setOnClickListener(backButtonListener());
+    }
+
+    private View.OnClickListener backButtonListener() {
+        return view -> {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setCustomAnimations(
+                    R.anim.fragment_enter,
+                    R.anim.fragment_exit,
+                    R.anim.fragment_previous_enter,
+                    R.anim.fragment_previous_exit
+            );
+            fragmentManager.popBackStack();
+            fragmentTransaction.commit();
+        };
     }
 }

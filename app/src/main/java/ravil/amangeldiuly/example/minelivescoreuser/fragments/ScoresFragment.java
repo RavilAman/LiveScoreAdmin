@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
@@ -90,7 +88,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         initializeViews();
         setListeners();
 
-        getDays(LocalDate.now());
+        getDays(lastSelectedDate);
         setDaysToButtons();
 
         centerRadioButton.setChecked(true);
@@ -128,7 +126,9 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     }
 
     private void initializeObjects() {
-        lastSelectedDate = LocalDate.now();
+        if (lastSelectedDate == null) {
+            lastSelectedDate = LocalDate.now();
+        }
         fiveDays = new ArrayList<>();
         currentMonthDays = new ArrayList<>();
     }
@@ -187,7 +187,6 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     }
 
     private void setGamesForSelectedDate(String requestedDate) {
-        Log.d("requested date", requestedDate);
         noGamesText.setVisibility(View.GONE);
         gameApi.getGamesByDate(requestedDate).enqueue(new Callback<>() {
             @Override
@@ -340,9 +339,14 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     public void onItemClick(Bundle data) {
         FragmentStatistics fragmentStatistics = new FragmentStatistics();
         fragmentStatistics.setArguments(data);
-
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(
+                R.anim.fragment_enter,
+                R.anim.fragment_exit,
+                R.anim.fragment_previous_enter,
+                R.anim.fragment_previous_exit
+        );
         fragmentTransaction.replace(R.id.fragment_container, fragmentStatistics);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
