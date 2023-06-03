@@ -1,20 +1,19 @@
-package ravil.amangeldiuly.example.minelivescoreuser.fragments;
+package ravil.amangeldiuly.example.minelivescoreuser.activities;
+
+import static ravil.amangeldiuly.example.minelivescoreuser.ColorConstants.APP_ORANGE;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -23,8 +22,8 @@ import com.google.gson.GsonBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.statistics.GroupsStatisticsAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupApi;
@@ -35,15 +34,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class FragmentStatistics extends Fragment {
+public class StatisticsActivity extends AppCompatActivity {
 
     private Context context;
-    private FragmentManager fragmentManager;
 
     private Retrofit retrofit;
     private GroupApi groupApi;
 
-    private View currentView;
     private ImageView tournamentLogo;
     private TextView tournamentName;
     private TextView groupName;
@@ -55,19 +52,20 @@ public class FragmentStatistics extends Fragment {
     private RecyclerView groupStatisticsRecyclerView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        currentView = inflater.inflate(R.layout.fragment_statistics, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_statistics);
+
         initializeRetrofit();
         initializeViews();
         setOnClickListeners();
-        Bundle data = getArguments();
-        assert data != null;
-        getAndSetStatistics(
-                (int) data.getLong("tournamentId"),
-                (int) data.getLong("groupId")
-        );
-        table.setTextColor(Color.parseColor("#FFF76D09"));
-        return currentView;
+
+        Intent intent = getIntent();
+        int tournamentId = (int) intent.getExtras().getLong("tournamentId");
+        int groupId = (int) intent.getExtras().getLong("groupId");
+        getAndSetStatistics(tournamentId, groupId);
+
+        table.setTextColor(Color.parseColor(APP_ORANGE));
     }
 
     private void initializeRetrofit() {
@@ -76,24 +74,23 @@ public class FragmentStatistics extends Fragment {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         groupApi = retrofit.create(GroupApi.class);
     }
 
     private void initializeViews() {
-        context = getContext();
-        fragmentManager = requireActivity().getSupportFragmentManager();
-        tournamentLogo = currentView.findViewById(R.id.fragment_statistics_tournament_logo);
-        tournamentName = currentView.findViewById(R.id.fragment_statistics_tournament_name);
-        groupName = currentView.findViewById(R.id.fragment_statistics_group_name);
-        groupStatisticsRecyclerView = currentView.findViewById(R.id.fragment_statistics_group_statistics_recycler_vew);
-        matches = currentView.findViewById(R.id.fragment_statistics_matches);
-        table = currentView.findViewById(R.id.fragment_statistics_table);
-        playerStatistics = currentView.findViewById(R.id.fragment_statistics_player_statistics);
-        teamStatistics = currentView.findViewById(R.id.fragment_statistics_team_statistics);
-        backButton = currentView.findViewById(R.id.fragment_statistics_back_button);
+        context = getApplicationContext();
+        tournamentLogo = findViewById(R.id.activity_statistics_tournament_logo);
+        tournamentName = findViewById(R.id.activity_statistics_tournament_name);
+        groupName = findViewById(R.id.activity_statistics_group_name);
+        groupStatisticsRecyclerView = findViewById(R.id.activity_statistics_group_statistics_recycler_vew);
+        matches = findViewById(R.id.activity_statistics_matches);
+        table = findViewById(R.id.activity_statistics_table);
+        playerStatistics = findViewById(R.id.activity_statistics_player_statistics);
+        teamStatistics = findViewById(R.id.activity_statistics_team_statistics);
+        backButton = findViewById(R.id.activity_statistics_back_button);
     }
 
     private void setStatistics(List<GroupInfoListDTO> statistics) {
@@ -137,16 +134,6 @@ public class FragmentStatistics extends Fragment {
     }
 
     private View.OnClickListener backButtonListener() {
-        return view -> {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.setCustomAnimations(
-                    R.anim.fragment_enter,
-                    R.anim.fragment_exit,
-                    R.anim.fragment_previous_enter,
-                    R.anim.fragment_previous_exit
-            );
-            fragmentManager.popBackStack();
-            fragmentTransaction.commit();
-        };
+        return view -> finish();
     }
 }

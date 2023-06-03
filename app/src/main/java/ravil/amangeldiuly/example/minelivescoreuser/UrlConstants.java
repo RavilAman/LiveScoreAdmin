@@ -1,6 +1,6 @@
 package ravil.amangeldiuly.example.minelivescoreuser;
 
-public class Constants {
+public class UrlConstants {
 
     public static final String BACKEND_URL = "http://192.168.0.14:8080/";
 

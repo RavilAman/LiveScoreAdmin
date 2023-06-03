@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.SharedPreferencesUtil;
@@ -64,7 +64,7 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
                 .create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

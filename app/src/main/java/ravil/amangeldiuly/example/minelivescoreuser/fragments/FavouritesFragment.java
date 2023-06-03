@@ -19,7 +19,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
@@ -63,7 +63,7 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
                 .setLenient()
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         tournamentApi = retrofit.create(TournamentApi.class);

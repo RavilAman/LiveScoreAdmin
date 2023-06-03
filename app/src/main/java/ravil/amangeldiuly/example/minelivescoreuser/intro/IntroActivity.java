@@ -21,7 +21,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.MainActivity;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
@@ -69,7 +69,7 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
                 .create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

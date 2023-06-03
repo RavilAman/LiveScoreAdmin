@@ -21,8 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,8 +35,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.calendar.CalendarAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.groups.GroupAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
@@ -50,7 +48,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, GroupAdapter.OnItemListener {
+public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener {
 
     private Context context;
 
@@ -119,7 +117,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         gameApi = retrofit.create(GameApi.class);
@@ -292,7 +290,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     private void setGames(List<NewGameDTO> games) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        GroupAdapter groupAdapter = new GroupAdapter(context, games, this);
+        GroupAdapter groupAdapter = new GroupAdapter(context, games);
         groupRecyclerView.setLayoutManager(linearLayoutManager);
         groupRecyclerView.setAdapter(groupAdapter);
     }
@@ -333,22 +331,5 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         lastSelectedDate = selectedDate;
         centerRadioButton.setChecked(true);
         setGamesForSelectedDate(formatDateForRequest(selectedDate));
-    }
-
-    @Override
-    public void onItemClick(Bundle data) {
-        FragmentStatistics fragmentStatistics = new FragmentStatistics();
-        fragmentStatistics.setArguments(data);
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(
-                R.anim.fragment_enter,
-                R.anim.fragment_exit,
-                R.anim.fragment_previous_enter,
-                R.anim.fragment_previous_exit
-        );
-        fragmentTransaction.replace(R.id.fragment_container, fragmentStatistics);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }

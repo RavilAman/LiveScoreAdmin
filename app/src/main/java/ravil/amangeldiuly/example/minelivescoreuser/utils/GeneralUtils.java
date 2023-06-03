@@ -1,11 +1,5 @@
 package ravil.amangeldiuly.example.minelivescoreuser.utils;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
-import androidx.fragment.app.FragmentActivity;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +39,18 @@ public class GeneralUtils {
         return gameScore.substring(0, gameScore.indexOf(":")) + " - "
                 + gameScore.substring(gameScore.indexOf(":") + 1);
     }
+
+//    public static<T> initializeRetrofit() {
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+//                .create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(UrlConstants.BACKEND_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//        groupApi = retrofit.create(GroupApi.class);
+//    }
 
     // todo: починить, не работает
 //    public static boolean isConnected(FragmentActivity fragmentActivity) {

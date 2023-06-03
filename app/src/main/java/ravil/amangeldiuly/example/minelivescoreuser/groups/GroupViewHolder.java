@@ -1,6 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.groups;
 
-import android.os.Bundle;
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,23 +12,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.activities.StatisticsActivity;
 
 public class GroupViewHolder extends RecyclerView.ViewHolder {
 
+    Context context;
     private LinearLayout groupItemLayout;
     ShapeableImageView tournamentLogo;
     TextView tournamentName;
     TextView groupName;
     RecyclerView gamesRecyclerView;
-    private GroupAdapter.OnItemListener onItemListener;
     long tournamentId;
     long groupId;
 
-    public GroupViewHolder(@NonNull View itemView, GroupAdapter.OnItemListener onItemListener) {
+    public GroupViewHolder(@NonNull View itemView) {
         super(itemView);
 
         groupItemLayout = itemView.findViewById(R.id.group_item_layout);
-        this.onItemListener = onItemListener;
         tournamentLogo = itemView.findViewById(R.id.group_card_tournament_logo);
         tournamentName = itemView.findViewById(R.id.group_card_tournament_name);
         groupName = itemView.findViewById(R.id.group_card_group_name);
@@ -38,10 +39,10 @@ public class GroupViewHolder extends RecyclerView.ViewHolder {
 
     private View.OnClickListener groupItemLayoutListener() {
         return view -> {
-            Bundle data = new Bundle();
-            data.putLong("tournamentId", tournamentId);
-            data.putLong("groupId", groupId);
-            onItemListener.onItemClick(data);
+            Intent statisticsIntent = new Intent(context, StatisticsActivity.class);
+            statisticsIntent.putExtra("tournamentId", tournamentId);
+            statisticsIntent.putExtra("groupId", groupId);
+            context.startActivity(statisticsIntent);
         };
     }
 }
