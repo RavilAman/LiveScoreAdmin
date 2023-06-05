@@ -2,7 +2,7 @@ package ravil.amangeldiuly.example.minelivescoreuser;
 
 public class UrlConstants {
 
-    public static final String BACKEND_URL = "http://192.168.0.14:8080/";
+    public static final String BACKEND_URL = "http://192.168.138.195:8080/";
 
     public static final String TOURNAMENTS = "tournament";
     public static final String TOURNAMENT_BY_NAME = "tournament/tournament_name";
@@ -19,6 +19,7 @@ public class UrlConstants {
     public static final String GROUP_STATISTIC = "group_info/group/points";
     public static final String STATISTICS_FOR_TOURNAMENT = "group_info/all_group/points";
 
+    public static final String PLAYER_STATISTIC_ALL = "player_statistics/top_five/{tournament_id}";
     public static final String PLAYER_STATISTIC_ASSISTS = "player_statistics/assists";
     public static final String PLAYER_STATISTIC_GOALS = "player_statistics/goals";
     public static final String PLAYER_STATISTIC_RED_CARD = "player_statistics/red_card";

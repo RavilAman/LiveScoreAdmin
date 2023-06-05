@@ -56,7 +56,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                 );
                 holder.playedGames.setText(String.valueOf(groupStatisticsItem.getGamePlayed()));
                 break;
-            case PLAYER:
+            case GENERAL:
                 distinctPlayerStatistics = generalStatistics.get(position);
                 Glide.with(context)
                         .load(distinctPlayerStatistics.getTeamLogo())
@@ -87,7 +87,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
         switch (statisticsType) {
             case GROUP:
                 return groupStatistics.size();
-            case PLAYER:
+            case GENERAL:
                 return generalStatistics.size();
             case INDIVIDUAL:
                 return individualStatistics.size();

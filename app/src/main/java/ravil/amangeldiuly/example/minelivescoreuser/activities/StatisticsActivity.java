@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupStatisticsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerStatisticsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerStatisticsAllDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,11 +58,18 @@ public class StatisticsActivity extends AppCompatActivity {
     private TextView teamStatistics;
     private ImageButton backButton;
     private RecyclerView groupStatisticsRecyclerView;
+    private LinearLayout statisticTypes;
+    private TextView statisticTypeAll;
+    private TextView statisticTypeAssists;
+    private TextView statisticTypeGoals;
+    private TextView statisticTypeRedCards;
+    private TextView statisticTypeYellowCards;
 
     private int lastSelectedCategoryNumber;
     private int tournamentId;
     private int groupId;
-    private List<String> categoriesList;
+    private int lastSelectedStatisticTypeNumber;
+    private List<PlayerStatisticsAllDTO> playerStatisticsAll;
     private List<DistinctPlayerStatisticsDTO> assistStatistics;
     private List<DistinctPlayerStatisticsDTO> goalStatistics;
     private List<DistinctPlayerStatisticsDTO> redCardStatistics;
@@ -71,7 +80,6 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
-//        initializeApis();
         initializeRetrofit();
         initializeObjects();
         initializeViews();
@@ -79,13 +87,6 @@ public class StatisticsActivity extends AppCompatActivity {
 
         table.performClick();
     }
-
-//    private void initializeApis() {
-//        RequestObject<GroupStatisticsApi> groupStatisticsApiRequestObject = new RequestObject<>(GroupStatisticsApi.class);
-//        RequestObject<PlayerStatisticsApi> playerStatisticsApiRequestObject = new RequestObject<>(PlayerStatisticsApi.class);
-//        groupStatisticsApi = groupStatisticsApiRequestObject.getApi();
-//        playerStatisticsApi = playerStatisticsApiRequestObject.getApi();
-//    }
 
     private void initializeRetrofit() {
         Gson gson = new GsonBuilder()
@@ -111,17 +112,36 @@ public class StatisticsActivity extends AppCompatActivity {
         playerStatistics = findViewById(R.id.activity_statistics_player_statistics);
         teamStatistics = findViewById(R.id.activity_statistics_team_statistics);
         backButton = findViewById(R.id.activity_statistics_back_button);
+        statisticTypes = findViewById(R.id.activity_statistics_statistics_types);
+        statisticTypeAll = findViewById(R.id.activity_statistics_type_all);
+        statisticTypeAssists = findViewById(R.id.activity_statistics_type_assists);
+        statisticTypeGoals = findViewById(R.id.activity_statistics_type_goals);
+        statisticTypeRedCards = findViewById(R.id.activity_statistics_type_red_cards);
+        statisticTypeYellowCards = findViewById(R.id.activity_statistics_type_yellow_cards);
     }
 
     public void initializeObjects() {
         Intent intent = getIntent();
         tournamentId = (int) intent.getExtras().getLong("tournamentId");
         groupId = (int) intent.getExtras().getLong("groupId");
-        categoriesList = new ArrayList<>();
+        playerStatisticsAll = new ArrayList<>();
         assistStatistics = new ArrayList<>();
         goalStatistics = new ArrayList<>();
         redCardStatistics = new ArrayList<>();
         yellowCardStatistics = new ArrayList<>();
+    }
+
+    private void setOnClickListeners() {
+        backButton.setOnClickListener(backButtonListener());
+        matches.setOnClickListener(matcherListener());
+        table.setOnClickListener(tableListener());
+        playerStatistics.setOnClickListener(playerStatisticsListener());
+        teamStatistics.setOnClickListener(teamStatisticsListener());
+        statisticTypeAll.setOnClickListener(statisticTypeAllListener());
+        statisticTypeAssists.setOnClickListener(statisticTypeAssistsListener());
+        statisticTypeGoals.setOnClickListener(statisticTypeGoalsListener());
+        statisticTypeRedCards.setOnClickListener(statisticTypeRedCardsListener());
+        statisticTypeYellowCards.setOnClickListener(statisticTypeYellowCardsListener());
     }
 
     private void setGroupStatistics(List<GroupInfoListDTO> statistics) {
@@ -131,8 +151,8 @@ public class StatisticsActivity extends AppCompatActivity {
         groupStatisticsRecyclerView.setAdapter(statisticsAdapter);
     }
 
-    private void setGeneralStatistics(List<List<DistinctPlayerStatisticsDTO>> statistics) {
-        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, StatisticsType.PLAYER);
+    private void setGeneralStatistics(List<PlayerStatisticsAllDTO> statistics) {
+        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, StatisticsType.GENERAL);
         statisticsAdapter.setGeneralStatisticsList(statistics);
         groupStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         groupStatisticsRecyclerView.setAdapter(statisticsAdapter);
@@ -160,6 +180,24 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
+    private void getPlayerStatisticsAll(int tournamentId) {
+        playerStatisticsAll.clear();
+        playerStatisticsApi.getAll(tournamentId).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<PlayerStatisticsAllDTO>> call, Response<List<PlayerStatisticsAllDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    playerStatisticsAll = response.body();
+                    setGeneralStatistics(playerStatisticsAll);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PlayerStatisticsAllDTO>> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void getPlayerAssistStatistics(int tournamentId) {
         assistStatistics.clear();
         playerStatisticsApi.getAssists(tournamentId).enqueue(new Callback<>() {
@@ -167,6 +205,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     assistStatistics = response.body();
+                    setIndividualStatistics(assistStatistics, "Assists");
                 }
             }
 
@@ -184,6 +223,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     goalStatistics = response.body();
+                    setIndividualStatistics(goalStatistics, "Goals");
                 }
             }
 
@@ -201,6 +241,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     redCardStatistics = response.body();
+                    setIndividualStatistics(redCardStatistics, "Red cards");
                 }
             }
 
@@ -245,53 +286,87 @@ public class StatisticsActivity extends AppCompatActivity {
         this.groupName.setText(groupName);
     }
 
-    private void setOnClickListeners() {
-        backButton.setOnClickListener(backButtonListener());
-        matches.setOnClickListener(matcherListener());
-        table.setOnClickListener(tableListener());
-        playerStatistics.setOnClickListener(playerStatisticsListener());
-        teamStatistics.setOnClickListener(teamStatisticsListener());
-    }
-
     private View.OnClickListener backButtonListener() {
         return view -> finish();
     }
 
     private View.OnClickListener matcherListener() {
         return view -> {
-            deSelectLastSelected();
+            deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 0;
             matches.setTextColor(Color.parseColor(APP_ORANGE));
+            statisticTypes.setVisibility(View.GONE);
         };
     }
 
     private View.OnClickListener tableListener() {
         return view -> {
-            deSelectLastSelected();
+            deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 1;
             table.setTextColor(Color.parseColor(APP_ORANGE));
             getTableStatistics(tournamentId, groupId);
+            statisticTypes.setVisibility(View.GONE);
         };
     }
 
     private View.OnClickListener playerStatisticsListener() {
         return view -> {
-            deSelectLastSelected();
+            deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 2;
             playerStatistics.setTextColor(Color.parseColor(APP_ORANGE));
-            getPlayerYellowCardStatistics(tournamentId);
+            statisticTypes.setVisibility(View.VISIBLE);
         };
     }
 
     private View.OnClickListener teamStatisticsListener() {
         return view -> {
-            deSelectLastSelected();
+            deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 3;
             teamStatistics.setTextColor(Color.parseColor(APP_ORANGE));
         };
     }
 
-    private void deSelectLastSelected() {
+    private View.OnClickListener statisticTypeAllListener() {
+        return view -> {
+            getPlayerStatisticsAll(tournamentId);
+            lastSelectedStatisticTypeNumber = 0;
+            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeAll, ColorConstants.BLACK);
+        };
+    }
+
+    private View.OnClickListener statisticTypeAssistsListener() {
+        return view -> {
+            getPlayerAssistStatistics(tournamentId);
+            lastSelectedStatisticTypeNumber = 1;
+            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeAssists, ColorConstants.BLACK);
+        };
+    }
+
+    private View.OnClickListener statisticTypeGoalsListener() {
+        return view -> {
+            getPlayerGoalStatistics(tournamentId);
+            lastSelectedStatisticTypeNumber = 2;
+            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeGoals, ColorConstants.BLACK);
+        };
+    }
+
+    private View.OnClickListener statisticTypeRedCardsListener() {
+        return view -> {
+            getPlayerRedCardStatistics(tournamentId);
+            lastSelectedStatisticTypeNumber = 3;
+            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeRedCards, ColorConstants.BLACK);
+        };
+    }
+
+    private View.OnClickListener statisticTypeYellowCardsListener() {
+        return view -> {
+            getPlayerYellowCardStatistics(tournamentId);
+            lastSelectedStatisticTypeNumber = 4;
+            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeYellowCards, ColorConstants.BLACK);
+        };
+    }
+
+    private void deSelectLastSelectedCategory() {
         switch (lastSelectedCategoryNumber) {
             case 0:
                 matches.setTextColor(Color.parseColor(ColorConstants.WHITE));
@@ -306,5 +381,30 @@ public class StatisticsActivity extends AppCompatActivity {
                 teamStatistics.setTextColor(Color.parseColor(ColorConstants.WHITE));
                 break;
         }
+    }
+
+//    private void deSelectLastSelectedStatisticType() {
+//        switch (lastSelectedStatisticTypeNumber) {
+//            case 0:
+//                changeStatisticBackgroundToDefault(statisticTypeAll);
+//                break;
+//            case 1:
+//                changeStatisticBackgroundToDefault(statisticTypeAssists);
+//                break;
+//            case 2:
+//                changeStatisticBackgroundToDefault(statisticTypeGoals);
+//                break;
+//            case 3:
+//                changeStatisticBackgroundToDefault(statisticTypeRedCards);
+//                break;
+//            case 4:
+//                changeStatisticBackgroundToDefault(statisticTypeYellowCards);
+//                break;
+//        }
+//    }
+
+    private void changeStatisticTypeColor(int background, TextView statisticType, String textColor) {
+        statisticType.setBackgroundResource(background);
+        statisticType.setTextColor(Color.parseColor(textColor));
     }
 }

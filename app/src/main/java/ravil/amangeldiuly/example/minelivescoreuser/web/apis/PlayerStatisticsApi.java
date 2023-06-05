@@ -4,11 +4,15 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerStatisticsAllDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface PlayerStatisticsApi {
+
+    @GET(UrlConstants.PLAYER_STATISTIC_ALL)
+    Call<List<PlayerStatisticsAllDTO>> getAll(@Query("tournament_id") int tournamentId);
 
     @GET(UrlConstants.PLAYER_STATISTIC_ASSISTS)
     Call<List<DistinctPlayerStatisticsDTO>> getAssists(@Query("tournament_id") int tournamentId);

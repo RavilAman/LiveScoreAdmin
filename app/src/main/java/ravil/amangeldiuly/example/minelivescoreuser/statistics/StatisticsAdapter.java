@@ -1,6 +1,8 @@
 package ravil.amangeldiuly.example.minelivescoreuser.statistics;
 
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,10 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerStatisticsAllDTO;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder> {
 
@@ -22,7 +26,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
     private final StatisticsType statisticsType;
     private List<GroupInfoListDTO> groupStatisticsList;
     private List<DistinctPlayerStatisticsDTO> individualStatistics;
-    private List<List<DistinctPlayerStatisticsDTO>> generalStatisticsList;
+    private List<PlayerStatisticsAllDTO> generalStatisticsList;
     private RecyclerView.RecycledViewPool recycledViewPool;
     private String individualCategoryName;
 
@@ -54,12 +58,12 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
                 linearLayoutManager.setInitialPrefetchItemCount(groupInfoListDTO.getSortedByPointTeams().size());
                 tableAdapter.setGroupStatistics(groupInfoListDTO.getSortedByPointTeams());
                 break;
-            case PLAYER:
+            case GENERAL:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
-                List<DistinctPlayerStatisticsDTO> playerStatistics = generalStatisticsList.get(position);
-//                holder.groupOrCategoryName.setText(categoriesList.get(position));
-                linearLayoutManager.setInitialPrefetchItemCount(playerStatistics.size());
-                tableAdapter.setGeneralStatistics(playerStatistics);
+                PlayerStatisticsAllDTO playerStatistics = generalStatisticsList.get(position);
+                holder.groupOrCategoryName.setText(playerStatistics.getStatName());
+                linearLayoutManager.setInitialPrefetchItemCount(playerStatistics.getStatistics().size());
+                tableAdapter.setGeneralStatistics(playerStatistics.getStatistics());
                 break;
             case INDIVIDUAL:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
@@ -79,7 +83,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
         switch (statisticsType) {
             case GROUP:
                 return groupStatisticsList.size();
-            case PLAYER:
+            case GENERAL:
                 return generalStatisticsList.size();
             case INDIVIDUAL:
                 return 1;
@@ -91,7 +95,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
         this.groupStatisticsList = groupStatisticsList;
     }
 
-    public void setGeneralStatisticsList(List<List<DistinctPlayerStatisticsDTO>> generalStatisticsList) {
+    public void setGeneralStatisticsList(List<PlayerStatisticsAllDTO> generalStatisticsList) {
         this.generalStatisticsList = generalStatisticsList;
     }
 
