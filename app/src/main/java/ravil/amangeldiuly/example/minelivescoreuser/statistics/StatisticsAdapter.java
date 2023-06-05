@@ -55,6 +55,8 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
                 holder.groupOrCategoryName.setText(groupInfoListDTO.getGroupName());
                 linearLayoutManager.setInitialPrefetchItemCount(groupInfoListDTO.getSortedByPointTeams().size());
                 tableAdapter.setGroupStatistics(groupInfoListDTO.getSortedByPointTeams());
+                holder.total.setVisibility(View.GONE);
+                holder.perGame.setVisibility(View.GONE);
                 break;
             case GENERAL:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);

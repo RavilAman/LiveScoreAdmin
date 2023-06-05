@@ -44,7 +44,8 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
         DistinctPlayerStatisticsDTO distinctPlayerStatistics;
         switch (statisticsType) {
             case GROUP:
-                holder.specificPoints.setVisibility(View.GONE);
+                holder.total.setVisibility(View.GONE);
+                holder.perGame.setVisibility(View.GONE);
                 GroupInfoDTO groupStatisticsItem = groupStatistics.get(position);
                 Glide.with(context)
                         .load(groupStatisticsItem.getTeamLogo())
@@ -55,6 +56,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                         String.valueOf(groupStatisticsItem.getGoalCount() - groupStatisticsItem.getGoalMissed())
                 );
                 holder.playedGames.setText(String.valueOf(groupStatisticsItem.getGamePlayed()));
+                holder.divider4.setVisibility(View.GONE);
                 break;
             case GENERAL:
                 distinctPlayerStatistics = generalStatistics.get(position);
@@ -65,7 +67,10 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                 holder.points.setVisibility(View.GONE);
                 holder.goalDifference.setVisibility(View.GONE);
                 holder.playedGames.setVisibility(View.GONE);
-                holder.specificPoints.setText(distinctPlayerStatistics.getPerGame());
+                holder.total.setText(String.valueOf(distinctPlayerStatistics.getTotal()));
+                holder.perGame.setText(distinctPlayerStatistics.getPerGame());
+                holder.divider2.setVisibility(View.GONE);
+                holder.divider3.setVisibility(View.GONE);
                 break;
             case INDIVIDUAL:
                 distinctPlayerStatistics = individualStatistics.get(position);
@@ -76,7 +81,10 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                 holder.points.setVisibility(View.GONE);
                 holder.goalDifference.setVisibility(View.GONE);
                 holder.playedGames.setVisibility(View.GONE);
-                holder.specificPoints.setText(distinctPlayerStatistics.getPerGame());
+                holder.total.setText(String.valueOf(distinctPlayerStatistics.getTotal()));
+                holder.perGame.setText(distinctPlayerStatistics.getPerGame());
+                holder.divider2.setVisibility(View.GONE);
+                holder.divider3.setVisibility(View.GONE);
                 break;
         }
     }

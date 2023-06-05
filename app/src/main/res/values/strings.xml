@@ -49,4 +49,6 @@
     <string name="player_statistics_goals">GOALS</string>
     <string name="player_statistics_red_cards">RED CARDS</string>
     <string name="player_statistics_yellow_cards">YELLOW CARDS</string>
+    <string name="player_statistic_total">Total</string>
+    <string name="player_statistic_per_game">Per Game</string>
 </resources>
