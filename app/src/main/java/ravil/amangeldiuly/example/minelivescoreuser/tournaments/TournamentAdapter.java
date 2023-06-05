@@ -19,12 +19,10 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
 
     private Context context;
     private List<TournamentDto> tournaments;
-    private final OnItemListener onItemListener;
 
-    public TournamentAdapter(Context context, List<TournamentDto> tournaments, OnItemListener onItemListener) {
+    public TournamentAdapter(Context context, List<TournamentDto> tournaments) {
         this.context = context;
         this.tournaments = tournaments;
-        this.onItemListener = onItemListener;
     }
 
     @NonNull
@@ -32,7 +30,7 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
     public TournamentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.tournament_item, parent, false);
-        return new TournamentViewHolder(view, onItemListener, context);
+        return new TournamentViewHolder(view, context);
     }
 
     @Override
@@ -41,8 +39,8 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
         holder.tournamentName.setText(currentTournament.getTournamentName());
         holder.tournamentLocation.setText(currentTournament.getTournamentLocation());
         holder.tournamentDto = currentTournament;
+        holder.tournamentId = currentTournament.getTournamentId();
         holder.redrawImageButtons();
-//        holder.imageButton.setOnClickListener(imageButtonOnClick(position));
 
         Glide.with(context)
                 .load(currentTournament.getTournamentLogo())
@@ -53,16 +51,4 @@ public class TournamentAdapter extends RecyclerView.Adapter<TournamentViewHolder
     public int getItemCount() {
         return tournaments.size();
     }
-
-    public interface OnItemListener {
-        void onItemClick(long tournamentId);
-    }
-
-//    private View.OnClickListener imageButtonOnClick(int position) {
-//        System.out.println("+++++++++++++ position: " + position);
-//        return view -> {
-//            tournaments.remove(position);
-//            notifyItemRemoved(position);
-//        };
-//    }
 }

@@ -31,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class FavouritesFragment extends Fragment implements TournamentAdapter.OnItemListener {
+public class FavouritesFragment extends Fragment {
 
     private View currentView;
     private Retrofit retrofit;
@@ -86,13 +86,9 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {
-        TournamentAdapter tournamentAdapter = new TournamentAdapter(getLayoutInflater().getContext(), tournaments, this);
+        TournamentAdapter tournamentAdapter = new TournamentAdapter(getLayoutInflater().getContext(), tournaments);
         tournamentsRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         tournamentsRecyclerView.setAdapter(tournamentAdapter);
-    }
-
-    @Override
-    public void onItemClick(long tournamentId) {
     }
 
     private SearchView.OnQueryTextListener introQueryTextListener() {

@@ -158,8 +158,30 @@ public class StatisticsActivity extends AppCompatActivity {
         groupStatisticsRecyclerView.setAdapter(statisticsAdapter);
     }
 
-    private void getTableStatistics(int tournamentId, int groupId) {
+    private void getTableStatisticsForGroup(int tournamentId, int groupId) {
         groupStatisticsApi.getGroupStatistics(groupId, tournamentId).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<GroupInfoListDTO>> call, Response<List<GroupInfoListDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    GroupInfoListDTO groupInfoListDTO = response.body().get(0);
+                    setGroupStatistics(response.body());
+                    setTournamentData(
+                            groupInfoListDTO.getTournamentLogo(),
+                            groupInfoListDTO.getTournamentName(),
+                            groupInfoListDTO.getGroupName()
+                    );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GroupInfoListDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getTableStatisticsForTournament(int tournamentId) {
+        groupStatisticsApi.getStatisticsForTournament(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<GroupInfoListDTO>> call, Response<List<GroupInfoListDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
@@ -304,7 +326,11 @@ public class StatisticsActivity extends AppCompatActivity {
             deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 1;
             table.setTextColor(Color.parseColor(APP_ORANGE));
-            getTableStatistics(tournamentId, groupId);
+            if (groupId == -1) {
+                getTableStatisticsForTournament(tournamentId);
+            } else {
+                getTableStatisticsForGroup(tournamentId, groupId);
+            }
             statisticTypes.setVisibility(View.GONE);
         };
     }

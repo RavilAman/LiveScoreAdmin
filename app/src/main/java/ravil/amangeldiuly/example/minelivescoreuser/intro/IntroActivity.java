@@ -35,7 +35,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class IntroActivity extends AppCompatActivity implements TournamentAdapter.OnItemListener {
+public class IntroActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private IntroViewPagerAdapter introViewPagerAdapter;
@@ -126,13 +126,9 @@ public class IntroActivity extends AppCompatActivity implements TournamentAdapte
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {
-        tournamentAdapter = new TournamentAdapter(this, tournaments, this);
+        tournamentAdapter = new TournamentAdapter(this, tournaments);
         tournamentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tournamentsRecyclerView.setAdapter(tournamentAdapter);
-    }
-
-    @Override
-    public void onItemClick(long tournamentId) {
     }
 
     private View.OnClickListener startButtonOnClickListener() {

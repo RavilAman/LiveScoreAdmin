@@ -1,9 +1,11 @@
 package ravil.amangeldiuly.example.minelivescoreuser.tournaments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import java.util.concurrent.Executors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.activities.StatisticsActivity;
 import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.SharedPreferencesUtil;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
@@ -33,12 +36,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TournamentViewHolder extends RecyclerView.ViewHolder {
 
+    LinearLayout mainLayout;
     ShapeableImageView tournamentLogo;
     TextView tournamentName;
     TextView tournamentLocation;
-    TournamentAdapter.OnItemListener onItemListener;
     ImageButton imageButton;
     boolean imageButtonPressed;
+    long tournamentId;
 
     Context context;
     TournamentDto tournamentDto;
@@ -47,11 +51,11 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
     private SQLiteManager sqLiteManager;
     private Retrofit retrofit;
 
-    public TournamentViewHolder(@NonNull View itemView, TournamentAdapter.OnItemListener onItemListener, Context context) {
+    public TournamentViewHolder(@NonNull View itemView, Context context) {
         super(itemView);
-        this.onItemListener = onItemListener;
         this.context = context;
 
+        mainLayout = itemView.findViewById(R.id.tournament_item_layout);
         tournamentLogo = itemView.findViewById(R.id.card_tournament_logo);
         tournamentName = itemView.findViewById(R.id.card_tournament_name);
         tournamentLocation = itemView.findViewById(R.id.card_tournament_location);
@@ -71,6 +75,7 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
         notificationApi = retrofit.create(NotificationApi.class);
 
         imageButton.setOnClickListener(imageButtonListener());
+        setOnClickListeners();
     }
 
     public void redrawImageButtons() {
@@ -80,9 +85,23 @@ public class TournamentViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    private void setOnClickListeners() {
+        mainLayout.setOnClickListener(layoutListener());
+    }
+
+    private View.OnClickListener layoutListener() {
+        return view -> {
+            if (imageButtonPressed) {
+                Intent statisticsIntent = new Intent(context, StatisticsActivity.class);
+                statisticsIntent.putExtra("tournamentId", tournamentId);
+                statisticsIntent.putExtra("groupId", -1L);
+                context.startActivity(statisticsIntent);
+            }
+        };
+    }
+
     private View.OnClickListener imageButtonListener() {
         return view -> {
-            onItemListener.onItemClick(tournamentDto.getTournamentId()); // todo: чекнуть работает ли без него
             imageButtonPressed = !imageButtonPressed;
             Executor mainExecutor = Executors.newSingleThreadExecutor();
             notificationApi.getTopicName(tournamentDto.getTournamentId()).enqueue(new Callback<>() {
