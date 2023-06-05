@@ -180,7 +180,7 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    private void getPlayerStatisticsAll(int tournamentId) {
+    private void getPlayerStatisticsAll() {
         playerStatisticsAll.clear();
         playerStatisticsApi.getAll(tournamentId).enqueue(new Callback<>() {
             @Override
@@ -198,14 +198,14 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    private void getPlayerAssistStatistics(int tournamentId) {
+    private void getPlayerAssistStatistics() {
         assistStatistics.clear();
         playerStatisticsApi.getAssists(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     assistStatistics = response.body();
-                    setIndividualStatistics(assistStatistics, "Assists");
+                    setIndividualStatistics(assistStatistics, "ASSIST");
                 }
             }
 
@@ -216,14 +216,14 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    private void getPlayerGoalStatistics(int tournamentId) {
+    private void getPlayerGoalStatistics() {
         goalStatistics.clear();
         playerStatisticsApi.getGoals(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     goalStatistics = response.body();
-                    setIndividualStatistics(goalStatistics, "Goals");
+                    setIndividualStatistics(goalStatistics, "GOAL");
                 }
             }
 
@@ -234,14 +234,14 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    private void getPlayerRedCardStatistics(int tournamentId) {
+    private void getPlayerRedCardStatistics() {
         redCardStatistics.clear();
         playerStatisticsApi.getRedCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     redCardStatistics = response.body();
-                    setIndividualStatistics(redCardStatistics, "Red cards");
+                    setIndividualStatistics(redCardStatistics, "RED CARD");
                 }
             }
 
@@ -252,14 +252,14 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    private void getPlayerYellowCardStatistics(int tournamentId) {
+    private void getPlayerYellowCardStatistics() {
         yellowCardStatistics.clear();
         playerStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     yellowCardStatistics = response.body();
-                    setIndividualStatistics(yellowCardStatistics, "Yellow cards");
+                    setIndividualStatistics(yellowCardStatistics, "YELLOW CARD");
                 }
             }
 
@@ -315,6 +315,7 @@ public class StatisticsActivity extends AppCompatActivity {
             lastSelectedCategoryNumber = 2;
             playerStatistics.setTextColor(Color.parseColor(APP_ORANGE));
             statisticTypes.setVisibility(View.VISIBLE);
+            statisticTypeAll.performClick();
         };
     }
 
@@ -328,41 +329,46 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private View.OnClickListener statisticTypeAllListener() {
         return view -> {
-            getPlayerStatisticsAll(tournamentId);
+            deSelectLastSelectedStatisticType();
+            getPlayerStatisticsAll();
             lastSelectedStatisticTypeNumber = 0;
-            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeAll, ColorConstants.BLACK);
+            makeStatisticSelected(statisticTypeAll);
         };
     }
 
     private View.OnClickListener statisticTypeAssistsListener() {
         return view -> {
-            getPlayerAssistStatistics(tournamentId);
+            deSelectLastSelectedStatisticType();
+            getPlayerAssistStatistics();
             lastSelectedStatisticTypeNumber = 1;
-            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeAssists, ColorConstants.BLACK);
+            makeStatisticSelected(statisticTypeAssists);
         };
     }
 
     private View.OnClickListener statisticTypeGoalsListener() {
         return view -> {
-            getPlayerGoalStatistics(tournamentId);
+            deSelectLastSelectedStatisticType();
+            getPlayerGoalStatistics();
             lastSelectedStatisticTypeNumber = 2;
-            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeGoals, ColorConstants.BLACK);
+            makeStatisticSelected(statisticTypeGoals);
         };
     }
 
     private View.OnClickListener statisticTypeRedCardsListener() {
         return view -> {
-            getPlayerRedCardStatistics(tournamentId);
+            deSelectLastSelectedStatisticType();
+            getPlayerRedCardStatistics();
             lastSelectedStatisticTypeNumber = 3;
-            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeRedCards, ColorConstants.BLACK);
+            makeStatisticSelected(statisticTypeRedCards);
         };
     }
 
     private View.OnClickListener statisticTypeYellowCardsListener() {
         return view -> {
-            getPlayerYellowCardStatistics(tournamentId);
+            deSelectLastSelectedStatisticType();
+            getPlayerYellowCardStatistics();
             lastSelectedStatisticTypeNumber = 4;
-            changeStatisticTypeColor(R.drawable.statistics_category_background, statisticTypeYellowCards, ColorConstants.BLACK);
+            makeStatisticSelected(statisticTypeYellowCards);
         };
     }
 
@@ -383,28 +389,33 @@ public class StatisticsActivity extends AppCompatActivity {
         }
     }
 
-//    private void deSelectLastSelectedStatisticType() {
-//        switch (lastSelectedStatisticTypeNumber) {
-//            case 0:
-//                changeStatisticBackgroundToDefault(statisticTypeAll);
-//                break;
-//            case 1:
-//                changeStatisticBackgroundToDefault(statisticTypeAssists);
-//                break;
-//            case 2:
-//                changeStatisticBackgroundToDefault(statisticTypeGoals);
-//                break;
-//            case 3:
-//                changeStatisticBackgroundToDefault(statisticTypeRedCards);
-//                break;
-//            case 4:
-//                changeStatisticBackgroundToDefault(statisticTypeYellowCards);
-//                break;
-//        }
-//    }
+    private void deSelectLastSelectedStatisticType() {
+        switch (lastSelectedStatisticTypeNumber) {
+            case 0:
+                makeStatisticDefault(statisticTypeAll);
+                break;
+            case 1:
+                makeStatisticDefault(statisticTypeAssists);
+                break;
+            case 2:
+                makeStatisticDefault(statisticTypeGoals);
+                break;
+            case 3:
+                makeStatisticDefault(statisticTypeRedCards);
+                break;
+            case 4:
+                makeStatisticDefault(statisticTypeYellowCards);
+                break;
+        }
+    }
 
-    private void changeStatisticTypeColor(int background, TextView statisticType, String textColor) {
-        statisticType.setBackgroundResource(background);
-        statisticType.setTextColor(Color.parseColor(textColor));
+    private void makeStatisticSelected(TextView statisticType) {
+        statisticType.setBackgroundResource(R.drawable.statistics_category_background);
+        statisticType.setTextColor(Color.parseColor(ColorConstants.BLACK));
+    }
+
+    private void makeStatisticDefault(TextView statisticType) {
+        statisticType.setBackground(null);
+        statisticType.setTextColor(Color.parseColor(ColorConstants.WHITE));
     }
 }

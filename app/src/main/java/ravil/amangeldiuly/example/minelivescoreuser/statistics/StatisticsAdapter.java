@@ -2,7 +2,6 @@ package ravil.amangeldiuly.example.minelivescoreuser.statistics;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType;
-import ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerStatisticsAllDTO;
@@ -70,7 +68,6 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
                 holder.groupOrCategoryName.setText(individualCategoryName);
                 linearLayoutManager.setInitialPrefetchItemCount(individualStatistics.size());
                 tableAdapter.setIndividualStatistics(individualStatistics);
-                System.out.println("individualStatistics: " + individualStatistics);
                 break;
         }
         holder.tableItemRecyclerView.setLayoutManager(linearLayoutManager);

@@ -68,7 +68,6 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                 holder.specificPoints.setText(distinctPlayerStatistics.getPerGame());
                 break;
             case INDIVIDUAL:
-                System.out.println("dnjsvjbdsvkjdvs");
                 distinctPlayerStatistics = individualStatistics.get(position);
                 Glide.with(context)
                         .load(distinctPlayerStatistics.getTeamLogo())
