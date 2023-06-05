@@ -43,4 +43,9 @@
     <string name="played_match_count">P</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_out">Log out</string>
+    <string name="tournaments">Tournaments</string>
+    <string name="create_in_draw">Create in draw</string>
+    <string name="upload_team">Upload Teams</string>
+    <string name="transfers">Transfers</string>
 </resources>
