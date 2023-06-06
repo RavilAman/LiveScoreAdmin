@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
     android:background="@color/app_black"
     android:gravity="center"
     android:orientation="horizontal"
-    android:layout_marginTop="1dp"
-    android:layout_marginBottom="1dp"
     android:padding="5dp">
 
     <TextView
@@ -86,13 +86,13 @@
         android:textColor="@color/white" />
 
     <TextView
-        android:id="@+id/table_item_total"
+        android:id="@+id/table_item_per_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="2"
+        android:ems="3"
         android:fontFamily="@font/inter_medium"
         android:gravity="center"
-        android:text="10"
+        android:text="1.0"
         android:textColor="@color/white" />
 
     <View
@@ -102,14 +102,14 @@
         android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/table_item_per_game"
+        android:id="@+id/table_item_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="2"
         android:layout_marginEnd="10dp"
-        android:ems="3"
         android:fontFamily="@font/inter_medium"
         android:gravity="center"
-        android:text="1.0"
+        android:text="10"
         android:textColor="@color/white" />
 
 </LinearLayout>
