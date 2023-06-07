@@ -6,6 +6,8 @@ public class Constants {
 
     public static final String TOURNAMENTS = "tournament";
     public static final String TOURNAMENT_BY_NAME = "tournament/tournament_name";
+    public static final String TOURNAMENTS_BY_USER = "tournament/user?userId=1"; //TODO change endpoint via token
+
 
     public static final String TOPIC_NAME = "notification/topic/tournament/{tournamentId}";
     public static final String CREATE_SUBSCRIPTION = "notification/subscriptions/{topic}";
