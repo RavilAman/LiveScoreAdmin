@@ -25,7 +25,6 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
@@ -37,35 +36,35 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TournamentListFragment extends Fragment implements TournamentAdapter.OnItemListener {
+public class TournamentList extends Fragment implements TournamentAdapter.OnItemListener {
+
     private View currentView;
     private Retrofit retrofit;
     private RecyclerView tournamentsRecyclerView;
     private List<TournamentDto> tournamentList;
     private TournamentApi tournamentApi;
-    private TextView noTournaments;
+    private TextView headerText;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
     private MenuItem selectedMenuItem;
 
-    public TournamentListFragment(FragmentManager fragmentManager, MenuItem menuItem){
+    public TournamentList(FragmentManager fragmentManager, MenuItem menuItem){
         this.selectedMenuItem = menuItem;
         this.fragmentManager = fragmentManager;
     }
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        currentView = inflater.inflate(R.layout.tournament_list_layout, container, false);
+        currentView = inflater.inflate(R.layout.tournaments_list, container, false);
 
         tournamentList = new ArrayList<>();
 
         tournamentsRecyclerView = currentView.findViewById(R.id.list_tournaments);
         imageButton = currentView.findViewById(R.id.game_back_button);
+        headerText = currentView.findViewById(R.id.page_header_text);
+        headerText.setText(R.string.upload_team);
 
-        Fragment scoreFragment = new ScoresFragment();
         fragmentManager = requireActivity().getSupportFragmentManager();
 
         imageButton.setOnClickListener(backButtonListener());

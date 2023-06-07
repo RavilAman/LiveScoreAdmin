@@ -24,7 +24,8 @@ import ravil.amangeldiuly.example.minelivescoreuser.fragments.FavouritesFragment
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.CreateInDrawFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.LoadTeamsFragment;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentListFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentList;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TransfersFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (item.getItemId()) {
             case R.id.nav_tournament:
-                replaceFragment(fragmentManager, new TournamentListFragment(fragmentManager, item), item);
+                replaceFragment(fragmentManager, new TournamentFragment(fragmentManager, item), item);
                 break;
             case R.id.nav_upload_teams:
                 replaceFragment(fragmentManager, new LoadTeamsFragment(), item);
