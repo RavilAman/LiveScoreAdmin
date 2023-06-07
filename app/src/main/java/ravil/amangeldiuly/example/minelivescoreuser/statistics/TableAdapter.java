@@ -15,6 +15,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctTeamStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoDTO;
 
 public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
@@ -22,8 +23,8 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
     private Context context;
     private final StatisticsType statisticsType;
     private List<GroupInfoDTO> groupStatistics;
-    private List<DistinctPlayerStatisticsDTO> individualStatistics;
-    private List<DistinctPlayerStatisticsDTO> generalStatistics;
+    private List<DistinctPlayerStatisticsDTO> playerStatistics;
+    private List<DistinctTeamStatisticsDTO> teamStatistics;
 
     public TableAdapter(Context context, StatisticsType statisticsType) {
         this.context = context;
@@ -41,7 +42,6 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull TableViewHolder holder, int position) {
         holder.count.setText(String.valueOf(position + 1));
-        DistinctPlayerStatisticsDTO distinctPlayerStatistics;
         switch (statisticsType) {
             case GROUP:
                 holder.total.setVisibility(View.GONE);
@@ -58,22 +58,24 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
                 holder.playedGames.setText(String.valueOf(groupStatisticsItem.getGamePlayed()));
                 holder.divider4.setVisibility(View.GONE);
                 break;
-            case GENERAL:
-                distinctPlayerStatistics = generalStatistics.get(position);
+            case GENERAL_TEAM:
+            case INDIVIDUAL_TEAM:
+                DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = teamStatistics.get(position);
                 Glide.with(context)
-                        .load(distinctPlayerStatistics.getTeamLogo())
+                        .load(distinctTeamStatisticsDTO.getTeamLogo())
                         .into(holder.teamLogo);
-                holder.name.setText(distinctPlayerStatistics.getPlayerName());
+                holder.name.setText(distinctTeamStatisticsDTO.getTeamName());
                 holder.points.setVisibility(View.GONE);
                 holder.goalDifference.setVisibility(View.GONE);
                 holder.playedGames.setVisibility(View.GONE);
-                holder.total.setText(String.valueOf(distinctPlayerStatistics.getTotal()));
-                holder.perGame.setText(distinctPlayerStatistics.getPerGame());
+                holder.total.setText(String.valueOf(distinctTeamStatisticsDTO.getTotal()));
+                holder.perGame.setText(distinctTeamStatisticsDTO.getPerGame());
                 holder.divider2.setVisibility(View.GONE);
                 holder.divider3.setVisibility(View.GONE);
                 break;
-            case INDIVIDUAL:
-                distinctPlayerStatistics = individualStatistics.get(position);
+            case GENERAL_PLAYER:
+            case INDIVIDUAL_PLAYER:
+                DistinctPlayerStatisticsDTO distinctPlayerStatistics = playerStatistics.get(position);
                 Glide.with(context)
                         .load(distinctPlayerStatistics.getTeamLogo())
                         .into(holder.teamLogo);
@@ -94,10 +96,12 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
         switch (statisticsType) {
             case GROUP:
                 return groupStatistics.size();
-            case GENERAL:
-                return generalStatistics.size();
-            case INDIVIDUAL:
-                return individualStatistics.size();
+            case INDIVIDUAL_PLAYER:
+            case GENERAL_PLAYER:
+                return playerStatistics.size();
+            case GENERAL_TEAM:
+            case INDIVIDUAL_TEAM:
+                return teamStatistics.size();
         }
         return 0;
     }
@@ -106,11 +110,11 @@ public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
         this.groupStatistics = groupStatistics;
     }
 
-    public void setGeneralStatistics(List<DistinctPlayerStatisticsDTO> generalStatistics) {
-        this.generalStatistics = generalStatistics;
+    public void setPlayerStatistics(List<DistinctPlayerStatisticsDTO> playerStatistics) {
+        this.playerStatistics = playerStatistics;
     }
 
-    public void setIndividualStatistics(List<DistinctPlayerStatisticsDTO> individualStatistics) {
-        this.individualStatistics = individualStatistics;
+    public void setTeamStatistics(List<DistinctTeamStatisticsDTO> teamStatistics) {
+        this.teamStatistics = teamStatistics;
     }
 }

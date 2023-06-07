@@ -1,6 +1,13 @@
 package ravil.amangeldiuly.example.minelivescoreuser.activities;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.ColorConstants.APP_ORANGE;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.SelectedStatisticsClass.PLAYER;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.SelectedStatisticsClass.TEAM;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.GENERAL_PLAYER;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.GENERAL_TEAM;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.GROUP;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.INDIVIDUAL_PLAYER;
+import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.INDIVIDUAL_TEAM;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,14 +34,18 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.ColorConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
+import ravil.amangeldiuly.example.minelivescoreuser.enums.SelectedStatisticsClass;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType;
 import ravil.amangeldiuly.example.minelivescoreuser.statistics.StatisticsAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupStatisticsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerStatisticsApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TeamStatisticsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctTeamStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerStatisticsAllDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamStatisticsAllDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +59,7 @@ public class StatisticsActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private GroupStatisticsApi groupStatisticsApi;
     private PlayerStatisticsApi playerStatisticsApi;
+    private TeamStatisticsApi teamStatisticsApi;
 
     private ImageView tournamentLogo;
     private TextView tournamentName;
@@ -65,11 +77,15 @@ public class StatisticsActivity extends AppCompatActivity {
     private TextView statisticTypeRedCards;
     private TextView statisticTypeYellowCards;
 
+    private StatisticsType currentlySelectedStatisticType;
+    private SelectedStatisticsClass selectedStatisticsClass;
     private int lastSelectedCategoryNumber;
     private int tournamentId;
     private int groupId;
     private int lastSelectedStatisticTypeNumber;
+    private List<GroupInfoListDTO> groupStatistics;
     private List<PlayerStatisticsAllDTO> playerStatisticsAll;
+    private List<TeamStatisticsAllDTO> teamStatisticsAll;
     private List<DistinctPlayerStatisticsDTO> assistStatistics;
     private List<DistinctPlayerStatisticsDTO> goalStatistics;
     private List<DistinctPlayerStatisticsDTO> redCardStatistics;
@@ -99,6 +115,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 .build();
         groupStatisticsApi = retrofit.create(GroupStatisticsApi.class);
         playerStatisticsApi = retrofit.create(PlayerStatisticsApi.class);
+        teamStatisticsApi = retrofit.create(TeamStatisticsApi.class);
     }
 
     private void initializeViews() {
@@ -124,11 +141,13 @@ public class StatisticsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         tournamentId = (int) intent.getExtras().getLong("tournamentId");
         groupId = (int) intent.getExtras().getLong("groupId");
+        groupStatistics = new ArrayList<>();
         playerStatisticsAll = new ArrayList<>();
         assistStatistics = new ArrayList<>();
         goalStatistics = new ArrayList<>();
         redCardStatistics = new ArrayList<>();
         yellowCardStatistics = new ArrayList<>();
+        teamStatisticsAll = new ArrayList<>();
     }
 
     private void setOnClickListeners() {
@@ -144,27 +163,43 @@ public class StatisticsActivity extends AppCompatActivity {
         statisticTypeYellowCards.setOnClickListener(statisticTypeYellowCardsListener());
     }
 
-    private void setGroupStatistics(List<GroupInfoListDTO> statistics) {
-        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, StatisticsType.GROUP);
-        statisticsAdapter.setGroupStatisticsList(statistics);
-        groupStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        groupStatisticsRecyclerView.setAdapter(statisticsAdapter);
-    }
-
-    private void setGeneralStatistics(List<PlayerStatisticsAllDTO> statistics) {
-        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, StatisticsType.GENERAL);
-        statisticsAdapter.setGeneralStatisticsList(statistics);
+    private void setStatistics(
+            List<DistinctPlayerStatisticsDTO> individualPlayerStatistics,
+            List<DistinctTeamStatisticsDTO> individualTeamStatistics,
+            String statisticsCategory) {
+        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, currentlySelectedStatisticType);
+        switch (currentlySelectedStatisticType) {
+            case GROUP:
+                statisticsAdapter.setGroupStatisticsList(groupStatistics);
+                break;
+            case GENERAL_PLAYER:
+                statisticsAdapter.setGeneralPlayerStatistics(playerStatisticsAll);
+                break;
+            case GENERAL_TEAM:
+                statisticsAdapter.setGeneralTeamStatistic(teamStatisticsAll);
+                break;
+            case INDIVIDUAL_PLAYER:
+                statisticsAdapter.setIndividualPlayerStatistics(individualPlayerStatistics);
+                statisticsAdapter.setIndividualCategoryName(statisticsCategory);
+                break;
+            case INDIVIDUAL_TEAM:
+                statisticsAdapter.setIndividualTeamStatistics(individualTeamStatistics);
+                statisticsAdapter.setIndividualCategoryName(statisticsCategory);
+                break;
+        }
         groupStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         groupStatisticsRecyclerView.setAdapter(statisticsAdapter);
     }
 
     private void getTableStatisticsForGroup(int tournamentId, int groupId) {
+        groupStatistics.clear();
         groupStatisticsApi.getGroupStatistics(groupId, tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<GroupInfoListDTO>> call, Response<List<GroupInfoListDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     GroupInfoListDTO groupInfoListDTO = response.body().get(0);
-                    setGroupStatistics(response.body());
+                    groupStatistics = response.body();
+                    setStatistics(null, null, null);
                     setTournamentData(
                             groupInfoListDTO.getTournamentLogo(),
                             groupInfoListDTO.getTournamentName(),
@@ -181,12 +216,14 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getTableStatisticsForTournament(int tournamentId) {
+        groupStatistics.clear();
         groupStatisticsApi.getStatisticsForTournament(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<GroupInfoListDTO>> call, Response<List<GroupInfoListDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     GroupInfoListDTO groupInfoListDTO = response.body().get(0);
-                    setGroupStatistics(response.body());
+                    groupStatistics = response.body();
+                    setStatistics(null, null, null);
                     setTournamentData(
                             groupInfoListDTO.getTournamentLogo(),
                             groupInfoListDTO.getTournamentName(),
@@ -209,7 +246,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<PlayerStatisticsAllDTO>> call, Response<List<PlayerStatisticsAllDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     playerStatisticsAll = response.body();
-                    setGeneralStatistics(playerStatisticsAll);
+                    setStatistics(null, null, null);
                 }
             }
 
@@ -227,7 +264,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     assistStatistics = response.body();
-                    setIndividualStatistics(assistStatistics, "ASSIST");
+                    setStatistics(assistStatistics, null, "ASSIST");
                 }
             }
 
@@ -245,7 +282,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     goalStatistics = response.body();
-                    setIndividualStatistics(goalStatistics, "GOAL");
+                    setStatistics(goalStatistics, null, "GOAL");
                 }
             }
 
@@ -263,7 +300,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     redCardStatistics = response.body();
-                    setIndividualStatistics(redCardStatistics, "RED CARD");
+                    setStatistics(redCardStatistics, null, "RED CARD");
                 }
             }
 
@@ -281,7 +318,7 @@ public class StatisticsActivity extends AppCompatActivity {
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     yellowCardStatistics = response.body();
-                    setIndividualStatistics(yellowCardStatistics, "YELLOW CARD");
+                    setStatistics(yellowCardStatistics, null, "YELLOW CARD");
                 }
             }
 
@@ -290,14 +327,6 @@ public class StatisticsActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
-    }
-
-    private void setIndividualStatistics(List<DistinctPlayerStatisticsDTO> statistics, String statisticsCategory) {
-        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, StatisticsType.INDIVIDUAL);
-        statisticsAdapter.setIndividualStatistics(statistics);
-        statisticsAdapter.setIndividualCategoryName(statisticsCategory);
-        groupStatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        groupStatisticsRecyclerView.setAdapter(statisticsAdapter);
     }
 
     private void setTournamentData(String tournamentLogo, String tournamentName, String groupName) {
@@ -323,6 +352,8 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private View.OnClickListener tableListener() {
         return view -> {
+            currentlySelectedStatisticType = GROUP;
+            statisticTypes.setVisibility(View.GONE);
             deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 1;
             table.setTextColor(Color.parseColor(APP_ORANGE));
@@ -331,12 +362,14 @@ public class StatisticsActivity extends AppCompatActivity {
             } else {
                 getTableStatisticsForGroup(tournamentId, groupId);
             }
-            statisticTypes.setVisibility(View.GONE);
         };
     }
 
     private View.OnClickListener playerStatisticsListener() {
         return view -> {
+            statisticTypeAssists.setVisibility(View.VISIBLE);
+            currentlySelectedStatisticType = GENERAL_PLAYER;
+            selectedStatisticsClass = PLAYER;
             deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 2;
             playerStatistics.setTextColor(Color.parseColor(APP_ORANGE));
@@ -347,23 +380,35 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private View.OnClickListener teamStatisticsListener() {
         return view -> {
+            currentlySelectedStatisticType = GENERAL_TEAM;
+            selectedStatisticsClass = TEAM;
             deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 3;
+            statisticTypes.setVisibility(View.VISIBLE);
             teamStatistics.setTextColor(Color.parseColor(APP_ORANGE));
+            statisticTypeAssists.setVisibility(View.GONE);
+            statisticTypeAll.performClick();
         };
     }
 
     private View.OnClickListener statisticTypeAllListener() {
         return view -> {
             deSelectLastSelectedStatisticType();
-            getPlayerStatisticsAll();
             lastSelectedStatisticTypeNumber = 0;
             makeStatisticSelected(statisticTypeAll);
+            if (selectedStatisticsClass == TEAM) {
+                currentlySelectedStatisticType = GENERAL_TEAM;
+                getTeamStatisticsAll();
+            } else if (selectedStatisticsClass == PLAYER) {
+                currentlySelectedStatisticType = GENERAL_PLAYER;
+                getPlayerStatisticsAll();
+            }
         };
     }
 
     private View.OnClickListener statisticTypeAssistsListener() {
         return view -> {
+            currentlySelectedStatisticType = INDIVIDUAL_PLAYER;
             deSelectLastSelectedStatisticType();
             getPlayerAssistStatistics();
             lastSelectedStatisticTypeNumber = 1;
@@ -374,27 +419,45 @@ public class StatisticsActivity extends AppCompatActivity {
     private View.OnClickListener statisticTypeGoalsListener() {
         return view -> {
             deSelectLastSelectedStatisticType();
-            getPlayerGoalStatistics();
             lastSelectedStatisticTypeNumber = 2;
             makeStatisticSelected(statisticTypeGoals);
+            if (selectedStatisticsClass == TEAM) {
+                currentlySelectedStatisticType = INDIVIDUAL_TEAM;
+                getTeamGoalStatistics();
+            } else if (selectedStatisticsClass == PLAYER) {
+                currentlySelectedStatisticType = INDIVIDUAL_PLAYER;
+                getPlayerGoalStatistics();
+            }
         };
     }
 
     private View.OnClickListener statisticTypeRedCardsListener() {
         return view -> {
             deSelectLastSelectedStatisticType();
-            getPlayerRedCardStatistics();
             lastSelectedStatisticTypeNumber = 3;
             makeStatisticSelected(statisticTypeRedCards);
+            if (selectedStatisticsClass == TEAM) {
+                currentlySelectedStatisticType = INDIVIDUAL_TEAM;
+                getTeamRedCardStatistics();
+            } else if (selectedStatisticsClass == PLAYER) {
+                currentlySelectedStatisticType = INDIVIDUAL_PLAYER;
+                getPlayerRedCardStatistics();
+            }
         };
     }
 
     private View.OnClickListener statisticTypeYellowCardsListener() {
         return view -> {
             deSelectLastSelectedStatisticType();
-            getPlayerYellowCardStatistics();
             lastSelectedStatisticTypeNumber = 4;
             makeStatisticSelected(statisticTypeYellowCards);
+            if (selectedStatisticsClass == TEAM) {
+                currentlySelectedStatisticType = INDIVIDUAL_TEAM;
+                getTeamYellowCardStatistics();
+            } else if (selectedStatisticsClass == PLAYER) {
+                currentlySelectedStatisticType = INDIVIDUAL_PLAYER;
+                getPlayerYellowCardStatistics();
+            }
         };
     }
 
@@ -443,5 +506,71 @@ public class StatisticsActivity extends AppCompatActivity {
     private void makeStatisticDefault(TextView statisticType) {
         statisticType.setBackground(null);
         statisticType.setTextColor(Color.parseColor(ColorConstants.WHITE));
+    }
+
+    private void getTeamStatisticsAll() {
+        teamStatisticsAll.clear();
+        teamStatisticsApi.getAll(tournamentId).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<TeamStatisticsAllDTO>> call, Response<List<TeamStatisticsAllDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    teamStatisticsAll = response.body();
+                    setStatistics(null, null, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<TeamStatisticsAllDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getTeamGoalStatistics() {
+        teamStatisticsApi.getGoals(tournamentId).enqueue(new Callback<List<DistinctTeamStatisticsDTO>>() {
+            @Override
+            public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    setStatistics(null, response.body(), "GOALS");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DistinctTeamStatisticsDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getTeamRedCardStatistics() {
+        teamStatisticsApi.getRedCards(tournamentId).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    setStatistics(null, response.body(), "RED CARDS");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DistinctTeamStatisticsDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getTeamYellowCardStatistics() {
+        teamStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<List<DistinctTeamStatisticsDTO>>() {
+            @Override
+            public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    setStatistics(null, response.body(), "YELLOW CARDS");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DistinctTeamStatisticsDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }

@@ -15,16 +15,20 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.DistinctTeamStatisticsDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerStatisticsAllDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamStatisticsAllDTO;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder> {
 
     private Context context;
     private final StatisticsType statisticsType;
     private List<GroupInfoListDTO> groupStatisticsList;
-    private List<DistinctPlayerStatisticsDTO> individualStatistics;
-    private List<PlayerStatisticsAllDTO> generalStatisticsList;
+    private List<DistinctPlayerStatisticsDTO> individualPlayerStatistics;
+    private List<DistinctTeamStatisticsDTO> individualTeamStatistics;
+    private List<PlayerStatisticsAllDTO> generalPlayerStatistics;
+    private List<TeamStatisticsAllDTO> generalTeamStatistic;
     private RecyclerView.RecycledViewPool recycledViewPool;
     private String individualCategoryName;
 
@@ -58,18 +62,31 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
                 holder.total.setVisibility(View.GONE);
                 holder.perGame.setVisibility(View.GONE);
                 break;
-            case GENERAL:
+            case GENERAL_PLAYER:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
-                PlayerStatisticsAllDTO playerStatistics = generalStatisticsList.get(position);
+                PlayerStatisticsAllDTO playerStatistics = generalPlayerStatistics.get(position);
                 holder.groupOrCategoryName.setText(playerStatistics.getStatName());
                 linearLayoutManager.setInitialPrefetchItemCount(playerStatistics.getStatistics().size());
-                tableAdapter.setGeneralStatistics(playerStatistics.getStatistics());
+                tableAdapter.setPlayerStatistics(playerStatistics.getStatistics());
                 break;
-            case INDIVIDUAL:
+            case GENERAL_TEAM:
+                holder.groupStatisticsItemLabel.setVisibility(View.GONE);
+                TeamStatisticsAllDTO teamStatistics = generalTeamStatistic.get(position);
+                holder.groupOrCategoryName.setText(teamStatistics.getStatName());
+                linearLayoutManager.setInitialPrefetchItemCount(teamStatistics.getStatisticsDTOS().size());
+                tableAdapter.setTeamStatistics(teamStatistics.getStatisticsDTOS());
+                break;
+            case INDIVIDUAL_PLAYER:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
                 holder.groupOrCategoryName.setText(individualCategoryName);
-                linearLayoutManager.setInitialPrefetchItemCount(individualStatistics.size());
-                tableAdapter.setIndividualStatistics(individualStatistics);
+                linearLayoutManager.setInitialPrefetchItemCount(individualPlayerStatistics.size());
+                tableAdapter.setPlayerStatistics(individualPlayerStatistics);
+                break;
+            case INDIVIDUAL_TEAM:
+                holder.groupStatisticsItemLabel.setVisibility(View.GONE);
+                holder.groupOrCategoryName.setText(individualCategoryName);
+                linearLayoutManager.setInitialPrefetchItemCount(individualTeamStatistics.size());
+                tableAdapter.setTeamStatistics(individualTeamStatistics);
                 break;
         }
         holder.tableItemRecyclerView.setLayoutManager(linearLayoutManager);
@@ -82,9 +99,12 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
         switch (statisticsType) {
             case GROUP:
                 return groupStatisticsList.size();
-            case GENERAL:
-                return generalStatisticsList.size();
-            case INDIVIDUAL:
+            case GENERAL_PLAYER:
+                return generalPlayerStatistics.size();
+            case GENERAL_TEAM:
+                return generalTeamStatistic.size();
+            case INDIVIDUAL_PLAYER:
+            case INDIVIDUAL_TEAM:
                 return 1;
         }
         return 0;
@@ -94,15 +114,23 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
         this.groupStatisticsList = groupStatisticsList;
     }
 
-    public void setGeneralStatisticsList(List<PlayerStatisticsAllDTO> generalStatisticsList) {
-        this.generalStatisticsList = generalStatisticsList;
+    public void setGeneralPlayerStatistics(List<PlayerStatisticsAllDTO> generalPlayerStatistics) {
+        this.generalPlayerStatistics = generalPlayerStatistics;
     }
 
     public void setIndividualCategoryName(String individualCategoryName) {
         this.individualCategoryName = individualCategoryName;
     }
 
-    public void setIndividualStatistics(List<DistinctPlayerStatisticsDTO> individualStatistics) {
-        this.individualStatistics = individualStatistics;
+    public void setIndividualPlayerStatistics(List<DistinctPlayerStatisticsDTO> individualPlayerStatistics) {
+        this.individualPlayerStatistics = individualPlayerStatistics;
+    }
+
+    public void setIndividualTeamStatistics(List<DistinctTeamStatisticsDTO> individualTeamStatistics) {
+        this.individualTeamStatistics = individualTeamStatistics;
+    }
+
+    public void setGeneralTeamStatistic(List<TeamStatisticsAllDTO> generalTeamStatistic) {
+        this.generalTeamStatistic = generalTeamStatistic;
     }
 }

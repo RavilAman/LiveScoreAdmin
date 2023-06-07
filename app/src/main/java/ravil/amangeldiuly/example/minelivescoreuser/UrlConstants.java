@@ -24,4 +24,9 @@ public class UrlConstants {
     public static final String PLAYER_STATISTIC_GOALS = "player_statistics/goals";
     public static final String PLAYER_STATISTIC_RED_CARD = "player_statistics/red_card";
     public static final String PLAYER_STATISTIC_YELLOW_CARD = "player_statistics/yellow_card";
+
+    public static final String TEAM_STATISTICS_ALL = "team_statistics/top_five/{tournament_id}";
+    public static final String TEAM_STATISTICS_GOALS = "team_statistics/goals";
+    public static final String TEAM_STATISTICS_RED_CARD = "team_statistics/red_cards/{tournament_id}";
+    public static final String TEAM_STATISTICS_YELLOW_CARD = "team_statistics/yellow_cards/{tournament_id}";
 }
