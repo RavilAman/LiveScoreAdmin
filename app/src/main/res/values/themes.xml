@@ -8,4 +8,7 @@
     <style name="RadioButtonNoIndicator" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:button">@null</item>
     </style>
+    <style name="NavigationViewStyle" parent="Widget.Design.NavigationView">
+        <item name="android:textColor">@drawable/bottom_nav_item_color_selector</item>
+    </style>
 </resources>
