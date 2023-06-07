@@ -57,38 +57,43 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerToggle.setToolbarNavigationClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
+        drawerLayout.addDrawerListener(onCloseListener());
+        navigationView.setNavigationItemSelectedListener(this::drawerNavigationListener);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+//        checkInternetAvailability();
+    }
 
-        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+    @NonNull
+    private static DrawerLayout.SimpleDrawerListener onCloseListener() {
+        return new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
-        });
+        };
+    }
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            switch (item.getItemId()) {
-                case R.id.nav_tournament:
-                    replaceFragment(fragmentManager, new TournamentListFragment(fragmentManager, item), item);
-                    break;
-                case R.id.nav_upload_teams:
-                    replaceFragment(fragmentManager, new LoadTeamsFragment(), item);
-                    break;
-                case R.id.nav_transfer:
-                    replaceFragment(fragmentManager, new TransfersFragment(), item);
-                    break;
-                case R.id.nav_create_in_draw:
-                    replaceFragment(fragmentManager, new CreateInDrawFragment(), item);
-                    break;
-            }
+    @SuppressLint("NonConstantResourceId")
+    private boolean drawerNavigationListener(MenuItem item) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        switch (item.getItemId()) {
+            case R.id.nav_tournament:
+                replaceFragment(fragmentManager, new TournamentListFragment(fragmentManager, item), item);
+                break;
+            case R.id.nav_upload_teams:
+                replaceFragment(fragmentManager, new LoadTeamsFragment(), item);
+                break;
+            case R.id.nav_transfer:
+                replaceFragment(fragmentManager, new TransfersFragment(), item);
+                break;
+            case R.id.nav_create_in_draw:
+                replaceFragment(fragmentManager, new CreateInDrawFragment(), item);
+                break;
+        }
 
-            drawerLayout.closeDrawer(GravityCompat.END);
-            return true;
-        });
-
-        drawerLayout.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
-//        checkInternetAvailability();
+        drawerLayout.closeDrawer(GravityCompat.END);
+        return true;
     }
 
     private void replaceFragment(FragmentManager fragmentManager, Fragment fragment, MenuItem item) {
