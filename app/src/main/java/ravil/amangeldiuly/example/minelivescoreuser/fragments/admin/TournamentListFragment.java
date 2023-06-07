@@ -1,14 +1,18 @@
-package ravil.amangeldiuly.example.minelivescoreuser.fragments;
+package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +25,7 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
@@ -39,6 +44,15 @@ public class TournamentListFragment extends Fragment implements TournamentAdapte
     private List<TournamentDto> tournamentList;
     private TournamentApi tournamentApi;
     private TextView noTournaments;
+    private ImageButton imageButton;
+    private FragmentManager fragmentManager;
+    private MenuItem selectedMenuItem;
+
+    public TournamentListFragment(FragmentManager fragmentManager, MenuItem menuItem){
+        this.selectedMenuItem = menuItem;
+        this.fragmentManager = fragmentManager;
+    }
+
 
 
     @Nullable
@@ -49,12 +63,29 @@ public class TournamentListFragment extends Fragment implements TournamentAdapte
         tournamentList = new ArrayList<>();
 
         tournamentsRecyclerView = currentView.findViewById(R.id.list_tournaments);
+        imageButton = currentView.findViewById(R.id.game_back_button);
 
+        Fragment scoreFragment = new ScoresFragment();
+        fragmentManager = requireActivity().getSupportFragmentManager();
+
+        imageButton.setOnClickListener(backButtonListener());
         initializeRetrofit();
         findAllTournamentsByUser();
 
 
         return currentView;
+    }
+    private View.OnClickListener backButtonListener() {
+        return view -> {
+            if (selectedMenuItem != null) {
+                selectedMenuItem.setChecked(false);
+                selectedMenuItem = null;
+            }
+
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentManager.popBackStack();
+            fragmentTransaction.commit();
+        };
     }
 
     private void initializeRetrofit() {

@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -22,7 +24,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.fragments.FavouritesFragment
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.CreateInDrawFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.LoadTeamsFragment;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentsFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentListFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TransfersFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle drawerToggle;
+    private MenuItem selectedMenuItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,31 +66,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         navigationView.setNavigationItemSelectedListener(item -> {
+            FragmentManager fragmentManager = getSupportFragmentManager();
             switch (item.getItemId()) {
                 case R.id.nav_tournament:
-                    item.setChecked(true);
-
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new TournamentsFragment())
-                            .commit();
+                    replaceFragment(fragmentManager, new TournamentListFragment(fragmentManager, item), item);
                     break;
                 case R.id.nav_upload_teams:
-                    item.setChecked(true);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new LoadTeamsFragment())
-                            .commit();
+                    replaceFragment(fragmentManager, new LoadTeamsFragment(), item);
                     break;
                 case R.id.nav_transfer:
-                    item.setChecked(true);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new TransfersFragment())
-                            .commit();
+                    replaceFragment(fragmentManager, new TransfersFragment(), item);
                     break;
                 case R.id.nav_create_in_draw:
-                    item.setChecked(true);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new CreateInDrawFragment())
-                            .commit();
+                    replaceFragment(fragmentManager, new CreateInDrawFragment(), item);
                     break;
             }
 
@@ -97,6 +89,19 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 //        checkInternetAvailability();
+    }
+
+    private void replaceFragment(FragmentManager fragmentManager, Fragment fragment, MenuItem item) {
+        if (selectedMenuItem != null) {
+            selectedMenuItem.setChecked(false);
+        }
+        selectedMenuItem = item;
+
+        item.setChecked(true);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private NavigationBarView.OnItemSelectedListener navigationListener() {
@@ -114,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_favourites:
                         item.setChecked(true);
                         selectedFragment = new FavouritesFragment();
-                        drawerLayout.openDrawer(GravityCompat.END);
+                        drawerLayout.openDrawer(getEnd());
                         break;
                 }
 
@@ -123,15 +128,23 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 return true;
             }
+
+            private int getEnd() {
+                if (selectedMenuItem != null) {
+                    selectedMenuItem.setChecked(false);
+                    selectedMenuItem = null;
+                }
+                return GravityCompat.END;
+            }
         };
     }
 
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.END)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
             drawerLayout.closeDrawer(GravityCompat.END);
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
