@@ -20,12 +20,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.FavouritesFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.CreateInDrawFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.LoadTeamsFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentFragment;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentList;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TransfersFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle drawerToggle;
-    private MenuItem selectedMenuItem;
+    private MenuItem selectedDrawerMenuItem;
+    private MenuItem selectedButtomNavMenuItem;
+
 
 
     @Override
@@ -81,15 +81,19 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.nav_tournament:
                 replaceFragment(fragmentManager, new TournamentFragment(fragmentManager, item), item);
+                selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_upload_teams:
                 replaceFragment(fragmentManager, new LoadTeamsFragment(), item);
+                selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_transfer:
                 replaceFragment(fragmentManager, new TransfersFragment(), item);
+                selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_create_in_draw:
                 replaceFragment(fragmentManager, new CreateInDrawFragment(), item);
+                selectedButtomNavMenuItem.setChecked(true);
                 break;
         }
 
@@ -98,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(FragmentManager fragmentManager, Fragment fragment, MenuItem item) {
-        if (selectedMenuItem != null) {
-            selectedMenuItem.setChecked(false);
+        if (selectedDrawerMenuItem != null) {
+            selectedDrawerMenuItem.setChecked(false);
         }
-        selectedMenuItem = item;
+        selectedDrawerMenuItem = item;
 
         item.setChecked(true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -118,15 +122,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+
                     case R.id.nav_scores:
+                        if (selectedDrawerMenuItem != null) {
+                            selectedDrawerMenuItem.setChecked(false);
+                            selectedDrawerMenuItem = null;
+                        }
+                        if (selectedButtomNavMenuItem != null) {
+                            selectedButtomNavMenuItem.setChecked(false);
+                        }
+                        selectedButtomNavMenuItem = item;
                         item.setChecked(true);
                         selectedFragment = new ScoresFragment();
                         break;
-                    case R.id.nav_favourites:
-                        item.setChecked(true);
-                        selectedFragment = new FavouritesFragment();
+                    case R.id.nav_menu_item:
+                        selectedButtomNavMenuItem = item;
                         drawerLayout.openDrawer(getEnd());
-                        break;
+                        return false;
                 }
 
                 getSupportFragmentManager().beginTransaction()
@@ -136,10 +148,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private int getEnd() {
-                if (selectedMenuItem != null) {
-                    selectedMenuItem.setChecked(false);
-                    selectedMenuItem = null;
-                }
                 return GravityCompat.END;
             }
         };
