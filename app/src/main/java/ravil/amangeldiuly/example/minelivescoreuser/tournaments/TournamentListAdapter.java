@@ -13,15 +13,16 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.calendar.CalendarAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 
 public class TournamentListAdapter extends RecyclerView.Adapter<TournamentListViewHolder> {
 
     private Context context;
     private List<TournamentDto> tournaments;
-    private final TournamentAdapter.OnItemListener onItemListener;
+    private final OnItemListener onItemListener;
 
-    public TournamentListAdapter(Context context, List<TournamentDto> tournaments, TournamentAdapter.OnItemListener onItemListener) {
+    public TournamentListAdapter(Context context, List<TournamentDto> tournaments, OnItemListener onItemListener) {
         this.context = context;
         this.tournaments = tournaments;
         this.onItemListener = onItemListener;
@@ -50,5 +51,9 @@ public class TournamentListAdapter extends RecyclerView.Adapter<TournamentListVi
     @Override
     public int getItemCount() {
         return tournaments.size();
+    }
+
+    public interface OnItemListener {
+        void onItemClick(long tournamentId);
     }
 }

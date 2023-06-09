@@ -36,7 +36,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TournamentList extends Fragment implements TournamentAdapter.OnItemListener {
+public class TournamentList extends Fragment implements TournamentListAdapter.OnItemListener {
 
     private View currentView;
     private Retrofit retrofit;

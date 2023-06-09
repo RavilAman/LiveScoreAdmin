@@ -23,13 +23,13 @@ public class TournamentListViewHolder extends RecyclerView.ViewHolder {
     ShapeableImageView tournamentLogo;
     TextView tournamentName;
     TextView tournamentLocation;
-    TournamentAdapter.OnItemListener onItemListener;
+    TournamentListAdapter.OnItemListener onItemListener;
     ImageButton imageButton;
     Context context;
     TournamentDto tournamentDto;
     Retrofit retrofit;
 
-    public TournamentListViewHolder(@NonNull View itemView,TournamentAdapter.OnItemListener onItemListener, Context context) {
+    public TournamentListViewHolder(@NonNull View itemView,TournamentListAdapter.OnItemListener onItemListener, Context context) {
         super(itemView);
         this.tournamentLogo = itemView.findViewById(R.id.card_tournament_logo);
         this.tournamentName = itemView.findViewById(R.id.card_tournament_name);
