@@ -1,11 +1,5 @@
 package ravil.amangeldiuly.example.minelivescoreuser.utils;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
-import androidx.fragment.app.FragmentActivity;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

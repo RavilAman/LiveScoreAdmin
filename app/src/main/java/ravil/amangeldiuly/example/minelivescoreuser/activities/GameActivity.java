@@ -1,8 +1,8 @@
 package ravil.amangeldiuly.example.minelivescoreuser.activities;
 
+import static ravil.amangeldiuly.example.minelivescoreuser.ColorConstants.APP_ORANGE;
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.gameScoreIntoDashFormat;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,10 +25,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
+import ravil.amangeldiuly.example.minelivescoreuser.ColorConstants;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.events.EventAdapter;
-import ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
@@ -68,7 +68,7 @@ public class GameActivity extends AppCompatActivity {
         setOnClickListeners();
 
         Intent intent = getIntent();
-        long protocolId =intent.getExtras().getLong("protocolId");
+        long protocolId = intent.getExtras().getLong("protocolId");
         setData(protocolId);
     }
 
@@ -78,7 +78,7 @@ public class GameActivity extends AppCompatActivity {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         protocolApi = retrofit.create(ProtocolApi.class);
@@ -122,7 +122,7 @@ public class GameActivity extends AppCompatActivity {
                             break;
                         case STARTED:
                             fullTime.setText(R.string.live);
-                            fullTime.setTextColor(Color.parseColor("#FFF76D09"));
+                            fullTime.setTextColor(Color.parseColor(APP_ORANGE));
                             gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
                             break;
                         case ENDED:

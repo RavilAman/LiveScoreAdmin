@@ -6,15 +6,52 @@
     android:background="@color/app_black"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/group_statistics_item_group_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/inter_medium"
-        android:text="Group Name"
-        android:textColor="@color/white" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/statistics_item_group_or_category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:ems="10"
+            android:fontFamily="@font/inter_medium"
+            android:text="Group Name"
+            android:textColor="@color/white" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="3" />
+
+        <TextView
+            android:id="@+id/statistics_item_per_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/player_statistic_per_game"
+            android:textColor="@color/white" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/statistics_item_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/player_statistic_total"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/group_statistics_item_label"
@@ -30,14 +67,13 @@
             android:layout_marginEnd="30dp"
             android:ems="1"
             android:fontFamily="@font/inter_medium"
-            android:text="#"
+            android:text="@string/number_symbol"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
             android:ems="9"
             android:fontFamily="@font/inter_medium"
             android:text="@string/team"
@@ -96,13 +132,11 @@
         android:id="@+id/group_statistics_item_divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/group_statistics_item_label"
         android:background="@color/divider_dark_grey" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/group_statistics_item_table_item_recycler_view"
+        android:id="@+id/statistics_item_table_item_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/group_statistics_item_divider" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

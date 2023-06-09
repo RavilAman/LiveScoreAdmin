@@ -19,7 +19,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
+import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.db.SQLiteManager;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
@@ -31,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class FavouritesFragment extends Fragment implements TournamentAdapter.OnItemListener {
+public class FavouritesFragment extends Fragment {
 
     private View currentView;
     private Retrofit retrofit;
@@ -63,7 +63,7 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
                 .setLenient()
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(UrlConstants.BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         tournamentApi = retrofit.create(TournamentApi.class);
@@ -86,13 +86,9 @@ public class FavouritesFragment extends Fragment implements TournamentAdapter.On
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {
-        TournamentAdapter tournamentAdapter = new TournamentAdapter(getLayoutInflater().getContext(), tournaments, this);
+        TournamentAdapter tournamentAdapter = new TournamentAdapter(getLayoutInflater().getContext(), tournaments);
         tournamentsRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         tournamentsRecyclerView.setAdapter(tournamentAdapter);
-    }
-
-    @Override
-    public void onItemClick(long tournamentId) {
     }
 
     private SearchView.OnQueryTextListener introQueryTextListener() {

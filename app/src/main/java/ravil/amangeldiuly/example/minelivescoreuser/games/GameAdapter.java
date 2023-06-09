@@ -1,5 +1,6 @@
 package ravil.amangeldiuly.example.minelivescoreuser.games;
 
+import static ravil.amangeldiuly.example.minelivescoreuser.ColorConstants.APP_ORANGE;
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.getGameScoreForTeam;
 
 import android.content.Context;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import ravil.amangeldiuly.example.minelivescoreuser.ColorConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GameDTO;
@@ -59,7 +61,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameViewHolder> {
         } else {
             if (game.getGameState() == GameState.STARTED) {
                 holder.gameTime.setText(R.string.game_item_live);
-                holder.gameTime.setTextColor(Color.parseColor("#FFF76D09"));
+                holder.gameTime.setTextColor(Color.parseColor(APP_ORANGE));
             } else if (game.getGameState() == GameState.ENDED) {
                 holder.gameTime.setText(R.string.game_item_ft);
             }
