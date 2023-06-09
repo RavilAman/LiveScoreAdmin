@@ -1,5 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.tournaments;
 
+import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,7 +14,6 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Retrofit;
@@ -41,7 +42,7 @@ public class TournamentListViewHolder extends RecyclerView.ViewHolder {
                 .setLenient()
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }

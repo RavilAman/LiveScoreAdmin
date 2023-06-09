@@ -1,5 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
+import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -23,10 +26,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
-import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
@@ -46,11 +47,15 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     private TextView noTournaments;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
-    private MenuItem selectedMenuItem;
+    private MenuItem selectedDrawerMenuItem;
+    private MenuItem selectedBottomMenuItem;
+    private BottomNavigationView bottomNavigationView;
 
-    public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem){
-        this.selectedMenuItem = menuItem;
+    public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem,MenuItem selectedBottomMenuItem,BottomNavigationView bottomNavigationView){
+        this.selectedDrawerMenuItem = menuItem;
         this.fragmentManager = fragmentManager;
+        this.selectedBottomMenuItem = selectedBottomMenuItem;
+        this.bottomNavigationView = bottomNavigationView;
     }
 
 
@@ -76,13 +81,20 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     }
     private View.OnClickListener backButtonListener() {
         return view -> {
-            if (selectedMenuItem != null) {
-                selectedMenuItem.setChecked(false);
-                selectedMenuItem = null;
+            if (selectedDrawerMenuItem != null) {
+                selectedDrawerMenuItem.setChecked(false);
+                selectedDrawerMenuItem = null;
             }
+            selectedBottomMenuItem.setChecked(false);
+
+            bottomNavigationView.getMenu().findItem(R.id.nav_scores).setChecked(true);
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentManager.popBackStack();
+            ScoresFragment scoreFragment = new ScoresFragment();
+            fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
+
+
             fragmentTransaction.commit();
         };
     }
@@ -93,7 +105,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         tournamentApi = retrofit.create(TournamentApi.class);

@@ -1,5 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
+import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,9 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.Constants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
-import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
@@ -93,7 +93,7 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BACKEND_URL)
+                .baseUrl(BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         tournamentApi = retrofit.create(TournamentApi.class);

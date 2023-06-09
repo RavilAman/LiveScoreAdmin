@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private MenuItem selectedDrawerMenuItem;
     private MenuItem selectedButtomNavMenuItem;
-
+    private BottomNavigationView bottomNavigationView;
 
 
     @Override
@@ -47,12 +47,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         noInternetTextView = findViewById(R.id.no_internet_text_view);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_bar);
         bottomNavigationView.setOnItemSelectedListener(navigationListener());
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new ScoresFragment())
                 .commit();
+
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (item.getItemId()) {
             case R.id.nav_tournament:
-                replaceFragment(fragmentManager, new TournamentFragment(fragmentManager, item), item);
+                replaceFragment(fragmentManager, new TournamentFragment(fragmentManager, item, selectedButtomNavMenuItem, bottomNavigationView), item);
                 selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_upload_teams:
