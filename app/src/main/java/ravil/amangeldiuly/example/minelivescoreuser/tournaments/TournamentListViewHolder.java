@@ -45,5 +45,8 @@ public class TournamentListViewHolder extends RecyclerView.ViewHolder {
                 .baseUrl(BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+
+        itemView.setOnClickListener(v -> onItemListener.onItemClick(tournamentDto));
     }
+
 }

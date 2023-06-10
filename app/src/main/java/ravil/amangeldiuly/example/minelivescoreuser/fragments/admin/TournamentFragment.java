@@ -3,6 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,13 +52,12 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     private MenuItem selectedBottomMenuItem;
     private BottomNavigationView bottomNavigationView;
 
-    public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem,MenuItem selectedBottomMenuItem,BottomNavigationView bottomNavigationView){
+    public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem, MenuItem selectedBottomMenuItem, BottomNavigationView bottomNavigationView) {
         this.selectedDrawerMenuItem = menuItem;
         this.fragmentManager = fragmentManager;
         this.selectedBottomMenuItem = selectedBottomMenuItem;
         this.bottomNavigationView = bottomNavigationView;
     }
-
 
 
     @Nullable
@@ -79,6 +79,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
         return currentView;
     }
+
     private View.OnClickListener backButtonListener() {
         return view -> {
             if (selectedDrawerMenuItem != null) {
@@ -139,8 +140,9 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
         tournamentsRecyclerView.setAdapter(tournamentAdapter);
     }
 
+
     @Override
-    public void onItemClick(long tournamentId) {
+    public void onItemClick(TournamentDto tournament) {
 
     }
 }

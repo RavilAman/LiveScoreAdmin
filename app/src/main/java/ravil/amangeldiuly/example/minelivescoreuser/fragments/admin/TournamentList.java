@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
@@ -46,11 +48,17 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
     private TextView headerText;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
-    private MenuItem selectedMenuItem;
+    private MenuItem selectedDrawerMenuItem;
+    private MenuItem selectedBottomMenuItem;
+    private BottomNavigationView bottomNavigationView;
+    private int pageHeaderText;
 
-    public TournamentList(FragmentManager fragmentManager, MenuItem menuItem){
-        this.selectedMenuItem = menuItem;
+    public TournamentList(FragmentManager fragmentManager, MenuItem menuItem, MenuItem selectedBottomMenuItem, BottomNavigationView bottomNavigationView, int pageHeaderText) {
+        this.selectedDrawerMenuItem = menuItem;
         this.fragmentManager = fragmentManager;
+        this.selectedBottomMenuItem = selectedBottomMenuItem;
+        this.bottomNavigationView = bottomNavigationView;
+        this.pageHeaderText = pageHeaderText;
     }
 
     @Nullable
@@ -63,7 +71,7 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
         tournamentsRecyclerView = currentView.findViewById(R.id.list_tournaments);
         imageButton = currentView.findViewById(R.id.game_back_button);
         headerText = currentView.findViewById(R.id.page_header_text);
-        headerText.setText(R.string.upload_team);
+        headerText.setText(pageHeaderText);
 
         fragmentManager = requireActivity().getSupportFragmentManager();
 
@@ -74,15 +82,23 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
 
         return currentView;
     }
+
     private View.OnClickListener backButtonListener() {
         return view -> {
-            if (selectedMenuItem != null) {
-                selectedMenuItem.setChecked(false);
-                selectedMenuItem = null;
+            if (selectedDrawerMenuItem != null) {
+                selectedDrawerMenuItem.setChecked(false);
+                selectedDrawerMenuItem = null;
             }
+            selectedBottomMenuItem.setChecked(false);
+
+            bottomNavigationView.getMenu().findItem(R.id.nav_scores).setChecked(true);
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentManager.popBackStack();
+            ScoresFragment scoreFragment = new ScoresFragment();
+            fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
+
+
             fragmentTransaction.commit();
         };
     }
@@ -128,7 +144,25 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
     }
 
     @Override
-    public void onItemClick(long tournamentId) {
-
+    public void onItemClick(TournamentDto tournament) {
+        if (pageHeaderText == R.string.upload_team){
+            LoadTeamsFragment newFragment =  LoadTeamsFragment.newInstanse(tournament,fragmentManager);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, newFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }else if (pageHeaderText == R.string.create_in_draw){
+            CreateInDrawFragment createInDrawFragment = new CreateInDrawFragment();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, createInDrawFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        } else if (pageHeaderText == R.string.transfers) {
+            TransfersFragment transfersFragment = new TransfersFragment();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, transfersFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
     }
 }

@@ -9,12 +9,12 @@
         android:id="@+id/fragment_statistics_group_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/fragment_statistics_back_button"
+            android:id="@+id/fragment_back_button"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
@@ -28,7 +28,7 @@
             app:tint="@color/light_grey" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/fragment_statistics_tournament_logo"
+            android:id="@+id/fragment_tournament_logo"
             android:layout_width="@dimen/tournament_logo_size"
             android:layout_height="@dimen/tournament_logo_size"
             android:layout_marginTop="7dp"
@@ -47,7 +47,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/fragment_statistics_tournament_name"
+                android:id="@+id/fragment_tournament_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tournament_name"
@@ -55,7 +55,7 @@
                 android:textSize="@dimen/tournament_name_text_size" />
 
             <TextView
-                android:id="@+id/fragment_statistics_group_name"
+                android:id="@+id/fragment_tournament_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/group"

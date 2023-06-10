@@ -24,6 +24,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.CreateInDrawFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.LoadTeamsFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentList;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TransfersFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,15 +86,15 @@ public class MainActivity extends AppCompatActivity {
                 selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_upload_teams:
-                replaceFragment(fragmentManager, new LoadTeamsFragment(), item);
+                replaceFragment(fragmentManager, new TournamentList(fragmentManager, item, selectedButtomNavMenuItem, bottomNavigationView, R.string.upload_team), item);
                 selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_transfer:
-                replaceFragment(fragmentManager, new TransfersFragment(), item);
+                replaceFragment(fragmentManager, new TournamentList(fragmentManager, item, selectedButtomNavMenuItem, bottomNavigationView, R.string.transfers), item);
                 selectedButtomNavMenuItem.setChecked(true);
                 break;
             case R.id.nav_create_in_draw:
-                replaceFragment(fragmentManager, new CreateInDrawFragment(), item);
+                replaceFragment(fragmentManager, new TournamentList(fragmentManager, item, selectedButtomNavMenuItem, bottomNavigationView, R.string.create_in_draw), item);
                 selectedButtomNavMenuItem.setChecked(true);
                 break;
         }

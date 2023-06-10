@@ -46,6 +46,8 @@ public class TournamentListAdapter extends RecyclerView.Adapter<TournamentListVi
         Glide.with(context)
                 .load(currentTournament.getTournamentLogo())
                 .into(holder.tournamentLogo);
+
+        holder.itemView.setOnClickListener(v -> onItemListener.onItemClick(currentTournament));
     }
 
     @Override
@@ -54,6 +56,6 @@ public class TournamentListAdapter extends RecyclerView.Adapter<TournamentListVi
     }
 
     public interface OnItemListener {
-        void onItemClick(long tournamentId);
+        void onItemClick(TournamentDto tournament);
     }
 }
