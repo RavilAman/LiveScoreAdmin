@@ -27,6 +27,7 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.UploadTeamsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -100,7 +101,7 @@ public class LoadTeamsFragment extends Fragment {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-                TournamentApi tournamentApi = retrofit.create(TournamentApi.class);
+                UploadTeamsApi tournamentApi = retrofit.create(UploadTeamsApi.class);
                 tournamentApi.uploadPlayerInfo(link, tournamentDto.getTournamentId() + "").enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {

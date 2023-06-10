@@ -20,7 +20,4 @@ public interface TournamentApi {
     @GET(UrlConstants.TOURNAMENTS_BY_USER)
     Call<List<TournamentDto>> findAllByUser();
 
-    @POST(UrlConstants.UPLOAD_PLAYER_INFO)
-    Call<String> uploadPlayerInfo(@Query("link") String link, @Query("tournamentId")String tournamentId);
-
 }
