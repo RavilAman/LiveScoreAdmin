@@ -118,15 +118,16 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
 
     private void findAllTournamentsByUser() {
         tournamentList.clear();
-        tournamentApi.findAllByUser().enqueue(new Callback<>() {
+
+        Callback<List<TournamentDto>> callback = new Callback<>() {
             @Override
             public void onResponse(Call<List<TournamentDto>> call, Response<List<TournamentDto>> response) {
                 if (response.body() != null) {
                     tournamentList = response.body();
                     createTournamentCards(tournamentList);
-//                    if (tournamentList.isEmpty()) {
-//                        noTournaments.setText(R.string.no_tournaments_with_name);
-//                    }
+//                if (tournamentList.isEmpty()) {
+//                    noTournaments.setText(R.string.no_tournaments_with_name);
+//                }
                 }
             }
 
@@ -134,7 +135,13 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
             public void onFailure(Call<List<TournamentDto>> call, Throwable t) {
                 t.printStackTrace();
             }
-        });
+        };
+
+        if (pageHeaderText == R.string.create_in_draw) {
+            tournamentApi.findAllCupByUser().enqueue(callback);
+        } else {
+            tournamentApi.findAllByUser().enqueue(callback);
+        }
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {

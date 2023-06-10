@@ -7,6 +7,7 @@ public class UrlConstants {
     public static final String TOURNAMENTS = "tournament";
     public static final String TOURNAMENT_BY_NAME = "tournament/tournament_name";
     public static final String TOURNAMENTS_BY_USER = "tournament/user?userId=1"; //TODO change endpoint via token
+    public static final String TOURNAMENTS_CUP_BY_USER = "tournament/user/cup?userId=1"; //TODO change endpoint via token
 
 
     public static final String TOPIC_NAME = "notification/topic/tournament/{tournamentId}";

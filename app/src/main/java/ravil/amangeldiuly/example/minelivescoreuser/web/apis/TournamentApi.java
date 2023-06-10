@@ -20,4 +20,6 @@ public interface TournamentApi {
     @GET(UrlConstants.TOURNAMENTS_BY_USER)
     Call<List<TournamentDto>> findAllByUser();
 
+    @GET(UrlConstants.TOURNAMENTS_CUP_BY_USER)
+    Call<List<TournamentDto>> findAllCupByUser();
 }
