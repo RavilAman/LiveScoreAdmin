@@ -265,11 +265,36 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/plus_button"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@id/calendar_holder_linear_layout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/custom_plus_button"
+            android:padding="8dp"
+            android:paddingTop="10dp"
+            android:text="@string/plus"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/calendar_holder_linear_layout" />
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/plus_button" />
 
     <TextView
         android:id="@+id/no_games_text_view"
