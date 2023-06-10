@@ -97,10 +97,11 @@
         android:background="@drawable/rounded_shape"
         android:hint="@string/paste_link_here"
         android:padding="10dp"
-        android:textColor="@color/app_black" />
+        android:textColor="@color/app_black"
+        android:inputType="textNoSuggestions" />
 
     <Button
-        android:id="@+id/upload_teams_buttom"
+        android:id="@+id/upload_teams_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/link_edittext"

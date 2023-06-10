@@ -31,4 +31,5 @@ public class UrlConstants {
     public static final String TEAM_STATISTICS_GOALS = "team_statistics/goals";
     public static final String TEAM_STATISTICS_RED_CARD = "team_statistics/red_cards/{tournament_id}";
     public static final String TEAM_STATISTICS_YELLOW_CARD = "team_statistics/yellow_cards/{tournament_id}";
+    public static final String UPLOAD_PLAYER_INFO = "/info/upload/player_info/link";
 }

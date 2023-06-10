@@ -145,24 +145,26 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
 
     @Override
     public void onItemClick(TournamentDto tournament) {
-        if (pageHeaderText == R.string.upload_team){
-            LoadTeamsFragment newFragment =  LoadTeamsFragment.newInstanse(tournament,fragmentManager);
+        Fragment fragment = null;
+
+        switch (pageHeaderText) {
+            case R.string.upload_team:
+                fragment = LoadTeamsFragment.newInstance(tournament, fragmentManager);
+                break;
+            case R.string.create_in_draw:
+                fragment = new CreateInDrawFragment();
+                break;
+            case R.string.transfers:
+                fragment = new TransfersFragment();
+                break;
+        }
+
+        if (fragment != null) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, newFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        }else if (pageHeaderText == R.string.create_in_draw){
-            CreateInDrawFragment createInDrawFragment = new CreateInDrawFragment();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, createInDrawFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        } else if (pageHeaderText == R.string.transfers) {
-            TransfersFragment transfersFragment = new TransfersFragment();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, transfersFragment);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
     }
+
 }
