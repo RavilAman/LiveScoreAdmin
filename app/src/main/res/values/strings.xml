@@ -62,4 +62,10 @@
     <string name="player_statistics_yellow_cards">YELLOW CARDS</string>
     <string name="player_statistic_total">Total</string>
     <string name="player_statistic_per_game">Per Game</string>
+    <string name="team_name">Team name</string>
+    <string name="choose_team">Choose team to make transfer</string>
+    <string name="choose_tournament">Choose tournament</string>
+    <string name="player_number">#1</string>
+    <string name="player_name">Player name</string>
+    <string name="update">Update</string>
 </resources>

@@ -11,4 +11,11 @@
     <style name="NavigationViewStyle" parent="Widget.Design.NavigationView">
         <item name="android:textColor">@drawable/bottom_nav_item_color_selector</item>
     </style>
+    <style name="SpinnerTheme" parent="Theme.AppCompat">
+        <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+    </style>
+
+    <style name="SpinnerStyle" parent="@android:style/Widget.Spinner">
+        <item name="android:background">@drawable/spinner_background</item>
+    </style>
 </resources>

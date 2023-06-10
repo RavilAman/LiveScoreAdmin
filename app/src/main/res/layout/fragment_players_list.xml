@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_black">
 
     <LinearLayout
@@ -27,8 +27,8 @@
             android:src="@drawable/ic_baseline_chevron_left_24"
             app:tint="@color/light_grey" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/fragment_tournament_logo"
+        <ImageView
+            android:id="@+id/fragment_team_logo"
             android:layout_width="@dimen/tournament_logo_size"
             android:layout_height="@dimen/tournament_logo_size"
             android:layout_marginTop="7dp"
@@ -47,75 +47,52 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/fragment_tournament_name"
+                android:id="@+id/fragment_team_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tournament_name"
                 android:textColor="@color/white"
                 android:textSize="@dimen/tournament_name_text_size" />
 
-            <TextView
-                android:id="@+id/fragment_tournament_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/group"
-                android:textColor="@color/white"
-                android:textSize="@dimen/tournament_location_text_size" />
+
         </LinearLayout>
     </LinearLayout>
 
     <TextView
-        android:gravity="center"
         android:id="@+id/page_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_tournament_info"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:textStyle="bold"
-        android:text="@string/upload_team"
+        android:text="@string/transfers"
         android:textColor="@color/app_orange"
-        android:textSize="30dp" />
+        android:textStyle="bold"
+        android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/paste_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/page_header"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="130dp"
-        android:text="@string/paste_link"
-        android:textColor="@color/grey"
-        android:textSize="15dp" />
 
-    <EditText
-        android:id="@+id/link_edittext"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_players"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/paste_link"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="50dp"
-        android:background="@drawable/rounded_shape"
-        android:hint="@string/paste_link_here"
-        android:padding="10dp"
-        android:textColor="@color/app_black"
-        android:inputType="textNoSuggestions" />
+        android:layout_height="400dp"
+        android:layout_below="@id/page_header"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
 
     <Button
         android:id="@+id/upload_teams_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/link_edittext"
+        android:layout_below="@id/list_players"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:background="@drawable/rounded_button_selector"
-        android:enabled="false"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:text="@string/upload_team"
+        android:text="@string/update"
         android:textColor="@color/black"
         android:textStyle="bold" />
-
 
 </RelativeLayout>

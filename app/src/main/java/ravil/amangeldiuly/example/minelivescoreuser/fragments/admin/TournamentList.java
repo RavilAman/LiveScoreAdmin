@@ -162,7 +162,7 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
                 fragment = new CreateInDrawFragment();
                 break;
             case R.string.transfers:
-                fragment = new TransfersFragment();
+                fragment = new TransfersFragment(tournament,fragmentManager);
                 break;
         }
 
