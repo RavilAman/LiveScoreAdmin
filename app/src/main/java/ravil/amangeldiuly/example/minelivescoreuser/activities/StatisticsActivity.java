@@ -9,6 +9,7 @@ import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.
 import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.INDIVIDUAL_PLAYER;
 import static ravil.amangeldiuly.example.minelivescoreuser.enums.StatisticsType.INDIVIDUAL_TEAM;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -69,13 +70,15 @@ public class StatisticsActivity extends AppCompatActivity {
     private TextView playerStatistics;
     private TextView teamStatistics;
     private ImageButton backButton;
-    private RecyclerView groupStatisticsRecyclerView;
     private LinearLayout statisticTypes;
     private TextView statisticTypeAll;
     private TextView statisticTypeAssists;
     private TextView statisticTypeGoals;
     private TextView statisticTypeRedCards;
     private TextView statisticTypeYellowCards;
+
+    private RecyclerView groupStatisticsRecyclerView;
+    private StatisticsAdapter statisticsAdapter;
 
     private StatisticsType currentlySelectedStatisticType;
     private SelectedStatisticsClass selectedStatisticsClass;
@@ -85,11 +88,14 @@ public class StatisticsActivity extends AppCompatActivity {
     private int lastSelectedStatisticTypeNumber;
     private List<GroupInfoListDTO> groupStatistics;
     private List<PlayerStatisticsAllDTO> playerStatisticsAll;
+    private List<DistinctPlayerStatisticsDTO> playerAssistStatistics;
+    private List<DistinctPlayerStatisticsDTO> playerGoalStatistics;
+    private List<DistinctPlayerStatisticsDTO> playerRedCardStatistics;
+    private List<DistinctPlayerStatisticsDTO> playerYellowCardStatistics;
     private List<TeamStatisticsAllDTO> teamStatisticsAll;
-    private List<DistinctPlayerStatisticsDTO> assistStatistics;
-    private List<DistinctPlayerStatisticsDTO> goalStatistics;
-    private List<DistinctPlayerStatisticsDTO> redCardStatistics;
-    private List<DistinctPlayerStatisticsDTO> yellowCardStatistics;
+    private List<DistinctTeamStatisticsDTO> teamGoalStatistics;
+    private List<DistinctTeamStatisticsDTO> teamRedCardStatistics;
+    private List<DistinctTeamStatisticsDTO> teamYellowCardStatistics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,16 +149,19 @@ public class StatisticsActivity extends AppCompatActivity {
         groupId = (int) intent.getExtras().getLong("groupId");
         groupStatistics = new ArrayList<>();
         playerStatisticsAll = new ArrayList<>();
-        assistStatistics = new ArrayList<>();
-        goalStatistics = new ArrayList<>();
-        redCardStatistics = new ArrayList<>();
-        yellowCardStatistics = new ArrayList<>();
+        playerAssistStatistics = new ArrayList<>();
+        playerGoalStatistics = new ArrayList<>();
+        playerRedCardStatistics = new ArrayList<>();
+        playerYellowCardStatistics = new ArrayList<>();
+        teamGoalStatistics = new ArrayList<>();
+        teamRedCardStatistics = new ArrayList<>();
+        teamYellowCardStatistics = new ArrayList<>();
         teamStatisticsAll = new ArrayList<>();
     }
 
     private void setOnClickListeners() {
         backButton.setOnClickListener(backButtonListener());
-        matches.setOnClickListener(matcherListener());
+        matches.setOnClickListener(matchesListener());
         table.setOnClickListener(tableListener());
         playerStatistics.setOnClickListener(playerStatisticsListener());
         teamStatistics.setOnClickListener(teamStatisticsListener());
@@ -167,7 +176,7 @@ public class StatisticsActivity extends AppCompatActivity {
             List<DistinctPlayerStatisticsDTO> individualPlayerStatistics,
             List<DistinctTeamStatisticsDTO> individualTeamStatistics,
             String statisticsCategory) {
-        StatisticsAdapter statisticsAdapter = new StatisticsAdapter(context, currentlySelectedStatisticType);
+        statisticsAdapter = new StatisticsAdapter(context, currentlySelectedStatisticType);
         switch (currentlySelectedStatisticType) {
             case GROUP:
                 statisticsAdapter.setGroupStatisticsList(groupStatistics);
@@ -258,13 +267,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getPlayerAssistStatistics() {
-        assistStatistics.clear();
+        playerAssistStatistics.clear();
         playerStatisticsApi.getAssists(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    assistStatistics = response.body();
-                    setStatistics(assistStatistics, null, "ASSIST");
+                    playerAssistStatistics = response.body();
+                    setStatistics(playerAssistStatistics, null, "ASSIST");
                 }
             }
 
@@ -276,13 +285,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getPlayerGoalStatistics() {
-        goalStatistics.clear();
+        playerGoalStatistics.clear();
         playerStatisticsApi.getGoals(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    goalStatistics = response.body();
-                    setStatistics(goalStatistics, null, "GOAL");
+                    playerGoalStatistics = response.body();
+                    setStatistics(playerGoalStatistics, null, "GOAL");
                 }
             }
 
@@ -294,13 +303,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getPlayerRedCardStatistics() {
-        redCardStatistics.clear();
+        playerRedCardStatistics.clear();
         playerStatisticsApi.getRedCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    redCardStatistics = response.body();
-                    setStatistics(redCardStatistics, null, "RED CARD");
+                    playerRedCardStatistics = response.body();
+                    setStatistics(playerRedCardStatistics, null, "RED CARD");
                 }
             }
 
@@ -312,13 +321,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getPlayerYellowCardStatistics() {
-        yellowCardStatistics.clear();
+        playerYellowCardStatistics.clear();
         playerStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    yellowCardStatistics = response.body();
-                    setStatistics(yellowCardStatistics, null, "YELLOW CARD");
+                    playerYellowCardStatistics = response.body();
+                    setStatistics(playerYellowCardStatistics, null, "YELLOW CARD");
                 }
             }
 
@@ -341,7 +350,7 @@ public class StatisticsActivity extends AppCompatActivity {
         return view -> finish();
     }
 
-    private View.OnClickListener matcherListener() {
+    private View.OnClickListener matchesListener() {
         return view -> {
             deSelectLastSelectedCategory();
             lastSelectedCategoryNumber = 0;
@@ -461,18 +470,32 @@ public class StatisticsActivity extends AppCompatActivity {
         };
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void deSelectLastSelectedCategory() {
         switch (lastSelectedCategoryNumber) {
             case 0:
                 matches.setTextColor(Color.parseColor(ColorConstants.WHITE));
                 break;
             case 1:
+                groupStatistics.clear();
+                statisticsAdapter.notifyDataSetChanged();
                 table.setTextColor(Color.parseColor(ColorConstants.WHITE));
                 break;
             case 2:
+                playerStatisticsAll.clear();
+                playerAssistStatistics.clear();
+                playerGoalStatistics.clear();
+                playerRedCardStatistics.clear();
+                playerYellowCardStatistics.clear();
+                statisticsAdapter.notifyDataSetChanged();
                 playerStatistics.setTextColor(Color.parseColor(ColorConstants.WHITE));
                 break;
             case 3:
+                teamStatisticsAll.clear();
+                teamGoalStatistics.clear();
+                teamRedCardStatistics.clear();
+                teamYellowCardStatistics.clear();
+                statisticsAdapter.notifyDataSetChanged();
                 teamStatistics.setTextColor(Color.parseColor(ColorConstants.WHITE));
                 break;
         }
@@ -527,11 +550,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getTeamGoalStatistics() {
+        teamGoalStatistics.clear();
         teamStatisticsApi.getGoals(tournamentId).enqueue(new Callback<List<DistinctTeamStatisticsDTO>>() {
             @Override
             public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    setStatistics(null, response.body(), "GOALS");
+                    teamGoalStatistics = response.body();
+                    setStatistics(null, teamGoalStatistics, "GOALS");
                 }
             }
 
@@ -543,11 +568,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getTeamRedCardStatistics() {
+        teamRedCardStatistics.clear();
         teamStatisticsApi.getRedCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    setStatistics(null, response.body(), "RED CARDS");
+                    teamRedCardStatistics = response.body();
+                    setStatistics(null, teamRedCardStatistics, "RED CARDS");
                 }
             }
 
@@ -559,11 +586,13 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void getTeamYellowCardStatistics() {
-        teamStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<List<DistinctTeamStatisticsDTO>>() {
+        teamYellowCardStatistics.clear();
+        teamStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    setStatistics(null, response.body(), "YELLOW CARDS");
+                    teamYellowCardStatistics = response.body();
+                    setStatistics(null, teamYellowCardStatistics, "YELLOW CARDS");
                 }
             }
 
