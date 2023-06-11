@@ -2,13 +2,16 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeseriali
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PLayerApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.UpdatePlayerRequestDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,9 +55,10 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     private ImageView teamLogo;
     private TextView teamName;
     private TeamDTO teamDTO;
-    private List<TeamDTO>teamList;
+    private List<TeamDTO> teamList;
+    private List<UpdatePlayerRequestDTO> playersToUpdate;
 
-    public PlayerListFragment(TeamDTO teamDTO, FragmentManager fragmentManager,List<TeamDTO> teamList) {
+    public PlayerListFragment(TeamDTO teamDTO, FragmentManager fragmentManager, List<TeamDTO> teamList) {
         this.teamDTO = teamDTO;
         this.fragmentManager = fragmentManager;
         this.teamList = teamList;
@@ -80,8 +85,49 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
         findAllPlayerByTeam();
 
+        Button updateButton = currentView.findViewById(R.id.update_button);
+        updateButton.setOnClickListener(updateButtonListener());
+
         return currentView;
     }
+
+    private View.OnClickListener updateButtonListener() {
+        return view -> {
+            List<UpdatePlayerRequestDTO> updateRequests = new ArrayList<>();
+
+            // Iterate over the playerList and collect the updated team IDs
+            for (PlayerDTO player : playerList) {
+                long newTeamId = player.getTeamId();
+                long playerId = player.getPlayerId();
+                UpdatePlayerRequestDTO request = new UpdatePlayerRequestDTO(newTeamId, playerId);
+                updateRequests.add(request);
+            }
+
+            PLayerApi playerApi = retrofit.create(PLayerApi.class);
+
+            Call<PlayerDTO> call = playerApi.updatePlayers(updateRequests);
+            call.enqueue(new Callback<PlayerDTO>() {
+                @Override
+                public void onResponse(Call<PlayerDTO> call, Response<PlayerDTO> response) {
+                    if (response.isSuccessful()) {
+                        PlayerDTO updateResponse = response.body();
+                        Toast.makeText(getContext(), "Players updated successfully", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        String errorMessage = response.message();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<PlayerDTO> call, Throwable t) {
+                    // Request failed, handle the failure
+                    t.printStackTrace();
+                    // Handle the failure
+                }
+            });
+        };
+    }
+
 
     private void findAllPlayerByTeam() {
         playerList.clear();
@@ -93,9 +139,6 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
                 if (response.body() != null) {
                     playerList = response.body();
                     createTeamCards(playerList);
-//                if (tournamentList.isEmpty()) {
-//                    noTournaments.setText(R.string.no_tournaments_with_name);
-//                }
                 }
             }
 
@@ -109,7 +152,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     }
 
     private void createTeamCards(List<PlayerDTO> playerList) {
-        PlayerAdapter playerAdapter = new PlayerAdapter(getLayoutInflater().getContext(), playerList, this,teamList);
+        PlayerAdapter playerAdapter = new PlayerAdapter(getLayoutInflater().getContext(), playerList, this, teamList, playersToUpdate);
         playerRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         playerRecyclerView.setAdapter(playerAdapter);
     }
@@ -136,6 +179,11 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
     @Override
     public void onItemClick(PlayerDTO player) {
-
+        long newTeamId = player.getTeamId(); // Get the selected team ID from the player object
+        PlayerAdapter adapter = (PlayerAdapter) playerRecyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updatePlayerTeam(player, newTeamId);
+        }
     }
+
 }

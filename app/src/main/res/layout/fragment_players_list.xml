@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tournament_name"
                 android:textColor="@color/white"
+                android:textStyle="bold"
                 android:textSize="@dimen/tournament_name_text_size" />
 
 
@@ -82,7 +83,7 @@
         />
 
     <Button
-        android:id="@+id/upload_teams_button"
+        android:id="@+id/update_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/list_players"

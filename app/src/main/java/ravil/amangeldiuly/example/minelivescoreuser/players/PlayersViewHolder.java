@@ -4,6 +4,7 @@ import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_
 
 import android.content.Context;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -58,6 +59,22 @@ public class PlayersViewHolder extends RecyclerView.ViewHolder {
                 .baseUrl(BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TeamDTO selectedTeam = teamList.get(position);
+                if (playerDTO.getTeamId() != selectedTeam.getTeamId()) {
+                    playerDTO.setTeamId(selectedTeam.getTeamId());
+                    onItemListener.onItemClick(playerDTO);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
 
         itemView.setOnClickListener(v -> onItemListener.onItemClick(playerDTO));
     }

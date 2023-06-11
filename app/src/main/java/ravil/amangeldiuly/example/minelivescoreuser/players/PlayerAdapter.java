@@ -14,6 +14,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.UpdatePlayerRequestDTO;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayersViewHolder> {
 
@@ -21,12 +22,14 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayersViewHolder> {
     private List<PlayerDTO> players;
     private List<TeamDTO> teamList;
     private final OnItemListener onItemListener;
+    private List<UpdatePlayerRequestDTO> updatePlayerRequestDTOS;
 
-    public PlayerAdapter(Context context, List<PlayerDTO> players, OnItemListener onItemListener, List<TeamDTO> teamList) {
+    public PlayerAdapter(Context context, List<PlayerDTO> players, OnItemListener onItemListener, List<TeamDTO> teamList, List<UpdatePlayerRequestDTO> updatePlayerRequestDTOS) {
         this.context = context;
         this.players = players;
         this.onItemListener = onItemListener;
         this.teamList = teamList;
+        this.updatePlayerRequestDTOS = updatePlayerRequestDTOS;
     }
 
     @NonNull
@@ -57,4 +60,13 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayersViewHolder> {
     public interface OnItemListener {
         void onItemClick(PlayerDTO player);
     }
+
+    public void updatePlayerTeam(PlayerDTO player, long newTeamId) {
+        int position = players.indexOf(player);
+        if (position != -1) {
+            player.setTeamId(newTeamId);
+            notifyItemChanged(position);
+        }
+    }
+
 }

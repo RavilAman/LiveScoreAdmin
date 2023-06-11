@@ -23,10 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 
-import java.util.List;
-
 import ravil.amangeldiuly.example.minelivescoreuser.R;
-import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.UploadTeamsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Retrofit;
@@ -70,7 +67,7 @@ public class LoadTeamsFragment extends Fragment {
         tournamentName = currentView.findViewById(R.id.fragment_tournament_name);
         tournamentGroup = currentView.findViewById(R.id.fragment_tournament_group);
         imageButton = currentView.findViewById(R.id.fragment_back_button);
-        uploadTeamsButton = currentView.findViewById(R.id.upload_teams_button);
+        uploadTeamsButton = currentView.findViewById(R.id.update_button);
         linkEditText = currentView.findViewById(R.id.link_edittext);
 
         Bundle args = getArguments();
