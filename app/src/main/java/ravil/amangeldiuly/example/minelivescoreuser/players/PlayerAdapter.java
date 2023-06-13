@@ -69,4 +69,8 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayersViewHolder> {
         }
     }
 
+    public void updatePlayerList(List<PlayerDTO> updatedPlayerList) {
+        this.players = updatedPlayerList;
+        notifyDataSetChanged();
+    }
 }

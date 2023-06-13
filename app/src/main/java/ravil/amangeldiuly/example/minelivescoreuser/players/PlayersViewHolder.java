@@ -36,7 +36,7 @@ public class PlayersViewHolder extends RecyclerView.ViewHolder {
     Retrofit retrofit;
     List<TeamDTO> teamList;
 
-    public PlayersViewHolder(@NonNull View itemView, PlayerAdapter.OnItemListener onItemListener, Context context,List<TeamDTO>teamList) {
+    public PlayersViewHolder(@NonNull View itemView, PlayerAdapter.OnItemListener onItemListener, Context context, List<TeamDTO> teamList) {
         super(itemView);
         this.playerName = itemView.findViewById(R.id.card_player_name);
         this.playerNumber = itemView.findViewById(R.id.card_player_number);
@@ -45,7 +45,18 @@ public class PlayersViewHolder extends RecyclerView.ViewHolder {
         this.context = context;
         this.teamList = teamList;
 
-        List<String> itemList = teamList.stream().map(TeamDTO::getTeamName).collect(Collectors.toList());
+        List<String> itemList = teamList.stream().map(i -> {
+            String name = i.getTeamName();
+            if (name.contains(" ") && name.length() > 11) {
+                String[] s = name.split(" ");
+                String s1 = s[0] + " " + s[1].charAt(0)+".";
+                return s1;
+            } else if (!name.contains(" ") && name.length() >= 11) {
+                return name.substring(0, 10) + "...";
+            }
+
+            return name;
+        }).collect(Collectors.toList());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, itemList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -16,5 +16,5 @@ public interface PLayerApi {
     Call<List<PlayerDTO>> findAllPlayerByTeamId(@Path("team_id")Long teamId);
 
     @PUT(UrlConstants.UPDATE_PLAYER_TEAM)
-    Call<PlayerDTO> updatePlayers(@Body List<UpdatePlayerRequestDTO> updateRequests);
+    Call<List<PlayerDTO>> updatePlayers(@Body List<UpdatePlayerRequestDTO> updateRequests);
 }

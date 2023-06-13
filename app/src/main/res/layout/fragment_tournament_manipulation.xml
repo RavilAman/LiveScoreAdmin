@@ -27,8 +27,8 @@
             android:src="@drawable/ic_baseline_chevron_left_24"
             app:tint="@color/light_grey" />
 
-        <ImageView
-            android:id="@+id/fragment_team_logo"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/fragment_tournament_logo"
             android:layout_width="@dimen/tournament_logo_size"
             android:layout_height="@dimen/tournament_logo_size"
             android:layout_marginTop="7dp"
@@ -47,53 +47,49 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/fragment_team_name"
+                android:id="@+id/fragment_tournament_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tournament_name"
                 android:textColor="@color/white"
-                android:textStyle="bold"
                 android:textSize="@dimen/tournament_name_text_size" />
 
-
+            <TextView
+                android:id="@+id/fragment_tournament_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/group"
+                android:textColor="@color/white"
+                android:textSize="@dimen/tournament_location_text_size" />
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/page_header"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_tournament_info"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="@string/transfers"
-        android:textColor="@color/app_orange"
-        android:textStyle="bold"
-        android:textSize="30sp" />
+        android:layout_marginTop="10dp"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/app_orange"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/app_orange"
+        app:tabTextColor="@color/light_grey" />
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tab_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_players"
+        android:id="@+id/list_teams"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_below="@id/page_header"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        />
-
-    <Button
-        android:id="@+id/fragment_player_update_button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/list_players"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/rounded_button_selector"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:text="@string/update"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
+        android:layout_below="@id/view_pager"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
 
 </RelativeLayout>

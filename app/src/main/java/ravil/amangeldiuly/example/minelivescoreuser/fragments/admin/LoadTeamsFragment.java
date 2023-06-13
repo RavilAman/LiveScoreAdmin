@@ -67,7 +67,7 @@ public class LoadTeamsFragment extends Fragment {
         tournamentName = currentView.findViewById(R.id.fragment_tournament_name);
         tournamentGroup = currentView.findViewById(R.id.fragment_tournament_group);
         imageButton = currentView.findViewById(R.id.fragment_back_button);
-        uploadTeamsButton = currentView.findViewById(R.id.update_button);
+        uploadTeamsButton = currentView.findViewById(R.id.upload_button);
         linkEditText = currentView.findViewById(R.id.link_edittext);
 
         Bundle args = getArguments();
@@ -99,19 +99,20 @@ public class LoadTeamsFragment extends Fragment {
                         .build();
 
                 UploadTeamsApi tournamentApi = retrofit.create(UploadTeamsApi.class);
-                tournamentApi.uploadPlayerInfo(link, tournamentDto.getTournamentId() + "").enqueue(new Callback<>() {
+                Call<String> stringCall = tournamentApi.uploadPlayerInfo(link, tournamentDto.getTournamentId() + "");
+                stringCall.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         // Hide progress dialog
-                        hideProgressDialog();
-
+//                        hideProgressDialog();
+                        String body = response.body();
                         if (response.isSuccessful()) {
-                            String body = response.body();
                             Toast.makeText(getContext(), "TEAMS SUCCESSFULLY ADDED", Toast.LENGTH_SHORT).show();
                         } else {
-                            String body = response.body();
                             Toast.makeText(getContext(), body, Toast.LENGTH_SHORT).show();
                         }
+                        linkEditText.setText("");
+                        uploadTeamsButton.setEnabled(false);
                     }
 
                     @Override

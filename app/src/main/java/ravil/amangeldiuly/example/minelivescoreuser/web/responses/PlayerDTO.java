@@ -74,4 +74,26 @@ public class PlayerDTO {
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlayerDTO playerDTO = (PlayerDTO) o;
+
+        if (!playerId.equals(playerDTO.playerId)) return false;
+        if (!name.equals(playerDTO.name)) return false;
+        if (!surname.equals(playerDTO.surname)) return false;
+        return role.equals(playerDTO.role);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = playerId.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + surname.hashCode();
+        result = 31 * result + role.hashCode();
+        return result;
+    }
 }

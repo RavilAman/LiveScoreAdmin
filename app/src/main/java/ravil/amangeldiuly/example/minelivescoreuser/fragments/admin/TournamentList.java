@@ -142,6 +142,8 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
         } else {
             tournamentApi.findAllByUser().enqueue(callback);
         }
+
+
     }
 
     private void createTournamentCards(List<TournamentDto> tournaments) {
@@ -159,7 +161,7 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
                 fragment = LoadTeamsFragment.newInstance(tournament, fragmentManager);
                 break;
             case R.string.create_in_draw:
-                fragment = new CreateInDrawFragment();
+                fragment = new CreateInDrawFragment(tournament,fragmentManager);
                 break;
             case R.string.transfers:
                 fragment = new TransfersFragment(tournament,fragmentManager);

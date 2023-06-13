@@ -10,5 +10,5 @@ import retrofit2.http.Path;
 
 public interface TeamApi {
     @GET(UrlConstants.TEAMS_BY_TOURNAMENT)
-    Call<List<TeamDTO>> findAllTeamsByTournament(@Path("tournament_id") Long tournamentId);
+    Call<List<TeamDTO>> findAllTeamsByTournament(@Path("tournamentId") Long tournamentId);
 }

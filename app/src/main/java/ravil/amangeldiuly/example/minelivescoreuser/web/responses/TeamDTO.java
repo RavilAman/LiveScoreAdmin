@@ -35,4 +35,11 @@ public class TeamDTO {
     public void setTeamLogo(String teamLogo) {
         this.teamLogo = teamLogo;
     }
+
+    @Override
+    public String toString() {
+        return "TeamDTO{" +
+                "teamName='" + teamName + '\'' +
+                '}';
+    }
 }

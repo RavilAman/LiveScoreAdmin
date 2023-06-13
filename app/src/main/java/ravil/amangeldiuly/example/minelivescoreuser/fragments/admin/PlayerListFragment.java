@@ -4,6 +4,7 @@ import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
 
     private View currentView;
+    private PlayerAdapter playerAdapter;
     private Retrofit retrofit;
     private RecyclerView playerRecyclerView;
     private List<PlayerDTO> playerList;
@@ -85,12 +87,13 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
         findAllPlayerByTeam();
 
-        Button updateButton = currentView.findViewById(R.id.update_button);
+        Button updateButton = currentView.findViewById(R.id.fragment_player_update_button);
         updateButton.setOnClickListener(updateButtonListener());
 
         return currentView;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private View.OnClickListener updateButtonListener() {
         return view -> {
             List<UpdatePlayerRequestDTO> updateRequests = new ArrayList<>();
@@ -105,24 +108,29 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
             PLayerApi playerApi = retrofit.create(PLayerApi.class);
 
-            Call<PlayerDTO> call = playerApi.updatePlayers(updateRequests);
-            call.enqueue(new Callback<PlayerDTO>() {
+            Call<List<PlayerDTO>> call = playerApi.updatePlayers(updateRequests);
+            call.enqueue(new Callback<>() {
                 @Override
-                public void onResponse(Call<PlayerDTO> call, Response<PlayerDTO> response) {
+                public void onResponse(Call<List<PlayerDTO>> call, Response<List<PlayerDTO>> response) {
                     if (response.isSuccessful()) {
-                        PlayerDTO updateResponse = response.body();
-                        Toast.makeText(getContext(), "Players updated successfully", Toast.LENGTH_SHORT).show();
-
+                        assert response.body() != null;
+                        if (!response.body().isEmpty()) {
+                            for (PlayerDTO player : response.body()) {
+                                playerList.remove(player);
+                            }
+                            playerAdapter.notifyDataSetChanged();
+                            Toast.makeText(getContext(), "Players updated successfully", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(getContext(), "Choose new team to transfer", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         String errorMessage = response.message();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<PlayerDTO> call, Throwable t) {
-                    // Request failed, handle the failure
-                    t.printStackTrace();
-                    // Handle the failure
+                public void onFailure(Call<List<PlayerDTO>> call, Throwable t) {
+
                 }
             });
         };
@@ -138,7 +146,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
             public void onResponse(Call<List<PlayerDTO>> call, Response<List<PlayerDTO>> response) {
                 if (response.body() != null) {
                     playerList = response.body();
-                    createTeamCards(playerList);
+                    createTeamCards();
                 }
             }
 
@@ -151,8 +159,8 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
     }
 
-    private void createTeamCards(List<PlayerDTO> playerList) {
-        PlayerAdapter playerAdapter = new PlayerAdapter(getLayoutInflater().getContext(), playerList, this, teamList, playersToUpdate);
+    private void createTeamCards() {
+        playerAdapter = new PlayerAdapter(getLayoutInflater().getContext(), playerList, this, teamList, playersToUpdate);
         playerRecyclerView.setLayoutManager(new LinearLayoutManager(getLayoutInflater().getContext()));
         playerRecyclerView.setAdapter(playerAdapter);
     }
@@ -179,7 +187,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
 
     @Override
     public void onItemClick(PlayerDTO player) {
-        long newTeamId = player.getTeamId(); // Get the selected team ID from the player object
+        long newTeamId = player.getTeamId();
         PlayerAdapter adapter = (PlayerAdapter) playerRecyclerView.getAdapter();
         if (adapter != null) {
             adapter.updatePlayerTeam(player, newTeamId);
