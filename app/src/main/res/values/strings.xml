@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">LiveScore</string>
-    <string name="app_label">Live Score</string>
+    <string name="app_name">LiveScoreAdmin</string>
+    <string name="app_label">Live Score Admin</string>
     <string name="welcome_label">WELCOME</string>
     <string name="scores_page">Scores</string>
     <string name="favourites_page">Favourites</string>
