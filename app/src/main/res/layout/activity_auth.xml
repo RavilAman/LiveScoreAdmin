@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:padding="20dp"
+    tools:context=".activities.AuthActivity">
+
+    <TextView
+        android:id="@+id/activity_auth_login_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/sign_in"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/activity_auth_login_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_auth_login_label"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/login_password_background"
+        android:drawableStart="@drawable/ic_baseline_person_24"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/white"
+        android:hint="@string/username"
+        android:inputType="text"
+        android:paddingStart="18dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/button_grey" />
+
+    <LinearLayout
+        android:id="@+id/activity_auth_password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_auth_login_field"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/login_password_background"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/activity_auth_password_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawableStart="@drawable/ic_baseline_lock_24"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/white"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingStart="18dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/button_grey" />
+
+        <ImageButton
+            android:id="@+id/activity_auth_password_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="8dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="6dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_baseline_remove_red_eye_24"
+            app:tint="@color/white" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_auth_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_auth_password_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/login"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/activity_auth_wrong_credentials_label"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/activity_auth_login_button"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/invalid_password_or_login"
+        android:textColor="@color/rainbow1"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>
