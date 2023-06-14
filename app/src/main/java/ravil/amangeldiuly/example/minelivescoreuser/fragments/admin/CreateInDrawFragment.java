@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,8 +25,10 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -53,8 +56,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CreateInDrawFragment extends Fragment {
 
-    private FragmentManager fragmentManager;
     private View currentView;
+    private FragmentManager fragmentManager;
     private List<TeamDTO> teamList;
     private List<AfterDrawDTO> groupList;
     private LinearLayout teamContainer;
@@ -65,6 +68,10 @@ public class CreateInDrawFragment extends Fragment {
     private TeamApi teamApi;
     private TournamentDto tournamentDto;
     private int completedRequests = 0;
+    private ShapeableImageView tournamentLogo;
+    private TextView tournamentName;
+    private TextView tournamentGroup;
+    private ImageButton imageButton;
 
     public CreateInDrawFragment(TournamentDto tournamentDto, FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
@@ -78,13 +85,16 @@ public class CreateInDrawFragment extends Fragment {
         teamContainer = currentView.findViewById(R.id.teamContainer);
         groupTableLayout = currentView.findViewById(R.id.groupTableLayout);
         uploadButton = currentView.findViewById(R.id.uploadButton);
-
+        tournamentName = currentView.findViewById(R.id.fragment_tournament_name);
+        tournamentLogo = currentView.findViewById(R.id.fragment_tournament_logo);
+        tournamentGroup = currentView.findViewById(R.id.fragment_tournament_group);
+        imageButton = currentView.findViewById(R.id.fragment_back_button);
+        imageButton.setOnClickListener(backButtonListener());
 
         teamList = new ArrayList<>();
         groupList = new ArrayList<>();
 
         initializeRetrofit();
-        Log.i(DELETE_SUBSCRIPTION, "$$$$$$$$$$$$$");
 
 
         Callback<List<TeamDTO>> teamCallback = new Callback<>() {
@@ -132,6 +142,12 @@ public class CreateInDrawFragment extends Fragment {
             // Send the draw data to the backend
             sendDrawData(drawList);
         });
+
+        tournamentName.setText(tournamentDto.getTournamentName());
+        tournamentGroup.setText(tournamentDto.getTournamentLocation());
+        Glide.with(this)
+                .load(tournamentDto.getTournamentLogo())
+                .into(tournamentLogo);
 
 
         return currentView;
@@ -361,6 +377,7 @@ public class CreateInDrawFragment extends Fragment {
             public void onResponse(Call<List<GroupInfoDTO>> call, Response<List<GroupInfoDTO>> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Draw uploaded successfully", Toast.LENGTH_SHORT).show();
+                    uploadButton.setEnabled(false);
                 } else {
                     Toast.makeText(getContext(), "Failed to upload draw", Toast.LENGTH_SHORT).show();
                 }
@@ -376,5 +393,13 @@ public class CreateInDrawFragment extends Fragment {
 
         // Example using Retrofit:
 
+    }
+    private View.OnClickListener backButtonListener() {
+        return view -> {
+
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentManager.popBackStack();
+            fragmentTransaction.commit();
+        };
     }
 }

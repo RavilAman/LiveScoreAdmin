@@ -1,11 +1,14 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
+import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.DELETE_SUBSCRIPTION;
+import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.STATISTICS_FOR_TOURNAMENT;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +25,16 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.UploadTeamsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Retrofit;
@@ -44,9 +55,11 @@ public class LoadTeamsFragment extends Fragment {
     private Button uploadTeamsButton;
     private EditText linkEditText;
     private ProgressDialog progressDialog;
+    private UploadTeamsApi tournamentApi;
+    private Retrofit retrofit;
 
-    public static LoadTeamsFragment newInstance(TournamentDto tournamentDto,FragmentManager fragmentManager){
-        LoadTeamsFragment fragment = new LoadTeamsFragment(fragmentManager,tournamentDto);
+    public static LoadTeamsFragment newInstance(TournamentDto tournamentDto, FragmentManager fragmentManager) {
+        LoadTeamsFragment fragment = new LoadTeamsFragment(fragmentManager, tournamentDto);
         Bundle args = new Bundle();
         args.putString("tournament_logo", tournamentDto.getTournamentLogo());
         args.putString("tournament_name", tournamentDto.getTournamentName());
@@ -55,7 +68,7 @@ public class LoadTeamsFragment extends Fragment {
         return fragment;
     }
 
-    public LoadTeamsFragment(FragmentManager fragmentManager, TournamentDto tournamentDto){
+    public LoadTeamsFragment(FragmentManager fragmentManager, TournamentDto tournamentDto) {
         this.fragmentManager = fragmentManager;
         this.tournamentDto = tournamentDto;
     }
@@ -70,9 +83,27 @@ public class LoadTeamsFragment extends Fragment {
         uploadTeamsButton = currentView.findViewById(R.id.upload_button);
         linkEditText = currentView.findViewById(R.id.link_edittext);
 
+
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS) // Set the connection timeout to 30 seconds
+                .readTimeout(60, TimeUnit.SECONDS) // Set the read timeout to 30 seconds
+                .writeTimeout(60, TimeUnit.SECONDS); // Set the write timeout to 30 seconds
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .create();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BACKEND_URL)
+                .client(httpClientBuilder.build()) // Set the custom OkHttpClient
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        tournamentApi = retrofit.create(UploadTeamsApi.class);
+
         Bundle args = getArguments();
 
-        if (args !=null){
+        if (args != null) {
             tournamentName.setText(args.getString("tournament_name"));
             tournamentGroup.setText(args.getString("tournament_group"));
             Glide.with(this)
@@ -86,43 +117,36 @@ public class LoadTeamsFragment extends Fragment {
 
         return currentView;
     }
+
     private View.OnClickListener uploadTeamsButtonListener() {
         return view -> {
             String link = linkEditText.getText().toString().trim();
             if (!link.isEmpty()) {
                 // Show progress dialog
                 showProgressDialog("Uploading Teams...");
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BACKEND_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                UploadTeamsApi tournamentApi = retrofit.create(UploadTeamsApi.class);
-                Call<String> stringCall = tournamentApi.uploadPlayerInfo(link, tournamentDto.getTournamentId() + "");
-                stringCall.enqueue(new Callback<>() {
+                Callback<ResponseBody> callback = new Callback<>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        // Hide progress dialog
-//                        hideProgressDialog();
-                        String body = response.body();
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        hideProgressDialog();
+                        assert response.body() != null;
+                        ResponseBody body = response.body();
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), "TEAMS SUCCESSFULLY ADDED", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Teams successfully added", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getContext(), body, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
                         }
                         linkEditText.setText("");
                         uploadTeamsButton.setEnabled(false);
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        // Hide progress dialog
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         hideProgressDialog();
+                        Toast.makeText(getContext(), "Vse Ploho", Toast.LENGTH_SHORT).show();
 
-                        t.printStackTrace();
                     }
-                });
+                };
+                tournamentApi.uploadPlayerInfo(link, tournamentDto.getTournamentId()).enqueue(callback);
             }
         };
     }

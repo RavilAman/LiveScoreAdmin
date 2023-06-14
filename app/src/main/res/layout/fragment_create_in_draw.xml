@@ -121,7 +121,7 @@
         android:background="@drawable/rounded_button_selector"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:text="@string/update"
+        android:text="@string/create_in_draw"
         android:textColor="@color/black"
         android:textStyle="bold" />
 
