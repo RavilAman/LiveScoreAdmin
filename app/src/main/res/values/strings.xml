@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">LiveScore</string>
-    <string name="app_label">Live Score</string>
+    <string name="app_name">LiveScoreAdmin</string>
+    <string name="app_label">Live Score Admin</string>
     <string name="welcome_label">WELCOME</string>
     <string name="scores_page">Scores</string>
     <string name="favourites_page">Favourites</string>
@@ -62,6 +62,11 @@
     <string name="player_statistics_yellow_cards">YELLOW CARDS</string>
     <string name="player_statistic_total">Total</string>
     <string name="player_statistic_per_game">Per Game</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="invalid_password_or_login">Invalid password or username</string>
+    <string name="username">Username</string>
     <string name="team_name">Team name</string>
     <string name="choose_team">Choose team to make transfer</string>
     <string name="choose_tournament">Choose tournament</string>
