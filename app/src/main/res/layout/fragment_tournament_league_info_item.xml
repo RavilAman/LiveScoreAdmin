@@ -64,24 +64,47 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        style="@style/AppTheme.TabLayout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/page_header"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_tournament_info"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:theme="@style/AppTheme.TabLayout"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/app_orange" />
+        android:layout_marginTop="30dp"
+        android:text="@string/tournament_table"
+        android:textColor="@color/app_orange"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
-    <!-- ViewPager -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <ScrollView
+        android:id="@+id/table_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tab_layout" />
+        android:layout_height="370dp"
+        android:layout_below="@id/page_header"
+        android:layout_marginTop="40dp">
 
+        <TableLayout
+            android:id="@+id/table_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+        </TableLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/finish_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/table_scroll_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/rounded_button_selector"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:text="@string/finish_tournament"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
 </RelativeLayout>

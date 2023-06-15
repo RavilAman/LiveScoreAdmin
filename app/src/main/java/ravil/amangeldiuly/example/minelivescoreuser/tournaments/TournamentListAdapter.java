@@ -1,6 +1,9 @@
 package ravil.amangeldiuly.example.minelivescoreuser.tournaments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +42,20 @@ public class TournamentListAdapter extends RecyclerView.Adapter<TournamentListVi
     @Override
     public void onBindViewHolder(@NonNull TournamentListViewHolder holder, int position) {
         TournamentDto currentTournament = tournaments.get(position);
+        if (currentTournament.getTournamentStatus().equals("FINISHED")) {
+            // Set the desired appearance for FINISHED status
+            ColorMatrix colorMatrix = new ColorMatrix();
+            colorMatrix.setSaturation(0);
+            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+            holder.tournamentLogo.setColorFilter(filter);
+            holder.tournamentName.setTextColor(Color.parseColor("#FF757575"));
+            holder.tournamentLocation.setTextColor(Color.parseColor("#FF757575"));
+        } else {
+            holder.tournamentLogo.setColorFilter(null);
+            holder.tournamentName.setTextColor(Color.parseColor("#FFFFFFFF"));
+            holder.tournamentLocation.setTextColor(Color.parseColor("#FFFFFFFF"));
+        }
+
         holder.tournamentName.setText(currentTournament.getTournamentName());
         holder.tournamentLocation.setText(currentTournament.getTournamentLocation());
         holder.tournamentDto = currentTournament;

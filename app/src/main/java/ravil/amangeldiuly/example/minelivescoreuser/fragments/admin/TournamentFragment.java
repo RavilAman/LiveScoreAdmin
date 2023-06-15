@@ -3,7 +3,6 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -143,6 +142,19 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
     @Override
     public void onItemClick(TournamentDto tournament) {
+        if (tournament.getTournamentType().equals("CUP")){
+            TournamentCupInfoFragment tournamentCupInfoFragment = new TournamentCupInfoFragment(fragmentManager,tournament);
 
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, tournamentCupInfoFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }else {
+            TournamentLeagueInfoFragment tournamentLeagueInfoFragment = new TournamentLeagueInfoFragment(fragmentManager,tournament);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, tournamentLeagueInfoFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
     }
 }

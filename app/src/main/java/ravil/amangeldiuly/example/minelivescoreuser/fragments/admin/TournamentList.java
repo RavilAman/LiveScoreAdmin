@@ -140,7 +140,7 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
         if (pageHeaderText == R.string.create_in_draw) {
             tournamentApi.findAllCupByUser().enqueue(callback);
         } else {
-            tournamentApi.findAllByUser().enqueue(callback);
+            tournamentApi.findAllNotFinishedByUser().enqueue(callback);
         }
 
 

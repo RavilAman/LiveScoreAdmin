@@ -152,4 +152,22 @@ public class GroupInfoDTO {
     public void setLive(boolean live) {
         isLive = live;
     }
+
+    @Override
+    public String toString() {
+        return "GroupInfoDTO{" +
+                "position=" + position +
+                ", teamId=" + teamId +
+                ", teamName='" + teamName + '\'' +
+                ", teamLogo='" + teamLogo + '\'' +
+                ", gamePlayed=" + gamePlayed +
+                ", winCount=" + winCount +
+                ", drawCount=" + drawCount +
+                ", loseCount=" + loseCount +
+                ", goalCount=" + goalCount +
+                ", goalMissed=" + goalMissed +
+                ", points=" + points +
+                ", isLive=" + isLive +
+                '}';
+    }
 }

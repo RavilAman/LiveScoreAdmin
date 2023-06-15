@@ -57,4 +57,15 @@ public class GroupInfoListDTO {
     public void setSortedByPointTeams(List<GroupInfoDTO> sortedByPointTeams) {
         this.sortedByPointTeams = sortedByPointTeams;
     }
+
+    @Override
+    public String toString() {
+        return "GroupInfoListDTO{" +
+                "tournamentName='" + tournamentName + '\'' +
+                ", tournamentLogo='" + tournamentLogo + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", groupId=" + groupId +
+                ", sortedByPointTeams=" + sortedByPointTeams +
+                '}';
+    }
 }

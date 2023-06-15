@@ -7,6 +7,7 @@ public class UrlConstants {
     public static final String TOURNAMENTS = "tournament";
     public static final String TOURNAMENT_BY_NAME = "tournament/tournament_name";
     public static final String TOURNAMENTS_BY_USER = "tournament/user?userId=1"; //TODO change endpoint via token
+    public static final String TOURNAMENTS_NOT_FINISHED_BY_USER = "tournament/user/no_finished?userId=1"; //TODO change endpoint via token
     public static final String TOURNAMENTS_CUP_BY_USER = "tournament/user/cup?userId=1"; //TODO change endpoint via token
 
 
@@ -40,4 +41,8 @@ public class UrlConstants {
 
     public static final String CREATE_IN_DRAW = "group_info/create_draw_in_cup";
     public static final String AFTER_DRAW = "group_info/tables_after_draw/{tournamentId}";
+    public static final String ALL_GROUP_BY_POINT = "group_info/all_group/points";
+    public static final String FINISH_LEAGUE = "group_info/finish_league/{tournament_id}";
+    public static final String GROUP_TABS = "group/group_tabs";
+
 }
