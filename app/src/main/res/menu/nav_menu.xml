@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_tournament"
+            android:icon="@drawable/cup_icon"
+            android:title="@string/tournaments" />
+        <item
+            android:id="@+id/nav_transfer"
+            android:icon="@drawable/transfers"
+            android:title="@string/transfers" />
+        <item
+            android:id="@+id/nav_upload_teams"
+            android:icon="@drawable/upload_team"
+            android:title="@string/upload_team" />
+        <item
+            android:id="@+id/nav_create_in_draw"
+            android:icon="@drawable/create_in_draw"
+            android:title="@string/create_in_draw" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/log_out"
+                android:icon="@drawable/log_out"
+                android:title="@string/log_out"/>
+        </menu>
+    </item>
+</menu>

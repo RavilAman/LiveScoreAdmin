@@ -8,4 +8,25 @@
     <style name="RadioButtonNoIndicator" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:button">@null</item>
     </style>
+    <style name="NavigationViewStyle" parent="Widget.Design.NavigationView">
+        <item name="android:textColor">@drawable/bottom_nav_item_color_selector</item>
+    </style>
+    <style name="SpinnerTheme" parent="Theme.AppCompat">
+        <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+    </style>
+
+    <style name="SpinnerStyle" parent="@android:style/Widget.Spinner">
+        <item name="android:background">@drawable/spinner_background</item>
+    </style>
+
+    <style name="AppTheme.TabLayout" parent="Theme.MaterialComponents">
+        <item name="tabBackground">"@android:color/transparent"</item>
+        <item name="tabIndicatorColor">@color/app_orange</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/white</item>
+    </style>
+
+    <style name="AppTheme.TabLayout2" parent="Widget.Design.TabLayout">
+        <item name="textAllCaps">false</item> <!-- Disable uppercase transformation -->
+    </style>
 </resources>

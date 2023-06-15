@@ -3,6 +3,8 @@
     <dimen name="weekdays_text">15sp</dimen>
     <dimen name="calendar_days_text">16sp</dimen>
     <dimen name="tournament_logo_size">50dp</dimen>
+    <dimen name="create_in_draw_team_size">30dp</dimen>
+    <dimen name="team_logo_size">40dp</dimen>
     <dimen name="favourites_button_size">50dp</dimen>
     <dimen name="tournament_name_text_size">14sp</dimen>
     <dimen name="tournament_location_text_size">10sp</dimen>

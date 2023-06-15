@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginBottom="14dp"
+    android:background="@drawable/tournament_card_background"
+    android:orientation="horizontal"
+    android:padding="25dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/card_player_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/player_number"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/tournament_name_text_size" />
+
+        <TextView
+            android:id="@+id/card_player_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/player_name"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/tournament_name_text_size" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:id="@+id/list_teams"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/custom_spinner_background"
+            android:popupBackground="@drawable/custom_spinner_dropdown_background"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
