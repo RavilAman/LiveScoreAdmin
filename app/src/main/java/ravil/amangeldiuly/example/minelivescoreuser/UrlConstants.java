@@ -6,6 +6,7 @@ public class UrlConstants {
 
     public static final String TOURNAMENTS = "tournament";
     public static final String TOURNAMENT_BY_NAME = "tournament/tournament_name";
+    public static final String TOURNAMENT_BY_USER = "tournament/user/no_finished";
 
     public static final String TOPIC_NAME = "notification/topic/tournament/{tournamentId}";
     public static final String CREATE_SUBSCRIPTION = "notification/subscriptions/{topic}";
@@ -13,6 +14,10 @@ public class UrlConstants {
 
     public static final String GAME_BY_DATE = "game/new/date";
     public static final String GAME_LIVE = "game/live";
+
+    public static final String GROUP_BY_TOURNAMENT = "group/tournament";
+
+    public static final String TEAM_BY_GROUP_AND_TOURNAMENT = "team/group";
 
     public static final String PROTOCOL_BY_ID = "protocol/{id}";
 

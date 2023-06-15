@@ -56,4 +56,9 @@
     <string name="sign_in">Sign in</string>
     <string name="invalid_password_or_login">Invalid password or username</string>
     <string name="username">Username</string>
+    <string name="create_game">Create game</string>
+    <string name="tournament">Tournament</string>
+    <string name="home">Home</string>
+    <string name="away">Away</string>
+    <string name="date_and_time">Date and time</string>
 </resources>

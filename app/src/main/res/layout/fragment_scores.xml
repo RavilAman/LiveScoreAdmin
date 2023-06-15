@@ -21,8 +21,8 @@
             android:layout_height="30dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/inter_medium"
             android:background="@drawable/no_padding_button"
+            android:fontFamily="@font/inter_medium"
             android:text="@string/live"
             android:textColor="@color/black"
             android:textSize="@dimen/scores_page_button_size"
@@ -265,11 +265,27 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/fragment_scores_create_game_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendar_holder_linear_layout"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/create_game_button_background"
+        android:fontFamily="@font/inter_medium"
+        android:gravity="center"
+        android:text="+"
+        android:textColor="@color/text_grey"
+        android:textSize="40sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/calendar_holder_linear_layout" />
+        android:layout_below="@id/fragment_scores_create_game_button"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/no_games_text_view"
