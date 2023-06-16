@@ -132,7 +132,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/create_game_teams_spinner_holder"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/inter_medium"
         android:gravity="center"
         android:text="@string/date_and_time"
@@ -141,10 +141,10 @@
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/create_game_date_time_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/create_game_date_and_time_label"
-        android:layout_marginTop="5dp"
         android:gravity="center">
 
         <NumberPicker
@@ -168,8 +168,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:layout_marginTop="5dp"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text=":"
@@ -178,17 +176,29 @@
             android:textStyle="bold" />
 
         <NumberPicker
-            android:id="@+id/create_hour_year_picker"
+            android:id="@+id/create_game_hour_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.Picker" />
 
         <NumberPicker
-            android:id="@+id/create_minute_year_picker"
+            android:id="@+id/create_game_minute_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.Picker" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/create_game_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/create_game_date_time_holder"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/create"
+        android:textColor="@color/white" />
 
 </RelativeLayout>
