@@ -1,6 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.activities;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.SharedPreferencesConstants.AUTH_TOKEN;
+import static ravil.amangeldiuly.example.minelivescoreuser.SharedPreferencesConstants.BEARER_PREFIX;
 import static ravil.amangeldiuly.example.minelivescoreuser.SharedPreferencesConstants.LOGGED_IN;
 import static ravil.amangeldiuly.example.minelivescoreuser.SharedPreferencesConstants.TRUE;
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.SharedPreferencesUtil.getValue;
@@ -125,7 +126,7 @@ public class AuthActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     SharedPreferencesUtil.putValue(context,
                             AUTH_TOKEN,
-                            response.body().getToken());
+                            BEARER_PREFIX + response.body().getToken());
 
                     SharedPreferencesUtil.putValue(context,
                             LOGGED_IN,

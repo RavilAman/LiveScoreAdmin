@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.android.gms.common.util.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -39,6 +40,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TeamApi;
@@ -91,6 +93,7 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private SaveGameDTO saveGameDTO;
     private DateTimeFormatter formatter;
 
+    private RequestHandler requestHandler;
     private Retrofit retrofit;
     private TournamentApi tournamentApi;
     private GroupApi groupApi;
@@ -104,9 +107,9 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        initializeViews();
         initializeRetrofit();
         initializeObjects();
-        initializeViews();
         setListeners();
         setFullWidth();
         resolveDates();
@@ -114,14 +117,8 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(UrlConstants.BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        requestHandler = new RequestHandler(context);
+        retrofit = requestHandler.getRetrofit();
         tournamentApi = retrofit.create(TournamentApi.class);
         groupApi = retrofit.create(GroupApi.class);
         teamApi = retrofit.create(TeamApi.class);
