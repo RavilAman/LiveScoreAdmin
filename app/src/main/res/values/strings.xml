@@ -89,4 +89,24 @@
     <string name="stage_not_started_yet">Stage not started yet</string>
     <string name="finish_stage">Finish stage</string>
     <string name="next_stage">NS</string>
+    <string name="create_game">Create game</string>
+    <string name="tournament">Tournament</string>
+    <string name="home">Home</string>
+    <string name="away">Away</string>
+    <string name="date_and_time">Date and time</string>
+    <string name="create">Create</string>
+    <string-array name="months">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>Aug</item>
+        <item>Sept</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
 </resources>

@@ -38,7 +38,9 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.calendar.CalendarAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.dialog.CreateGameDialog;
 import ravil.amangeldiuly.example.minelivescoreuser.groups.GroupAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.NewGameDTO;
@@ -48,7 +50,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener {
+public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, ActionInterfaces.DialogCloseListener {
 
     private Context context;
 
@@ -65,6 +67,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private ImageButton previousMonthButton;
     private ImageButton nextMonthButton;
     private Button liveButton;
+    private Button createGameButton;
     private Drawable liveButtonBackground;
 
     private Retrofit retrofit;
@@ -109,6 +112,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         centerRadioButton = currentView.findViewById(R.id.scores_page_radio_button_3);
         liveButton = currentView.findViewById(R.id.scores_page_live_button);
         liveButtonBackground = liveButton.getBackground();
+        createGameButton = currentView.findViewById(R.id.fragment_scores_create_game_button);
     }
 
     private void initializeRetrofit() {
@@ -137,6 +141,14 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         nextMonthButton.setOnClickListener(nextMonthButtonOnClick());
         radioGroup.setOnCheckedChangeListener(radioGroupListener());
         liveButton.setOnClickListener(liveButtonListener());
+        createGameButton.setOnClickListener(createGameListener());
+    }
+
+    private View.OnClickListener createGameListener() {
+        return view -> {
+            CreateGameDialog createGameDialog = new CreateGameDialog(this);
+            createGameDialog.show(getParentFragmentManager(), "");
+        };
     }
 
     private RadioGroup.OnCheckedChangeListener radioGroupListener() {
@@ -331,5 +343,14 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         lastSelectedDate = selectedDate;
         centerRadioButton.setChecked(true);
         setGamesForSelectedDate(formatDateForRequest(selectedDate));
+    }
+
+    @Override
+    public void onDialogClosed(LocalDate toDate) {
+        getDays(toDate);
+        setDaysToButtons();
+        lastSelectedDate = toDate;
+        centerRadioButton.setChecked(true);
+        setGamesForSelectedDate(formatDateForRequest(toDate));
     }
 }

@@ -1,10 +1,14 @@
 package ravil.amangeldiuly.example.minelivescoreuser.web.responses;
 
+
 public class TeamDTO {
 
     private Long teamId;
     private String teamName;
     private String teamLogo;
+
+    public TeamDTO() {
+    }
 
     public TeamDTO(Long teamId, String teamName, String teamLogo) {
         this.teamId = teamId;

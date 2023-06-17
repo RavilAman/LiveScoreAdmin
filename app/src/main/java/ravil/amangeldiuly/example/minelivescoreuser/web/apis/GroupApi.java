@@ -10,7 +10,9 @@ import retrofit2.http.Query;
 
 public interface GroupApi {
 
+    @GET(UrlConstants.GROUP_BY_TOURNAMENT)
+    Call<List<GroupDTO>> findGroupsByTournament(@Query("tournamentId") int tournamentId);
+
     @GET(UrlConstants.GROUP_TABS)
     Call<List<GroupDTO>> getGroupTabs(@Query("tournamentId") Long tournamentId);
-
 }

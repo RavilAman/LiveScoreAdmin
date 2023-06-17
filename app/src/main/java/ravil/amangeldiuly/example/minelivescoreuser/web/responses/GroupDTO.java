@@ -1,5 +1,6 @@
 package ravil.amangeldiuly.example.minelivescoreuser.web.responses;
 
+
 public class GroupDTO {
 
     private Long groupId;
@@ -7,6 +8,9 @@ public class GroupDTO {
     private String groupName;
     private boolean isPlayoff;
     private boolean currentStage;
+
+    public GroupDTO() {
+    }
 
     public GroupDTO(Long groupId, String tournamentName, String groupName, boolean isPlayoff, boolean currentStage) {
         this.groupId = groupId;
