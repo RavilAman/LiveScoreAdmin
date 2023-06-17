@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,11 +31,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupApi;
@@ -72,10 +75,9 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private NumberPicker minutePicker;
     private Button createGameButton;
 
+    private ActionInterfaces.DialogCloseListener dialogCloseListener;
     private TournamentDto selectedTournament;
     private GroupDTO selectedGroup;
-    private TeamDTO selectedHomeTeam;
-    private TeamDTO selectedAwayTeam;
     private List<TournamentDto> tournaments;
     private List<String> tournamentNames;
     private List<GroupDTO> groups;
@@ -94,6 +96,10 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private GroupApi groupApi;
     private TeamApi teamApi;
     private GameApi gameApi;
+
+    public CreateGameDialog(ActionInterfaces.DialogCloseListener dialogCloseListener) {
+        this.dialogCloseListener = dialogCloseListener;
+    }
 
     @NonNull
     @Override
@@ -155,7 +161,6 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
                 + "-" + day
                 + " " + hours[hourPicker.getValue()]
                 + ":" + minutes[minutePicker.getValue()];
-        System.out.println("Дату сформировал такую: " + dateTimeString);
         return LocalDateTime.parse(dateTimeString, formatter);
     }
 
@@ -163,39 +168,11 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
         return (picker, oldVal, newVal) -> {
             // todo: то же самое на year сделать
             LocalDateTime currentDate = getCurrentDateFromPicker(days[0]);
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(currentDate);
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             Month currentMonth = currentDate.getMonth();
-            System.out.println(currentMonth);
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-            System.out.println("############################################");
             int currentYear = currentDate.getYear();
-            System.out.println(currentYear);
-            System.out.println("############################################");
-
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
             int monthLength = currentMonth.length(Year.of(currentYear).isLeap());
-            System.out.println(monthLength);
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-
-            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             days = new String[monthLength];
-            Arrays.stream(days).forEach(System.out::println);
-            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             fillArrayData(days, monthLength, true);
-            Arrays.stream(days).forEach(System.out::println);
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
-            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-            System.out.println(currentDate.getDayOfMonth());
-            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
             daysPickerSetup(monthLength, currentDate.getDayOfMonth());
         };
     }
@@ -237,18 +214,15 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
 
     private void daysPickerSetup(int currentMonthDayCount, int currentDay) {
         dayPicker.setMinValue(1);
-        System.out.println("*********************************************");
-        System.out.println(currentMonthDayCount);
         dayPicker.setMaxValue(currentMonthDayCount);
-        System.out.println("*********************************************");
         dayPicker.setDisplayedValues(days);
         dayPicker.setValue(currentDay);
         dayPicker.setWrapSelectorWheel(false);
     }
 
     private void yearPickerSetup(int currentYear) {
-        yearPicker.setMinValue(currentYear - 5);
-        yearPicker.setMaxValue(currentYear + 5);
+        yearPicker.setMinValue(currentYear - 1);
+        yearPicker.setMaxValue(currentYear + 1);
         yearPicker.setValue(currentYear);
         yearPicker.setWrapSelectorWheel(false);
     }
@@ -382,15 +356,6 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
         if (parent.getId() == R.id.create_game_group_spinner) {
             selectedGroup = identifyGroup(groupSpinner.getSelectedItem().toString());
             getTeams();
-            saveGameDTO.setGroupId(selectedGroup.getGroupId());
-        }
-        if (parent.getId() == R.id.create_game_home_teams_spinner) {
-            selectedHomeTeam = identifyTeam(homeTeamsSpinner.getSelectedItem().toString());
-            saveGameDTO.setTeam1Id(selectedHomeTeam.getTeamId());
-        }
-        if (parent.getId() == R.id.create_game_away_teams_spinner) {
-            selectedAwayTeam = identifyTeam(awayTeamsSpinner.getSelectedItem().toString());
-            saveGameDTO.setTeam2Id(selectedAwayTeam.getTeamId());
         }
     }
 
@@ -399,32 +364,40 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     }
 
     private void createGame() {
-        saveGameDTO.setDateTime(getCurrentDateFromPicker(
-                days[dayPicker.getValue() - 1])
-        );
-        System.out.println("@#$%^#$%^#$%^$%");
-        System.out.println(saveGameDTO);
-        System.out.println("@#$%^#$%^#$%^$%");
+        LocalDateTime matchTime = getCurrentDateFromPicker(days[dayPicker.getValue() - 1]);
+        saveGameDTO.setGroupId(selectedGroup.getGroupId());
+        Object selectedHomeTeam = homeTeamsSpinner.getSelectedItem();
+        Object selectedAwayTeam = awayTeamsSpinner.getSelectedItem();
+        saveGameDTO.setDateTime(matchTime);
+        if (selectedAwayTeam == null || selectedHomeTeam == null) {
+            Toast.makeText(context, "You should select all fields!", Toast.LENGTH_SHORT).show();
+        } else {
+            saveGameDTO.setTeam1Id(
+                    identifyTeam(selectedHomeTeam.toString()).getTeamId()
+            );
+            saveGameDTO.setTeam2Id(
+                    identifyTeam(selectedAwayTeam.toString()).getTeamId()
+            );
+            if (Objects.equals(saveGameDTO.getTeam1Id(), saveGameDTO.getTeam2Id())) {
+                Toast.makeText(context, "Same teams selected!", Toast.LENGTH_SHORT).show();
+            } else {
+                gameApi.postGame(saveGameDTO).enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Toast.makeText(context, "Game created successfully!", Toast.LENGTH_SHORT).show();
+                            dialogCloseListener.onDialogClosed(matchTime.toLocalDate());
+                            dismiss();
+                        }
+                    }
 
-        gameApi.postGame(saveGameDTO).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    System.out.println("!!Success!!");
-                } else if (response.code() == 403) {
-                    System.out.println("!!403!!");
-                }
-                else {
-                    System.out.println("!!failure!!, " + response.code());
-                }
+                    @Override
+                    public void onFailure(Call<GameDTO> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
             }
-
-            @Override
-            public void onFailure(Call<GameDTO> call, Throwable t) {
-                System.out.println("!!error!!");
-                t.printStackTrace();
-            }
-        });
+        }
     }
 
     private TournamentDto identifyTournament(String tournamentName) {

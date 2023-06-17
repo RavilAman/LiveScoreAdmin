@@ -40,6 +40,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.calendar.CalendarAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.dialog.CreateGameDialog;
 import ravil.amangeldiuly.example.minelivescoreuser.groups.GroupAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.NewGameDTO;
@@ -49,7 +50,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener {
+public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, ActionInterfaces.DialogCloseListener {
 
     private Context context;
 
@@ -145,7 +146,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     private View.OnClickListener createGameListener() {
         return view -> {
-            CreateGameDialog createGameDialog = new CreateGameDialog();
+            CreateGameDialog createGameDialog = new CreateGameDialog(this);
             createGameDialog.show(getParentFragmentManager(), "");
         };
     }
@@ -342,5 +343,14 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
         lastSelectedDate = selectedDate;
         centerRadioButton.setChecked(true);
         setGamesForSelectedDate(formatDateForRequest(selectedDate));
+    }
+
+    @Override
+    public void onDialogClosed(LocalDate toDate) {
+        getDays(toDate);
+        setDaysToButtons();
+        lastSelectedDate = toDate;
+        centerRadioButton.setChecked(true);
+        setGamesForSelectedDate(formatDateForRequest(toDate));
     }
 }
