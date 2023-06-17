@@ -1,11 +1,10 @@
-package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
+package ravil.amangeldiuly.example.minelivescoreuser.tournaments;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,30 +13,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupInfoApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.FinishStageDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamDTO;
@@ -48,78 +48,57 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TournamentLeagueInfoFragment extends Fragment {
+public class TournamentPlayOfTabFragment extends Fragment {
 
-    private List<GroupInfoListDTO> groupInfoListDTO;
+    private static final String ARG_TAB_NAME = "arg_tab_name";
+    private TextView groupName;
+    private GroupDTO groupDTO;
+    private ScrollView scrollView;
     private TableLayout tableLayout;
-    private ImageButton imageButton;
-    private ShapeableImageView tournamentLogo;
-    private FragmentManager fragmentManager;
-    private TextView tournamentName;
-    private TextView tournamentGroup;
+    private GroupInfoApi groupInfoApi;
     private TournamentDto tournamentDto;
     private Retrofit retrofit;
-    private GroupInfoApi groupInfoApi;
+    private TextView notStarted;
     private Button finishButton;
-    private TeamDTO winnerTeam;
-    private TextView pageHeader;
+    private List<GroupInfoListDTO> groupInfoListDTO;
+    private TournamentGroupStageFragment.OnFinishButtonClickListener onFinishButtonClickListener;
+    private FinishStageDTO finishStageDTO;
+    private List<Long> selectedTeams;
+    private int teamSize;
+    private int selectedTeamCount = 0;
+    private OnNotifySetData onNotifySetOnChanged;
 
-    public TournamentLeagueInfoFragment(FragmentManager fragmentManager, TournamentDto tournamentDto) {
-        this.fragmentManager = fragmentManager;
+    public TournamentPlayOfTabFragment(GroupDTO groupDTO, TournamentDto tournamentDto, TournamentGroupStageFragment.OnFinishButtonClickListener listener) {
         this.tournamentDto = tournamentDto;
+        this.groupDTO = groupDTO;
+        this.onFinishButtonClickListener = listener;
     }
 
-    @Nullable
+    @SuppressLint("MissingInflatedId")
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View currentView = inflater.inflate(R.layout.fragment_tournament_league_info_item, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_tournament_play_of_item, container, false);
 
-        tableLayout = currentView.findViewById(R.id.table_layout);
-        imageButton = currentView.findViewById(R.id.fragment_back_button);
-        imageButton.setOnClickListener(backButtonListener());
-        tournamentGroup = currentView.findViewById(R.id.fragment_tournament_group);
-        tournamentName = currentView.findViewById(R.id.fragment_tournament_name);
-        tournamentLogo = currentView.findViewById(R.id.fragment_tournament_logo);
-        finishButton = currentView.findViewById(R.id.finish_button);
-        pageHeader = currentView.findViewById(R.id.page_header);
-        if (tournamentDto.getTournamentStatus().equals("FINISHED")){
-            finishButton.setEnabled(false);
-        }
+        scrollView = view.findViewById(R.id.table_scroll_view);
+        tableLayout = view.findViewById(R.id.table_layout);
+        notStarted = view.findViewById(R.id.not_started);
+        finishButton = view.findViewById(R.id.finish_button);
 
-        finishButton.setOnClickListener(finishTournament());
-
-        initializeTournamentNameLogo();
-
+        selectedTeams = new ArrayList<>();
         initializeRetrofit();
         getTable();
 
-        return currentView;
-    }
-
-    private void initializeTournamentNameLogo() {
-        if (tournamentDto.getTournamentStatus().equals("FINISHED")) {
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.setSaturation(0);
-            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
-            tournamentLogo.setColorFilter(filter);
-            tournamentName.setTextColor(Color.parseColor("#FF757575"));
-            tournamentGroup.setTextColor(Color.parseColor("#FF757575"));
-            pageHeader.setTextColor(Color.parseColor("#FF757575"));
-        } else {
-            tournamentLogo.setColorFilter(null);
-            tournamentName.setTextColor(Color.parseColor("#FFFFFFFF"));
-            tournamentGroup.setTextColor(Color.parseColor("#FFFFFFFF"));
+        if (!groupDTO.isCurrentStage()) {
+            finishButton.setEnabled(false);
         }
 
-        tournamentName.setText(tournamentDto.getTournamentName());
-        tournamentGroup.setText(tournamentDto.getTournamentLocation());
-        Glide.with(this)
-                .load(tournamentDto.getTournamentLogo())
-                .into(tournamentLogo);
+        finishButton.setOnClickListener(finishStage());
+
+        return view;
     }
 
     @NonNull
-    private View.OnClickListener finishTournament() {
+    private View.OnClickListener finishStage() {
         return v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             View customView = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
@@ -128,9 +107,18 @@ public class TournamentLeagueInfoFragment extends Fragment {
             Button negativeButton = customView.findViewById(R.id.negative_button);
             AlertDialog dialog = builder.create();
 
-            // Set click listeners for the buttons
             positiveButton.setOnClickListener(v1 -> {
-                groupInfoApi.finishLeague(tournamentDto.getTournamentId()).enqueue(finishLeague());
+                if (selectedTeams.isEmpty()) {
+                    Toast.makeText(getContext(), "Select teams to finish stage", Toast.LENGTH_SHORT).show();
+                } else {
+                    finishStageDTO = new FinishStageDTO(selectedTeams, groupDTO.getGroupId());
+                    groupInfoApi
+                            .finishStage(tournamentDto.getTournamentId(), finishStageDTO)
+                            .enqueue(finishStageCallback());
+
+
+                }
+
                 dialog.dismiss();
             });
 
@@ -138,25 +126,30 @@ public class TournamentLeagueInfoFragment extends Fragment {
                 dialog.dismiss();
             });
 
+
             dialog.show();
         };
     }
 
     @NonNull
-    private Callback<TeamDTO> finishLeague() {
+    private Callback<List<TeamDTO>> finishStageCallback() {
         return new Callback<>() {
             @Override
-            public void onResponse(Call<TeamDTO> call, Response<TeamDTO> response) {
+            public void onResponse(Call<List<TeamDTO>> call, Response<List<TeamDTO>> response) {
                 if (response.isSuccessful()) {
-                    winnerTeam = response.body();
-                    assert winnerTeam != null;
-                    Log.i("",winnerTeam.toString());
                     finishButton.setEnabled(false);
+                    if (onNotifySetOnChanged !=null){
+                        onNotifySetOnChanged.onNotifySetData();
+                    }
+
+                    if (onFinishButtonClickListener != null) {
+                        onFinishButtonClickListener.onFinishButtonClicked();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<TeamDTO> call, Throwable t) {
+            public void onFailure(Call<List<TeamDTO>> call, Throwable t) {
 
             }
         };
@@ -168,11 +161,19 @@ public class TournamentLeagueInfoFragment extends Fragment {
             public void onResponse(Call<List<GroupInfoListDTO>> call, Response<List<GroupInfoListDTO>> response) {
                 if (response.isSuccessful()) {
                     groupInfoListDTO = response.body();
-                    assert groupInfoListDTO != null;
                     List<GroupInfoDTO> sortedByPointTeams = groupInfoListDTO.get(0).getSortedByPointTeams();
-                    createTableHeaderRow();
-
-                    fillTable(sortedByPointTeams);
+                    if (sortedByPointTeams.isEmpty()) {
+                        finishButton.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.GONE);
+                        notStarted.setVisibility(View.VISIBLE);
+                    } else {
+                        createTableHeaderRow();
+                        fillTable(sortedByPointTeams);
+                        finishButton.setVisibility(View.VISIBLE);
+                        scrollView.setVisibility(View.VISIBLE);
+                        notStarted.setVisibility(View.GONE);
+                        teamSize = sortedByPointTeams.size()/2;
+                    }
                 }
             }
 
@@ -181,43 +182,7 @@ public class TournamentLeagueInfoFragment extends Fragment {
 
             }
         };
-        groupInfoApi.allGroupsByPoint(tournamentDto.getTournamentId()).enqueue(callback);
-    }
-
-    private View.OnClickListener backButtonListener() {
-        return view -> {
-
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentManager.popBackStack();
-            fragmentTransaction.commit();
-        };
-    }
-
-
-    private void fillTable(List<GroupInfoDTO> sortedByPointTeams) {
-        for (GroupInfoDTO rowData : sortedByPointTeams) {
-            TableRow row = createTableRow();
-            TextView positionText = createTextView(rowData.getPosition() + "", 1);
-            LinearLayout team = createTeamTextView(rowData.getTeamLogo(), rowData.getTeamName(), 4);
-            TextView playedMatchText = createTextView(rowData.getGamePlayed() + "", 1);
-            TextView winText = createTextView(rowData.getWinCount() + "", 1);
-            TextView drawText = createTextView(rowData.getDrawCount() + "", 1);
-            TextView loseText = createTextView(rowData.getLoseCount() + "", 1);
-            Integer diff = rowData.getGoalCount() - rowData.getGoalMissed();
-            TextView goalsScoredText = createTextView(diff + "", 1);
-            TextView pointsText = createTextView(rowData.getPoints() + "", 1);
-
-            row.addView(positionText);
-            row.addView(team);
-            row.addView(playedMatchText);
-            row.addView(winText);
-            row.addView(drawText);
-            row.addView(loseText);
-            row.addView(goalsScoredText);
-            row.addView(pointsText);
-
-            tableLayout.addView(row);
-        }
+        groupInfoApi.groupInfoByGroup(groupDTO.getGroupId(), tournamentDto.getTournamentId()).enqueue(callback);
     }
 
     private void initializeRetrofit() {
@@ -232,25 +197,74 @@ public class TournamentLeagueInfoFragment extends Fragment {
         groupInfoApi = retrofit.create(GroupInfoApi.class);
     }
 
+    private void fillTable(List<GroupInfoDTO> sortedByPointTeams) {
+        for (int i = 0; i < sortedByPointTeams.size(); i++) {
+            GroupInfoDTO rowData = sortedByPointTeams.get(i);
+            TableRow row = createTableRow();
+
+            TextView positionText = createTextView(rowData.getPosition() + "", 1);
+            LinearLayout team = createTeamTextView(rowData.getTeamLogo(), rowData.getTeamName(), 4);
+            TextView playedMatchText = createTextView(rowData.getGamePlayed() + "", 1);
+
+            Integer diff = rowData.getGoalCount() - rowData.getGoalMissed();
+            TextView goalsScoredText = createTextView(diff + "", 1);
+            CheckBox checkBox = getCheckBox(1);
+
+            checkBox.setTag(i);
+
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                int rowPosition = (int) buttonView.getTag();
+                if (isChecked) {
+                    if (selectedTeamCount < teamSize) {
+                        selectedTeams.add(sortedByPointTeams.get(rowPosition).getTeamId());
+                        selectedTeamCount++;
+                    } else {
+                        checkBox.setChecked(false);
+                    }
+                    Log.i("","SELECTED TEAMS"+selectedTeams.toString());
+                } else {
+                    selectedTeams.remove(sortedByPointTeams.get(rowPosition).getTeamId());
+                    selectedTeamCount--;
+                    Log.i("","SELECTED TEAMS"+selectedTeams.toString());
+
+                }
+            });
+
+            row.addView(positionText);
+            row.addView(team);
+            row.addView(playedMatchText);
+            row.addView(goalsScoredText);
+            row.addView(checkBox);
+
+            tableLayout.addView(row);
+        }
+    }
+
+    @NonNull
+    private CheckBox getCheckBox(int weight) {
+        CheckBox checkBox = new CheckBox(requireContext());
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
+        checkBox.setChecked(false);
+        checkBox.setButtonTintList(getResources().getColorStateList(R.color.app_orange));
+//        checkBox.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.checkbox_border));
+        return checkBox;
+    }
+
     private void createTableHeaderRow() {
         TableRow headerRow = createTableRow();
         TextView positionHeader = createHeaderTextView(getString(R.string.Num), 1);
         TextView teamHeader = createHeaderTextView(getString(R.string.team), 4);
         TextView playedMatchHeader = createHeaderTextView(getString(R.string.played_match_count), 1);
-        TextView winHeader = createHeaderTextView(getString(R.string.win_count), 1);
-        TextView drawHeader = createHeaderTextView(getString(R.string.draw_count), 1);
-        TextView loseHeader = createHeaderTextView(getString(R.string.lose_count), 1);
         TextView goalDifferenceHeader = createHeaderTextView(getString(R.string.goal_difference), 1);
-        TextView pointsHeader = createHeaderTextView(getString(R.string.points), 1);
+        TextView nextStage = createHeaderTextView(getString(R.string.next_stage), 1);
+
 
         headerRow.addView(positionHeader);
         headerRow.addView(teamHeader);
         headerRow.addView(playedMatchHeader);
-        headerRow.addView(winHeader);
-        headerRow.addView(drawHeader);
-        headerRow.addView(loseHeader);
+
         headerRow.addView(goalDifferenceHeader);
-        headerRow.addView(pointsHeader);
+        headerRow.addView(nextStage);
         tableLayout.addView(headerRow);
     }
 
@@ -287,6 +301,7 @@ public class TournamentLeagueInfoFragment extends Fragment {
 
     private LinearLayout createTeamTextView(String teamLogoUrl, String teamName, int weight) {
         LinearLayout layout = new LinearLayout(requireContext());
+        layout.setPadding(0, 15, 0, 0);
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
         layout.setLayoutParams(layoutParams);
         layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -313,13 +328,20 @@ public class TournamentLeagueInfoFragment extends Fragment {
         return layout;
     }
 
-    private  String getTeamName(String teamName) {
+    private String getTeamName(String teamName) {
         if (teamName.contains(" ") && teamName.length() > 11) {
             String[] s = teamName.split(" ");
-            return s[0] + " " + s[1].charAt(0)+".";
+            return s[0] + " " + s[1].charAt(0) + ".";
         } else if (!teamName.contains(" ") && teamName.length() >= 11) {
             return teamName.substring(0, 10) + "...";
         }
         return teamName;
+    }
+    public void setOnFinishButtonClickListener(OnNotifySetData listener) {
+        onNotifySetOnChanged = listener;
+    }
+
+    public interface OnNotifySetData {
+        void onNotifySetData();
     }
 }

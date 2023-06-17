@@ -4,6 +4,7 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AfterDrawDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.FinishStageDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoListDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveGroupInfoDTO;
@@ -25,6 +26,15 @@ public interface GroupInfoApi {
     @GET(UrlConstants.ALL_GROUP_BY_POINT)
     Call<List<GroupInfoListDTO>> allGroupsByPoint(@Query("tournamentId") Long tournamentId);
 
+    @GET(UrlConstants.GROUP_INFO_BY_GROUP)
+    Call<List<GroupInfoListDTO>> groupInfoByGroup(@Query("groupId") Long groupId, @Query("tournamentId") Long tournamentId);
+
     @POST(UrlConstants.FINISH_LEAGUE)
     Call<TeamDTO> finishLeague(@Path("tournament_id") Long tournamentId);
+
+    @POST(UrlConstants.FINISH_GROUP_STAGE)
+    Call<List<TeamDTO>> finishGroupStage(@Path("tournament_id") Long tournamentId);
+
+    @POST(UrlConstants.FINISH_STAGE)
+    Call<List<TeamDTO>> finishStage(@Path("tournament_id") Long tournamentId, @Body FinishStageDTO finishStageDTO);
 }

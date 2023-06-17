@@ -3,6 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,9 @@ import java.util.List;
 import java.util.Objects;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentGroupStageFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentInfoAdapter;
-import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentInfoTabFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentPlayOfTabFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupDTO;
@@ -38,7 +40,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TournamentCupInfoFragment extends Fragment {
+public class TournamentCupInfoFragment extends Fragment implements TabLayout.OnTabSelectedListener,TournamentGroupStageFragment.OnFinishButtonClickListener {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -71,6 +73,7 @@ public class TournamentCupInfoFragment extends Fragment {
         tournamentLogo = currentView.findViewById(R.id.fragment_tournament_logo);
 
         initializeRetrofit();
+        tabLayout.addOnTabSelectedListener(this);
 
 
         tournamentName.setText(tournamentDto.getTournamentName());
@@ -141,13 +144,43 @@ public class TournamentCupInfoFragment extends Fragment {
             if (group.isCurrentStage()) {
                 currentStage = i;
             }
-            adapter.addFragment(TournamentInfoTabFragment.newInstance(group), group);
+            if (group.getGroupId() == null){
+                adapter.addFragment(new TournamentGroupStageFragment(group, tournamentDto,this),group);
+            }else {
+                adapter.addFragment(new TournamentPlayOfTabFragment(group,tournamentDto,this), group);
+            }
 
         }
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         Objects.requireNonNull(tabLayout.getTabAt(currentStage)).select();
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        int position = tab.getPosition();
+        GroupDTO clickedGroup = tabList.get(position);
+        Log.i("",clickedGroup.toString());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onFinishButtonClicked() {
+        int currentTabPosition = viewPager.getCurrentItem();
+
+        if (currentTabPosition < tabList.size() - 1) {
+            viewPager.setCurrentItem(currentTabPosition + 1);
+        }
     }
 
 }

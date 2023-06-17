@@ -85,4 +85,8 @@
     <string name="are_you_sure">Are you sure you want to finish the tournament?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <string name="finish_group_stage">Finish group stage</string>
+    <string name="stage_not_started_yet">Stage not started yet</string>
+    <string name="finish_stage">Finish stage</string>
+    <string name="next_stage">NS</string>
 </resources>

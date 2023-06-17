@@ -55,4 +55,15 @@ public class GroupDTO {
     public void setCurrentStage(boolean currentStage) {
         this.currentStage = currentStage;
     }
+
+    @Override
+    public String toString() {
+        return "GroupDTO{" +
+                "groupId=" + groupId +
+                ", tournamentName='" + tournamentName + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", isPlayoff=" + isPlayoff +
+                ", currentStage=" + currentStage +
+                '}';
+    }
 }
