@@ -21,13 +21,22 @@ public class UrlConstants {
     public static final String POST_GAME = "game";
 
     public static final String GROUP_BY_TOURNAMENT = "group/tournament";
+    public static final String GROUP_TABS = "group/group_tabs";
 
     public static final String TEAM_BY_GROUP_AND_TOURNAMENT = "team/group";
+    public static final String TEAMS_BY_TOURNAMENT = "team/group/{tournamentId}";
 
     public static final String PROTOCOL_BY_ID = "protocol/{id}";
 
     public static final String GROUP_STATISTIC = "group_info/group/points";
     public static final String STATISTICS_FOR_TOURNAMENT = "group_info/all_group/points";
+    public static final String CREATE_IN_DRAW = "group_info/create_draw_in_cup";
+    public static final String AFTER_DRAW = "group_info/tables_after_draw/{tournamentId}";
+    public static final String ALL_GROUP_BY_POINT = "group_info/all_group/points";
+    public static final String FINISH_LEAGUE = "group_info/finish_league/{tournament_id}";
+    public static final String GROUP_INFO_BY_GROUP = "group_info/group/points";
+    public static final String FINISH_GROUP_STAGE = "group_info/finish_group_stage/{tournament_id}";
+    public static final String FINISH_STAGE = "group_info/finish_stage/{tournament_id}";
 
     public static final String PLAYER_STATISTIC_ALL = "player_statistics/top_five/{tournament_id}";
     public static final String PLAYER_STATISTIC_ASSISTS = "player_statistics/assists";
@@ -43,14 +52,7 @@ public class UrlConstants {
     public static final String AUTH_LOGIN = "auth/login";
 
     public static final String UPLOAD_PLAYER_INFO = "info/upload/player_info/link";
-    public static final String TEAMS_BY_TOURNAMENT = "team/group/{tournamentId}";
+
     public static final String PLAYER_BY_TEAM = "player/team/{team_id}";
     public static final String UPDATE_PLAYER_TEAM = "player/update/players";
-
-    public static final String CREATE_IN_DRAW = "group_info/create_draw_in_cup";
-    public static final String AFTER_DRAW = "group_info/tables_after_draw/{tournamentId}";
-    public static final String ALL_GROUP_BY_POINT = "group_info/all_group/points";
-    public static final String FINISH_LEAGUE = "group_info/finish_league/{tournament_id}";
-    public static final String GROUP_TABS = "group/group_tabs";
-
 }
