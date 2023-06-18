@@ -145,10 +145,47 @@
         android:layout_marginTop="2dp"
         android:background="@color/divider_dark_grey" />
 
+    <LinearLayout
+        android:id="@+id/game_activity_manipulate_game"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/wave"
+        android:backgroundTint="@color/grey"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/game_activity_start_match"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/start"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/game_activity_auto_defeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/inter_medium"
+            android:padding="10dp"
+            android:text="@string/automatic_defeat"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/game_activity_events_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/divider"
+        android:layout_below="@id/game_activity_manipulate_game"
         android:layout_marginTop="10dp" />
 </RelativeLayout>

@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,35 +19,35 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreuser.ColorConstants;
-import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreuser.events.EventAdapter;
-import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GameDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.ProtocolDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GameActivity extends AppCompatActivity {
 
     private Context context;
 
+    private RequestHandler requestHandler;
     private Retrofit retrofit;
     private ProtocolApi protocolApi;
+    private GameApi gameApi;
 
+    private LinearLayout manipulateGame;
     private ImageButton backButton;
     private ImageView team1Logo;
     private ImageView team2Logo;
@@ -54,16 +56,19 @@ public class GameActivity extends AppCompatActivity {
     private TextView gameScore;
     private TextView fullTime;
     private RecyclerView eventsRecyclerView;
+    private Button startGame;
+    private Button autoDefeat;
 
     private List<EventDTO> events;
+    private ProtocolDTO protocolDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        initializeRetrofit();
         initializeViews();
+        initializeRetrofit();
         initializeObjects();
         setOnClickListeners();
 
@@ -73,15 +78,10 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(UrlConstants.BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        requestHandler = new RequestHandler(context);
+        retrofit = requestHandler.getRetrofit();
         protocolApi = retrofit.create(ProtocolApi.class);
+        gameApi = retrofit.create(GameApi.class);
     }
 
     private void initializeViews() {
@@ -94,6 +94,9 @@ public class GameActivity extends AppCompatActivity {
         gameScore = findViewById(R.id.game_activity_game_score);
         fullTime = findViewById(R.id.game_activity_full_time);
         eventsRecyclerView = findViewById(R.id.game_activity_events_recycler_view);
+        manipulateGame = findViewById(R.id.game_activity_manipulate_game);
+        startGame = findViewById(R.id.game_activity_start_match);
+        autoDefeat = findViewById(R.id.game_activity_auto_defeat);
     }
 
     private void initializeObjects() {
@@ -101,11 +104,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setData(long protocolId) {
-        protocolApi.getProtocolById(protocolId).enqueue(new Callback<ProtocolDTO>() {
+        protocolApi.getProtocolById(protocolId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ProtocolDTO> call, Response<ProtocolDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ProtocolDTO protocolDTO = response.body();
+                    protocolDTO = response.body();
                     Glide.with(context)
                             .load(protocolDTO.getTeam1Logo())
                             .into(team1Logo);
@@ -116,18 +119,13 @@ public class GameActivity extends AppCompatActivity {
                     team2Name.setText(protocolDTO.getTeam2());
                     switch (protocolDTO.getGameState()) {
                         case NOT_STARTED:
-                            String time = protocolDTO.getDateAndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-                            fullTime.setText("");
-                            gameScore.setText(time);
+                            fillDataGameStateNotStarted();
                             break;
                         case STARTED:
-                            fullTime.setText(R.string.live);
-                            fullTime.setTextColor(Color.parseColor(APP_ORANGE));
-                            gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
+                            fillDataGameStateStart();
                             break;
                         case ENDED:
-                            fullTime.setText(R.string.full_time);
-                            gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
+                            fillDataGameStateEnded();
                             break;
                     }
                     events = response.body().getEvents();
@@ -142,8 +140,56 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    private void fillDataGameStateNotStarted() {
+        manipulateGame.setVisibility(View.VISIBLE);
+        String time = protocolDTO.getDateAndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        fullTime.setText("");
+        gameScore.setText(time);
+    }
+
+    private void fillDataGameStateStart() {
+        fullTime.setText(R.string.live);
+        fullTime.setTextColor(Color.parseColor(APP_ORANGE));
+        gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
+    }
+
+    private void fillDataGameStateEnded() {
+        fullTime.setText(R.string.full_time);
+        gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
+    }
+
     private void setOnClickListeners() {
         backButton.setOnClickListener(backButtonOnClickListener());
+        startGame.setOnClickListener(startGameListener());
+        autoDefeat.setOnClickListener(autoDefeatListener());
+    }
+
+    private View.OnClickListener startGameListener() {
+        return view -> startGame();
+    }
+
+    private View.OnClickListener autoDefeatListener() {
+        return view -> {
+
+        };
+    }
+
+    private void startGame() {
+        gameApi.startGame(protocolDTO.getGameId().intValue()).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
+                if (response.isSuccessful()) {
+                    protocolDTO.setGameState(GameState.STARTED);
+                    manipulateGame.setVisibility(View.GONE);
+                    fillDataGameStateStart();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GameDTO> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private View.OnClickListener backButtonOnClickListener() {

@@ -95,6 +95,7 @@
     <string name="away">Away</string>
     <string name="date_and_time">Date and time</string>
     <string name="create">Create</string>
+    <string name="automatic_defeat">Automatic defeat</string>
     <string-array name="months">
         <item>Jan</item>
         <item>Feb</item>

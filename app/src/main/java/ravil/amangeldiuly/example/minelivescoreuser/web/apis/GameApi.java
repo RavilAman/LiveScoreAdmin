@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface GameApi {
@@ -22,4 +23,7 @@ public interface GameApi {
 
     @POST(UrlConstants.POST_GAME)
     Call<GameDTO> postGame(@Body SaveGameDTO saveGameDTO);
+
+    @POST(UrlConstants.START_GAME)
+    Call<GameDTO> startGame(@Path("id") int id);
 }
