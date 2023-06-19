@@ -138,7 +138,7 @@ public class TournamentPlayOfTabFragment extends Fragment {
             public void onResponse(Call<List<TeamDTO>> call, Response<List<TeamDTO>> response) {
                 if (response.isSuccessful()) {
                     finishButton.setEnabled(false);
-                    if (onNotifySetOnChanged !=null){
+                    if (onNotifySetOnChanged != null) {
                         onNotifySetOnChanged.onNotifySetData();
                     }
 
@@ -172,7 +172,7 @@ public class TournamentPlayOfTabFragment extends Fragment {
                         finishButton.setVisibility(View.VISIBLE);
                         scrollView.setVisibility(View.VISIBLE);
                         notStarted.setVisibility(View.GONE);
-                        teamSize = sortedByPointTeams.size()/2;
+                        teamSize = sortedByPointTeams.size() / 2;
                     }
                 }
             }
@@ -221,11 +221,11 @@ public class TournamentPlayOfTabFragment extends Fragment {
                     } else {
                         checkBox.setChecked(false);
                     }
-                    Log.i("","SELECTED TEAMS"+selectedTeams.toString());
+                    Log.i("", "SELECTED TEAMS" + selectedTeams.toString());
                 } else {
                     selectedTeams.remove(sortedByPointTeams.get(rowPosition).getTeamId());
                     selectedTeamCount--;
-                    Log.i("","SELECTED TEAMS"+selectedTeams.toString());
+                    Log.i("", "SELECTED TEAMS" + selectedTeams.toString());
 
                 }
             });
@@ -243,7 +243,10 @@ public class TournamentPlayOfTabFragment extends Fragment {
     @NonNull
     private CheckBox getCheckBox(int weight) {
         CheckBox checkBox = new CheckBox(requireContext());
-        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
+//        checkBox.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+        TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
+//        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        checkBox.setLayoutParams(layoutParams);
         checkBox.setChecked(false);
         checkBox.setButtonTintList(getResources().getColorStateList(R.color.app_orange));
 //        checkBox.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.checkbox_border));
@@ -258,13 +261,12 @@ public class TournamentPlayOfTabFragment extends Fragment {
         TextView goalDifferenceHeader = createHeaderTextView(getString(R.string.goal_difference), 1);
         TextView nextStage = createHeaderTextView(getString(R.string.next_stage), 1);
 
-
         headerRow.addView(positionHeader);
         headerRow.addView(teamHeader);
         headerRow.addView(playedMatchHeader);
-
         headerRow.addView(goalDifferenceHeader);
         headerRow.addView(nextStage);
+
         tableLayout.addView(headerRow);
     }
 
@@ -301,7 +303,7 @@ public class TournamentPlayOfTabFragment extends Fragment {
 
     private LinearLayout createTeamTextView(String teamLogoUrl, String teamName, int weight) {
         LinearLayout layout = new LinearLayout(requireContext());
-        layout.setPadding(0, 15, 0, 0);
+        layout.setPadding(15, 15, 15, 15);
         TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, weight);
         layout.setLayoutParams(layoutParams);
         layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -337,6 +339,7 @@ public class TournamentPlayOfTabFragment extends Fragment {
         }
         return teamName;
     }
+
     public void setOnFinishButtonClickListener(OnNotifySetData listener) {
         onNotifySetOnChanged = listener;
     }

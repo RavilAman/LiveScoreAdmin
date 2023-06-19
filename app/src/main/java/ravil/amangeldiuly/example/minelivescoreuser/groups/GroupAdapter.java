@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,18 +16,23 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.games.GameAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GameDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.NewGameDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
 
     private Context context;
     private RecyclerView.RecycledViewPool recycledViewPool;
     private List<NewGameDTO> gamesInGroups;
+    private FragmentManager fragmentManager;
 
-    public GroupAdapter(Context context, List<NewGameDTO> gamesInGroups) {
+    public GroupAdapter(Context context, List<NewGameDTO> gamesInGroups,FragmentManager fragmentManager) {
         recycledViewPool = new RecyclerView.RecycledViewPool();
         this.gamesInGroups = gamesInGroups;
         this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -41,11 +47,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         holder.context = context;
         NewGameDTO newGameDTO = gamesInGroups.get(position);
+        holder.tournament =  new TournamentDto(newGameDTO.getTournamentId(),newGameDTO.getTournamentName(),newGameDTO.getTournamentLogo(),newGameDTO.getTournamentType(),newGameDTO.getTournamentLocation(),newGameDTO.getTournamentStatus());
         Glide.with(context)
                 .load(newGameDTO.getTournamentLogo())
                 .into(holder.tournamentLogo);
         holder.tournamentName.setText(newGameDTO.getTournamentName());
         holder.groupName.setText(newGameDTO.getGroupName());
+        holder.fragmentManager = fragmentManager;
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 holder.gamesRecyclerView.getContext(),

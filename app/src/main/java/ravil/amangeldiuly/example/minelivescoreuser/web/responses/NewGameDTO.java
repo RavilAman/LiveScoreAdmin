@@ -7,20 +7,14 @@ public class NewGameDTO {
     private Long tournamentId;
     private String tournamentName;
     private String tournamentLogo;
+    private String tournamentType;
+    private String tournamentLocation;
+    private String tournamentStatus;
     private String groupName;
     private Long groupId;
     private List<GameDTO> games;
 
     public NewGameDTO() {
-    }
-
-    public NewGameDTO(Long tournamentId, String tournamentName, String tournamentLogo, String groupName, Long groupId, List<GameDTO> games) {
-        this.tournamentId = tournamentId;
-        this.tournamentName = tournamentName;
-        this.tournamentLogo = tournamentLogo;
-        this.groupName = groupName;
-        this.groupId = groupId;
-        this.games = games;
     }
 
     public Long getTournamentId() {
@@ -69,6 +63,30 @@ public class NewGameDTO {
 
     public void setGames(List<GameDTO> games) {
         this.games = games;
+    }
+
+    public String getTournamentType() {
+        return tournamentType;
+    }
+
+    public void setTournamentType(String tournamentType) {
+        this.tournamentType = tournamentType;
+    }
+
+    public String getTournamentLocation() {
+        return tournamentLocation;
+    }
+
+    public void setTournamentLocation(String tournamentLocation) {
+        this.tournamentLocation = tournamentLocation;
+    }
+
+    public String getTournamentStatus() {
+        return tournamentStatus;
+    }
+
+    public void setTournamentStatus(String tournamentStatus) {
+        this.tournamentStatus = tournamentStatus;
     }
 
     @Override

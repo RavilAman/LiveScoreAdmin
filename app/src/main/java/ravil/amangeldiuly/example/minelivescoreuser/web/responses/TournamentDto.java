@@ -11,6 +11,8 @@ public class TournamentDto {
 
     public TournamentDto() {}
 
+
+
     public TournamentDto(Long tournamentId, String tournamentName, String tournamentLogo, String tournamentType, String tournamentLocation, String tournamentStatus) {
         this.tournamentId = tournamentId;
         this.tournamentName = tournamentName;
