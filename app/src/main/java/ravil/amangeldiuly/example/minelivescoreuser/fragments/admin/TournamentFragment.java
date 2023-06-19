@@ -3,12 +3,16 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
@@ -28,6 +33,8 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.tournament.CreateTournamentDialogFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.slider.SliderAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
@@ -50,6 +57,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     private MenuItem selectedDrawerMenuItem;
     private MenuItem selectedBottomMenuItem;
     private BottomNavigationView bottomNavigationView;
+    private Button addButton;
 
     public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem, MenuItem selectedBottomMenuItem, BottomNavigationView bottomNavigationView) {
         this.selectedDrawerMenuItem = menuItem;
@@ -68,6 +76,9 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
         tournamentsRecyclerView = currentView.findViewById(R.id.list_tournaments);
         imageButton = currentView.findViewById(R.id.game_back_button);
+        addButton = currentView.findViewById(R.id.add_button);
+
+        addButton.setOnClickListener(this::showCreateTournamentDialog);
 
         fragmentManager = requireActivity().getSupportFragmentManager();
 
@@ -77,6 +88,51 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
 
         return currentView;
+    }
+
+    private void showCreateTournamentDialog(View anchorView) {
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.create_tournament_pop_up, null);
+
+        // Create the popup window
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+
+        ViewPager sliderViewPager = popupView.findViewById(R.id.viewPager);
+        List<Integer> imageList = new ArrayList<>();
+        imageList.add(R.drawable.cup);
+        imageList.add(R.drawable.league);
+        SliderAdapter sliderAdapter = new SliderAdapter(getContext(), imageList);
+        sliderViewPager.setAdapter(sliderAdapter);
+
+        // Set onClickListener for previous button
+        ImageButton btnPrevious = popupView.findViewById(R.id.btnPrevious);
+        btnPrevious.setOnClickListener(v -> {
+            int currentPosition = sliderViewPager.getCurrentItem();
+            if (currentPosition > 0) {
+                sliderViewPager.setCurrentItem(currentPosition - 1);
+            } else {
+                Toast.makeText(getContext(), "Already at the first image", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set onClickListener for next button
+        ImageButton btnNext = popupView.findViewById(R.id.btnNext);
+        btnNext.setOnClickListener(v -> {
+            int currentPosition = sliderViewPager.getCurrentItem();
+            int totalItems = sliderAdapter.getCount();
+            if (currentPosition < totalItems - 1) {
+                sliderViewPager.setCurrentItem(currentPosition + 1);
+            } else {
+                Toast.makeText(getContext(), "Already at the last image", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Show the popup window at the center of the anchor view
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
     }
 
     private View.OnClickListener backButtonListener() {
