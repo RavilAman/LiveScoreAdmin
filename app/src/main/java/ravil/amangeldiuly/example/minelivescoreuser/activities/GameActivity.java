@@ -48,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
     private GameApi gameApi;
 
     private LinearLayout manipulateGame;
+    private LinearLayout manipulateEvent;
     private ImageButton backButton;
     private ImageView team1Logo;
     private ImageView team2Logo;
@@ -97,6 +98,7 @@ public class GameActivity extends AppCompatActivity {
         manipulateGame = findViewById(R.id.game_activity_manipulate_game);
         startGame = findViewById(R.id.game_activity_start_match);
         autoDefeat = findViewById(R.id.game_activity_auto_defeat);
+        manipulateEvent = findViewById(R.id.game_activity_manipulate_event_layout);
     }
 
     private void initializeObjects() {
@@ -142,6 +144,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void fillDataGameStateNotStarted() {
         manipulateGame.setVisibility(View.VISIBLE);
+        manipulateEvent.setVisibility(View.GONE);
         String time = protocolDTO.getDateAndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
         fullTime.setText("");
         gameScore.setText(time);

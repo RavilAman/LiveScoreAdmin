@@ -13,5 +13,6 @@
     <dimen name="game_team_logo_size">25dp</dimen>
     <dimen name="game_activity_tournament_logo_size">65dp</dimen>
     <dimen name="event_item_text_size">12sp</dimen>
+    <dimen name="event_manipulator_text_size">13sp</dimen>
     <dimen name="statistics_label_sizes">12sp</dimen>
 </resources>
