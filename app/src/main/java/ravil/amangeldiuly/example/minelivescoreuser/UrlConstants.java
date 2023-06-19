@@ -56,4 +56,8 @@ public class UrlConstants {
 
     public static final String PLAYER_BY_TEAM = "player/team/{team_id}";
     public static final String UPDATE_PLAYER_TEAM = "player/update/players";
+
+    public static final String POST_EVENT = "event";
+    public static final String POST_GOAL = "event/save_goal";
+    public static final String POST_PENALTY = "event/save_penalty";
 }

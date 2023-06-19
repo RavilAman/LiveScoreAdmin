@@ -136,10 +136,8 @@
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:background="@color/rainbow1"
-            android:scaleType="fitXY"
             android:src="@drawable/ic_baseline_edit_24"
-            app:tint="@color/white" />
+            android:background="@android:color/transparent"/>
 
     </LinearLayout>
 

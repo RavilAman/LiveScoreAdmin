@@ -4,7 +4,6 @@ import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.players.PlayerAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
-import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PLayerApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.UpdatePlayerRequestDTO;
@@ -51,7 +50,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     private Retrofit retrofit;
     private RecyclerView playerRecyclerView;
     private List<PlayerDTO> playerList;
-    private PLayerApi pLayerApi;
+    private PlayerApi pLayerApi;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
     private ImageView teamLogo;
@@ -106,7 +105,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
                 updateRequests.add(request);
             }
 
-            PLayerApi playerApi = retrofit.create(PLayerApi.class);
+            PlayerApi playerApi = retrofit.create(PlayerApi.class);
 
             Call<List<PlayerDTO>> call = playerApi.updatePlayers(updateRequests);
             call.enqueue(new Callback<>() {
@@ -174,7 +173,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
                 .baseUrl(BACKEND_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-        pLayerApi = retrofit.create(PLayerApi.class);
+        pLayerApi = retrofit.create(PlayerApi.class);
     }
 
     private View.OnClickListener backButtonListener() {

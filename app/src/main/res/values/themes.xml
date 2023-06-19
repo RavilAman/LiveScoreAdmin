@@ -14,18 +14,15 @@
     <style name="SpinnerTheme" parent="Theme.AppCompat">
         <item name="android:spinnerStyle">@style/SpinnerStyle</item>
     </style>
-
     <style name="SpinnerStyle" parent="@android:style/Widget.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
     </style>
-
     <style name="AppTheme.TabLayout" parent="Theme.MaterialComponents">
         <item name="tabBackground">"@android:color/transparent"</item>
         <item name="tabIndicatorColor">@color/app_orange</item>
         <item name="tabSelectedTextColor">@color/white</item>
         <item name="tabTextColor">@color/white</item>
     </style>
-
     <style name="AppTheme.TabLayout2" parent="Widget.Design.TabLayout">
         <item name="textAllCaps">false</item> <!-- Disable uppercase transformation -->
     </style>
@@ -40,5 +37,10 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+    <style name="CustomCheckBox" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/app_orange</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 </resources>

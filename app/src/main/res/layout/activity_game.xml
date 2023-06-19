@@ -160,9 +160,11 @@
             android:id="@+id/game_activity_start_match"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/squircle_button"
+            android:backgroundTint="@color/app_orange"
             android:fontFamily="@font/inter_medium"
             android:text="@string/start"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -171,9 +173,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/squircle_button"
+            android:backgroundTint="@color/app_orange"
             android:fontFamily="@font/inter_medium"
             android:padding="10dp"
+            android:textAllCaps="false"
             android:text="@string/automatic_defeat"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -201,6 +205,7 @@
             android:layout_height="wrap_content">
 
             <Button
+                android:id="@+id/game_activity_goal_team_1"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginStart="35dp"
@@ -218,6 +223,7 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/game_activity_goal_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginEnd="35dp"
@@ -237,6 +243,7 @@
             android:layout_marginTop="10dp">
 
             <Button
+                android:id="@+id/game_activity_yellow_card_team_1"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginStart="35dp"
@@ -254,6 +261,7 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/game_activity_yellow_card_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginEnd="35dp"
@@ -273,6 +281,7 @@
             android:layout_marginTop="10dp">
 
             <Button
+                android:id="@+id/game_activity_red_card_team_1"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginStart="35dp"
@@ -290,6 +299,7 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/game_activity_red_card_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginEnd="35dp"
@@ -309,6 +319,7 @@
             android:layout_marginTop="10dp">
 
             <Button
+                android:id="@+id/game_activity_penalty_team_1"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginStart="35dp"
@@ -326,6 +337,7 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/game_activity_penalty_team_2"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginEnd="35dp"
@@ -340,6 +352,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/game_activity_end_match"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_gravity="center"

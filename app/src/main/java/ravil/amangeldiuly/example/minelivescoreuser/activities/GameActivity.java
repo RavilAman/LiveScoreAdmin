@@ -3,6 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreuser.activities;
 import static ravil.amangeldiuly.example.minelivescoreuser.ColorConstants.APP_ORANGE;
 import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.gameScoreIntoDashFormat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,9 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.dialog.ManipulateEventDialog;
+import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreuser.events.EventAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.EventApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
@@ -59,6 +63,15 @@ public class GameActivity extends AppCompatActivity {
     private RecyclerView eventsRecyclerView;
     private Button startGame;
     private Button autoDefeat;
+    private Button goalEventTeam1;
+    private Button yellowCardEventTeam1;
+    private Button redCardEventTeam1;
+    private Button goalEventTeam2;
+    private Button yellowCardEventTeam2;
+    private Button redCardEventTeam2;
+    private Button penaltyEventTeam1;
+    private Button penaltyEventTeam2;
+    private Button endMatch;
 
     private List<EventDTO> events;
     private ProtocolDTO protocolDTO;
@@ -99,6 +112,15 @@ public class GameActivity extends AppCompatActivity {
         startGame = findViewById(R.id.game_activity_start_match);
         autoDefeat = findViewById(R.id.game_activity_auto_defeat);
         manipulateEvent = findViewById(R.id.game_activity_manipulate_event_layout);
+        goalEventTeam1 = findViewById(R.id.game_activity_goal_team_1);
+        yellowCardEventTeam1 = findViewById(R.id.game_activity_yellow_card_team_1);
+        redCardEventTeam1 = findViewById(R.id.game_activity_red_card_team_1);
+        penaltyEventTeam1 = findViewById(R.id.game_activity_penalty_team_1);
+        goalEventTeam2 = findViewById(R.id.game_activity_goal_team_2);
+        yellowCardEventTeam2 = findViewById(R.id.game_activity_yellow_card_team_2);
+        redCardEventTeam2 = findViewById(R.id.game_activity_red_card_team_2);
+        penaltyEventTeam2 = findViewById(R.id.game_activity_penalty_team_2);
+        endMatch = findViewById(R.id.game_activity_end_match);
     }
 
     private void initializeObjects() {
@@ -151,6 +173,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void fillDataGameStateStart() {
+        manipulateEvent.setVisibility(View.VISIBLE);
         fullTime.setText(R.string.live);
         fullTime.setTextColor(Color.parseColor(APP_ORANGE));
         gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
@@ -165,6 +188,95 @@ public class GameActivity extends AppCompatActivity {
         backButton.setOnClickListener(backButtonOnClickListener());
         startGame.setOnClickListener(startGameListener());
         autoDefeat.setOnClickListener(autoDefeatListener());
+        goalEventTeam1.setOnClickListener(createEventListener());
+        yellowCardEventTeam1.setOnClickListener(createEventListener());
+        redCardEventTeam1.setOnClickListener(createEventListener());
+        penaltyEventTeam1.setOnClickListener(createEventListener());
+        goalEventTeam2.setOnClickListener(createEventListener());
+        yellowCardEventTeam2.setOnClickListener(createEventListener());
+        redCardEventTeam2.setOnClickListener(createEventListener());
+        penaltyEventTeam2.setOnClickListener(createEventListener());
+        endMatch.setOnClickListener(createEventListener());
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    private View.OnClickListener createEventListener() {
+        return view -> {
+            switch (view.getId()) {
+                case R.id.game_activity_goal_team_1:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam1Logo(),
+                            protocolDTO.getTeam1Id(),
+                            EventEnum.GOAL
+                    );
+                    break;
+                case R.id.game_activity_yellow_card_team_1:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam1Logo(),
+                            protocolDTO.getTeam1Id(),
+                            EventEnum.YELLOW_CARD
+                    );
+                    break;
+                case R.id.game_activity_red_card_team_1:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam1Logo(),
+                            protocolDTO.getTeam1Id(),
+                            EventEnum.RED_CARD
+                    );
+                    break;
+                case R.id.game_activity_penalty_team_1:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam1Logo(),
+                            protocolDTO.getTeam1Id(),
+                            EventEnum.PENALTY
+                    );
+                    break;
+                case R.id.game_activity_goal_team_2:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam2Logo(),
+                            protocolDTO.getTeam2Id(),
+                            EventEnum.GOAL
+                    );
+                    break;
+                case R.id.game_activity_yellow_card_team_2:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam2Logo(),
+                            protocolDTO.getTeam2Id(),
+                            EventEnum.YELLOW_CARD
+                    );
+                    break;
+                case R.id.game_activity_red_card_team_2:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam2Logo(),
+                            protocolDTO.getTeam2Id(),
+                            EventEnum.RED_CARD
+                    );
+                    break;
+                case R.id.game_activity_penalty_team_2:
+                    openCreateEventDialog(
+                            protocolDTO.getProtocolId(),
+                            protocolDTO.getTeam2Logo(),
+                            protocolDTO.getTeam2Id(),
+                            EventEnum.PENALTY
+                    );
+                    break;
+                case R.id.game_activity_end_match:
+                    break;
+            }
+        };
+    }
+
+    private void openCreateEventDialog(long protocolId, String teamLogo, long teamId, EventEnum eventEnum) {
+        ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId,
+                teamLogo, teamId, eventEnum);
+        manipulateEventDialog.show(getSupportFragmentManager(), "");
     }
 
     private View.OnClickListener startGameListener() {
@@ -173,7 +285,6 @@ public class GameActivity extends AppCompatActivity {
 
     private View.OnClickListener autoDefeatListener() {
         return view -> {
-
         };
     }
 
