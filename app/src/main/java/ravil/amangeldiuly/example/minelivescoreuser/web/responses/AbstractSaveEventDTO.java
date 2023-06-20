@@ -39,4 +39,13 @@ public class AbstractSaveEventDTO {
     public void setMinute(Integer minute) {
         this.minute = minute;
     }
+
+    @Override
+    public String toString() {
+        return "AbstractSaveEventDTO{" +
+                "protocolId=" + protocolId +
+                ", playerId=" + playerId +
+                ", minute=" + minute +
+                '}';
+    }
 }

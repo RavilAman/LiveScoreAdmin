@@ -19,4 +19,11 @@ public class SaveGoalEventDTO extends AbstractSaveEventDTO {
     public void setAssistId(Long assistId) {
         this.assistId = assistId;
     }
+
+    @Override
+    public String toString() {
+        return "SaveGoalEventDTO{" +
+                "assistId=" + assistId +
+                '}';
+    }
 }

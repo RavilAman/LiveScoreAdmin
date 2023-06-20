@@ -4,7 +4,11 @@ import java.time.LocalDate;
 
 public interface ActionInterfaces {
 
-    interface DialogCloseListener {
+    interface CreateGameDialogCloseListener {
         void onDialogClosed(LocalDate toDate);
+    }
+
+    interface ManipulateEventDialogCloseListener {
+        void onDialogClosed(String message);
     }
 }

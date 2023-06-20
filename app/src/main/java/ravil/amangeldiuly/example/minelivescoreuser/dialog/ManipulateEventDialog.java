@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,16 +20,26 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.bumptech.glide.Glide;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.EventApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveEventDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveGoalEventDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +59,8 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private NumberPicker minutePicker;
     private Button saveButton;
 
+    private ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener;
+    private LocalDateTime gameDateTime;
     private long protocolId;
     private String teamLogoLink;
     private long teamId;
@@ -56,17 +69,20 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private ArrayAdapter<String> assistAdapter;
     private List<PlayerDTO> players;
     private List<String> playerFullNames;
+    String closeMessage;
 
     private RequestHandler requestHandler;
     private Retrofit retrofit;
     private EventApi eventApi;
     private PlayerApi playerApi;
 
-    public ManipulateEventDialog(long protocolId, String teamLogoLink, long teamId, EventEnum eventEnum) {
+    public ManipulateEventDialog(long protocolId, String teamLogoLink, long teamId, EventEnum eventEnum,
+                                 ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener) {
         this.protocolId = protocolId;
         this.teamLogoLink = teamLogoLink;
         this.teamId = teamId;
         this.eventEnum = eventEnum;
+        this.manipulateEventDialogCloseListener = manipulateEventDialogCloseListener;
     }
 
     @NonNull
@@ -76,14 +92,15 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         initializeRetrofit();
         initializeObjects();
         setFullWidth();
-
         setData();
+        setListeners();
         return manipulateEventDialog;
     }
 
     private void initializeObjects() {
         players = new ArrayList<>();
         playerFullNames = new ArrayList<>();
+        closeMessage = "error!";
     }
 
     private void initializeViews() {
@@ -117,6 +134,96 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         playerApi = retrofit.create(PlayerApi.class);
     }
 
+    private void setListeners() {
+        saveButton.setOnClickListener(saveButtonListener());
+    }
+
+    private View.OnClickListener saveButtonListener() {
+        return view -> saveEvent();
+    }
+
+    private void saveEvent() {
+        PlayerDTO player = identifyPlayer(authorSpinner.getSelectedItem().toString());
+        if (player != null) {
+            if (eventEnum.equals(EventEnum.GOAL)) {
+                SaveGoalEventDTO saveGoalEventDTO = new SaveGoalEventDTO();
+                saveGoalEventDTO.setProtocolId(protocolId);
+                saveGoalEventDTO.setPlayerId(player.getPlayerId());
+                saveGoalEventDTO.setMinute(minutePicker.getValue());
+                PlayerDTO assistPlayer = identifyPlayer(assistSpinner.getSelectedItem().toString());
+                if (assistPlayer != null) {
+                    saveGoalEventDTO.setAssistId(assistPlayer.getPlayerId());
+                }
+                if (!Objects.equals(saveGoalEventDTO.getPlayerId(), saveGoalEventDTO.getAssistId())) {
+                    eventApi.postGoalEvent(saveGoalEventDTO).enqueue(new Callback<>() {
+                        @Override
+                        public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                            if (response.isSuccessful()) {
+                                closeMessage = "Goal scored successfully!";
+                            }
+                            manipulateEventDialogCloseListener.onDialogClosed(closeMessage);
+                            dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(Call<EventDTO> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                } else {
+                    Toast.makeText(context, "Same players have been selected for author and assist!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                SaveEventDTO saveEventDTO = new SaveEventDTO();
+                saveEventDTO.setProtocolId(protocolId);
+                saveEventDTO.setMinute(minutePicker.getValue());
+                saveEventDTO.setPlayerId(player.getPlayerId());
+                if (eventEnum.equals(EventEnum.PENALTY)) {
+                    saveEventDTO.setEventEnumId(5L);
+                    eventApi.postPenaltyEvent(saveEventDTO).enqueue(new Callback<>() {
+                        @Override
+                        public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                            if (response.isSuccessful()) {
+                                closeMessage = "Penalty scored successfully!";
+                            }
+                            manipulateEventDialogCloseListener.onDialogClosed(closeMessage);
+                            dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(Call<EventDTO> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                    return;
+                } else if (eventEnum.equals(EventEnum.YELLOW_CARD)) {
+                    closeMessage = "Yellow card awarded successfully!";
+                    saveEventDTO.setEventEnumId(3L);
+                } else if (eventEnum.equals(EventEnum.RED_CARD)) {
+                    closeMessage = "Red card awarded successfully!";
+                    saveEventDTO.setEventEnumId(4L);
+                }
+                eventApi.postEvent(saveEventDTO).enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                        if (!response.isSuccessful()) {
+                            closeMessage = "error!";
+                        }
+                        manipulateEventDialogCloseListener.onDialogClosed(closeMessage);
+                        dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(Call<EventDTO> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(context, "Please, select player!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void bendLayoutUnderEvent() {
         switch (eventEnum) {
             case YELLOW_CARD:
@@ -131,6 +238,8 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 break;
             case PENALTY:
                 eventLabel.setText(R.string.penalty);
+                assistLabel.setVisibility(View.GONE);
+                assistSpinner.setVisibility(View.GONE);
                 break;
         }
     }
@@ -138,8 +247,18 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private void configureMinutePicker() {
         minutePicker.setMinValue(1);
         minutePicker.setMaxValue(90);
-        minutePicker.setValue(1);
+        minutePicker.setValue(getGameMinute());
         minutePicker.setWrapSelectorWheel(false);
+    }
+
+    private int getGameMinute() {
+        ZoneId timeZone = ZoneId.of("GMT+6");
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(timeZone);
+        LocalDateTime rightNow = zonedDateTime.toLocalDateTime();
+        long minutesDifference = Duration.between(gameDateTime, rightNow).toMinutes();
+        return minutesDifference > 0L && minutesDifference <= 90
+                ? (int) minutesDifference
+                : 45;
     }
 
     private void setData() {
@@ -159,6 +278,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
             public void onResponse(Call<List<PlayerDTO>> call, Response<List<PlayerDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     players = response.body();
+                    deleteSpaceFromNames();
                     setPlayerNames();
 
                     authorsAdapter = new ArrayAdapter<>(context, R.layout.players_spinner_item, playerFullNames);
@@ -179,8 +299,40 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     }
 
     private void setPlayerNames() {
-        playerFullNames = players.stream()
-                .map(playerDTO -> playerDTO.getName() + " " + playerDTO.getSurname())
-                .collect(Collectors.toList());
+        playerFullNames.add("");
+        playerFullNames.addAll(
+                players.stream()
+                        .map(playerDTO ->
+                                playerDTO.getName() + " " + playerDTO.getSurname())
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private void deleteSpaceFromNames() {
+        players.forEach(playerDTO -> {
+            playerDTO.setSurname(
+                    playerDTO.getSurname().replaceAll("\\s", "")
+            );
+            playerDTO.setName(
+                    playerDTO.getName().replaceAll("\\s", "")
+            );
+        });
+    }
+
+    public void setGameDateTime(LocalDateTime gameDateTime) {
+        this.gameDateTime = gameDateTime;
+    }
+
+    private PlayerDTO identifyPlayer(String playerFullName) {
+        if (playerFullName.isEmpty()) {
+            return null;
+        }
+        Optional<PlayerDTO> answer = players.stream().filter(playerDTO ->
+                playerDTO.getName()
+                        .equals(playerFullName.substring(0, playerFullName.indexOf(" ")))
+                        && playerDTO.getSurname()
+                        .equals(playerFullName.substring(playerFullName.indexOf(" ") + 1))
+        ).findFirst();
+        return answer.orElse(null);
     }
 }

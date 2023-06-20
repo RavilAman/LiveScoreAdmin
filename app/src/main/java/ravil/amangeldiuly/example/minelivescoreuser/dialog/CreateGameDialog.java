@@ -68,7 +68,7 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private NumberPicker minutePicker;
     private Button createGameButton;
 
-    private ActionInterfaces.DialogCloseListener dialogCloseListener;
+    private ActionInterfaces.CreateGameDialogCloseListener createGameDialogCloseListener;
     private TournamentDto selectedTournament;
     private GroupDTO selectedGroup;
     private List<TournamentDto> tournaments;
@@ -91,8 +91,8 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private TeamApi teamApi;
     private GameApi gameApi;
 
-    public CreateGameDialog(ActionInterfaces.DialogCloseListener dialogCloseListener) {
-        this.dialogCloseListener = dialogCloseListener;
+    public CreateGameDialog(ActionInterfaces.CreateGameDialogCloseListener createGameDialogCloseListener) {
+        this.createGameDialogCloseListener = createGameDialogCloseListener;
     }
 
     @NonNull
@@ -375,7 +375,7 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
                     public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Toast.makeText(context, "Game created successfully!", Toast.LENGTH_SHORT).show();
-                            dialogCloseListener.onDialogClosed(matchTime.toLocalDate());
+                            createGameDialogCloseListener.onDialogClosed(matchTime.toLocalDate());
                             dismiss();
                         }
                     }

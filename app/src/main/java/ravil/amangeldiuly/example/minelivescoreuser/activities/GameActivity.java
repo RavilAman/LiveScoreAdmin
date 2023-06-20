@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,8 +31,8 @@ import ravil.amangeldiuly.example.minelivescoreuser.dialog.ManipulateEventDialog
 import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreuser.events.EventAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
-import ravil.amangeldiuly.example.minelivescoreuser.web.apis.EventApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
@@ -42,7 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements ActionInterfaces.ManipulateEventDialogCloseListener {
 
     private Context context;
 
@@ -75,6 +76,7 @@ public class GameActivity extends AppCompatActivity {
 
     private List<EventDTO> events;
     private ProtocolDTO protocolDTO;
+    private long protocolId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +89,8 @@ public class GameActivity extends AppCompatActivity {
         setOnClickListeners();
 
         Intent intent = getIntent();
-        long protocolId = intent.getExtras().getLong("protocolId");
-        setData(protocolId);
+        protocolId = intent.getExtras().getLong("protocolId");
+        setData();
     }
 
     private void initializeRetrofit() {
@@ -127,7 +129,7 @@ public class GameActivity extends AppCompatActivity {
         events = new ArrayList<>();
     }
 
-    private void setData(long protocolId) {
+    private void setData() {
         protocolApi.getProtocolById(protocolId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ProtocolDTO> call, Response<ProtocolDTO> response) {
@@ -275,7 +277,8 @@ public class GameActivity extends AppCompatActivity {
 
     private void openCreateEventDialog(long protocolId, String teamLogo, long teamId, EventEnum eventEnum) {
         ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId,
-                teamLogo, teamId, eventEnum);
+                teamLogo, teamId, eventEnum, this);
+        manipulateEventDialog.setGameDateTime(protocolDTO.getDateAndTime());
         manipulateEventDialog.show(getSupportFragmentManager(), "");
     }
 
@@ -314,5 +317,11 @@ public class GameActivity extends AppCompatActivity {
         EventAdapter eventAdapter = new EventAdapter(context, events, team1Id);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventsRecyclerView.setAdapter(eventAdapter);
+    }
+
+    @Override
+    public void onDialogClosed(String message) {
+        setData();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 }
