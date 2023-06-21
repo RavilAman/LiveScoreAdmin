@@ -60,4 +60,7 @@ public class UrlConstants {
     public static final String POST_EVENT = "event";
     public static final String POST_GOAL = "event/save_goal";
     public static final String POST_PENALTY = "event/save_penalty";
+    public static final String PUT_EVENT = "event/{id}";
+    public static final String PUT_GOAL = "event/save_goal/{id}";
+    public static final String PUT_PENALTY = "event/save_penalty/{id}";
 }

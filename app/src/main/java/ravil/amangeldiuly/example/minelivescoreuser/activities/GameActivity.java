@@ -35,6 +35,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AssistDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GameDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.ProtocolDTO;
@@ -43,7 +44,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class GameActivity extends AppCompatActivity implements ActionInterfaces.ManipulateEventDialogCloseListener {
+public class GameActivity extends AppCompatActivity implements ActionInterfaces.ManipulateEventDialogCloseListener,
+        ActionInterfaces.ManipulateEventDialogOpenListener {
 
     private Context context;
 
@@ -206,7 +208,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         return view -> {
             switch (view.getId()) {
                 case R.id.game_activity_goal_team_1:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam1Logo(),
                             protocolDTO.getTeam1Id(),
@@ -214,7 +216,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_yellow_card_team_1:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam1Logo(),
                             protocolDTO.getTeam1Id(),
@@ -222,7 +224,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_red_card_team_1:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam1Logo(),
                             protocolDTO.getTeam1Id(),
@@ -230,7 +232,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_penalty_team_1:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam1Logo(),
                             protocolDTO.getTeam1Id(),
@@ -238,7 +240,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_goal_team_2:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam2Logo(),
                             protocolDTO.getTeam2Id(),
@@ -246,7 +248,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_yellow_card_team_2:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam2Logo(),
                             protocolDTO.getTeam2Id(),
@@ -254,7 +256,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_red_card_team_2:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam2Logo(),
                             protocolDTO.getTeam2Id(),
@@ -262,7 +264,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     );
                     break;
                 case R.id.game_activity_penalty_team_2:
-                    openCreateEventDialog(
+                    openEventDialogToCreate(
                             protocolDTO.getProtocolId(),
                             protocolDTO.getTeam2Logo(),
                             protocolDTO.getTeam2Id(),
@@ -275,9 +277,16 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         };
     }
 
-    private void openCreateEventDialog(long protocolId, String teamLogo, long teamId, EventEnum eventEnum) {
+    private void openEventDialogToCreate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum) {
         ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId,
                 teamLogo, teamId, eventEnum, this);
+        manipulateEventDialog.setGameDateTime(protocolDTO.getDateAndTime());
+        manipulateEventDialog.show(getSupportFragmentManager(), "");
+    }
+
+    private void openEventDialogToUpdate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+        ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId, teamLogo,
+                teamId, eventEnum, this, playerId, minute, eventId, assistDTO);
         manipulateEventDialog.setGameDateTime(protocolDTO.getDateAndTime());
         manipulateEventDialog.show(getSupportFragmentManager(), "");
     }
@@ -314,7 +323,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     }
 
     private void setEvents(Long team1Id) {
-        EventAdapter eventAdapter = new EventAdapter(context, events, team1Id);
+        EventAdapter eventAdapter = new EventAdapter(context, events, team1Id, this);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventsRecyclerView.setAdapter(eventAdapter);
     }
@@ -323,5 +332,10 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     public void onDialogClosed(String message) {
         setData();
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDialogOpen(String teamLogo, long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+        openEventDialogToUpdate(protocolId, teamLogo, teamId, eventEnum, playerId, minute, eventId, assistDTO);
     }
 }

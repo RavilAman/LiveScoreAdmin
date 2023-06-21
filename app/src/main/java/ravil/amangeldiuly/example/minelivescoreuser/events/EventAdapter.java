@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
+import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AssistDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
 
 public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
@@ -22,11 +25,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
     private Context context;
     private List<EventDTO> events;
     private Long team1Id;
+    private ActionInterfaces.ManipulateEventDialogOpenListener manipulateEventDialogOpenListener;
 
-    public EventAdapter(Context context, List<EventDTO> events, Long team1Id) {
+    public EventAdapter(Context context, List<EventDTO> events, Long team1Id,
+                        ActionInterfaces.ManipulateEventDialogOpenListener manipulateEventDialogOpenListener) {
         this.context = context;
         this.events = events;
         this.team1Id = team1Id;
+        this.manipulateEventDialogOpenListener = manipulateEventDialogOpenListener;
     }
 
     @NonNull
@@ -41,7 +47,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         EventDTO eventDTO = events.get(position);
+        EventEnum eventEnum = null;
         holder.time.setText(eventDTO.getMinute() + "°");
+        String eventName = eventDTO.getEventName();
+        if (eventName.equals("GOAL")) {
+            eventEnum = EventEnum.GOAL;
+        } else if (eventName.equals("PENALTY")) {
+            eventEnum = EventEnum.PENALTY;
+        }
         switch (eventDTO.getEventName()) {
             case "GOAL":
             case "PENALTY":
@@ -85,6 +98,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     holder.team1Player.setVisibility(View.GONE);
                 }
+                eventEnum = EventEnum.YELLOW_CARD;
                 break;
             case "RED_CARD":
                 holder.team1Assist.setVisibility(View.GONE);
@@ -101,6 +115,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     holder.team1Player.setVisibility(View.GONE);
                 }
+                eventEnum = EventEnum.RED_CARD;
                 break;
             case "SECOND_YELLOW_CARD":
                 holder.team1Assist.setVisibility(View.GONE);
@@ -117,8 +132,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     holder.team1Player.setVisibility(View.GONE);
                 }
+                eventEnum = EventEnum.SECOND_YELLOW_CARD;
                 break;
         }
+        holder.editEvent.setOnClickListener(editEventListener(eventDTO.getTeamLogo(), eventDTO.getTeamId(),
+                eventEnum, eventDTO.getPlayerId(), eventDTO.getMinute(), eventDTO.getEventId(), eventDTO.getAssist()));
+    }
+
+    private View.OnClickListener editEventListener(String teamLogo, Long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+        return view -> manipulateEventDialogOpenListener.onDialogOpen(teamLogo, teamId, eventEnum, playerId, minute, eventId, assistDTO);
     }
 
     @Override

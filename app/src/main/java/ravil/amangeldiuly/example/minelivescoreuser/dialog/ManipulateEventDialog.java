@@ -2,6 +2,7 @@ package ravil.amangeldiuly.example.minelivescoreuser.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.media.metrics.Event;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -36,6 +37,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.EventApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AssistDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveEventDTO;
@@ -69,7 +71,12 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private ArrayAdapter<String> assistAdapter;
     private List<PlayerDTO> players;
     private List<String> playerFullNames;
-    String closeMessage;
+    private String closeMessage;
+    private Long playerId;
+    private Integer minute;
+    private Long eventId;
+    private AssistDTO assistDTO;
+    private boolean update;
 
     private RequestHandler requestHandler;
     private Retrofit retrofit;
@@ -83,6 +90,21 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         this.teamId = teamId;
         this.eventEnum = eventEnum;
         this.manipulateEventDialogCloseListener = manipulateEventDialogCloseListener;
+    }
+
+    public ManipulateEventDialog(long protocolId, String teamLogoLink, long teamId, EventEnum eventEnum,
+                                 ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener,
+                                 Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+        this.protocolId = protocolId;
+        this.teamLogoLink = teamLogoLink;
+        this.teamId = teamId;
+        this.eventEnum = eventEnum;
+        this.manipulateEventDialogCloseListener = manipulateEventDialogCloseListener;
+        this.playerId = playerId;
+        this.minute = minute;
+        this.eventId = eventId;
+        this.assistDTO = assistDTO;
+        update = true;
     }
 
     @NonNull
@@ -139,10 +161,10 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     }
 
     private View.OnClickListener saveButtonListener() {
-        return view -> saveEvent();
+        return view -> saveOrUpdateEvent();
     }
 
-    private void saveEvent() {
+    private void saveOrUpdateEvent() {
         PlayerDTO player = identifyPlayer(authorSpinner.getSelectedItem().toString());
         if (player != null) {
             if (eventEnum.equals(EventEnum.GOAL)) {
@@ -153,14 +175,29 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 PlayerDTO assistPlayer = identifyPlayer(assistSpinner.getSelectedItem().toString());
                 if (assistPlayer != null) {
                     saveGoalEventDTO.setAssistId(assistPlayer.getPlayerId());
+                } else {
+                    saveGoalEventDTO.setAssistId(0L);
                 }
                 if (!Objects.equals(saveGoalEventDTO.getPlayerId(), saveGoalEventDTO.getAssistId())) {
-                    eventApi.postGoalEvent(saveGoalEventDTO).enqueue(new Callback<>() {
+                    Call<EventDTO> goalCall = eventApi.postGoalEvent(saveGoalEventDTO);
+                    if (update) {
+                        System.out.println("event Id: " + eventId);
+                        System.out.println(saveGoalEventDTO.getProtocolId());
+                        System.out.println(saveGoalEventDTO.getPlayerId());
+                        System.out.println(saveGoalEventDTO.getAssistId());
+                        System.out.println(saveGoalEventDTO.getMinute());
+                        goalCall = eventApi.putGoalEvent(eventId.intValue(), saveGoalEventDTO);
+                    }
+                    goalCall.enqueue(new Callback<>() {
                         @Override
                         public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                             if (response.isSuccessful()) {
                                 closeMessage = "Goal scored successfully!";
+                                if (update) {
+                                    closeMessage = "Event changed successfully!";
+                                }
                             }
+                            System.out.println("response: " + response.body());
                             manipulateEventDialogCloseListener.onDialogClosed(closeMessage);
                             dismiss();
                         }
@@ -180,11 +217,18 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 saveEventDTO.setPlayerId(player.getPlayerId());
                 if (eventEnum.equals(EventEnum.PENALTY)) {
                     saveEventDTO.setEventEnumId(5L);
-                    eventApi.postPenaltyEvent(saveEventDTO).enqueue(new Callback<>() {
+                    Call<EventDTO> penaltyCall = eventApi.postPenaltyEvent(saveEventDTO);
+                    if (update) {
+                        eventApi.putPenaltyEvent(eventId.intValue(), saveEventDTO);
+                    }
+                    penaltyCall.enqueue(new Callback<>() {
                         @Override
                         public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                             if (response.isSuccessful()) {
                                 closeMessage = "Penalty scored successfully!";
+                                if (update) {
+                                    closeMessage = "Event changed successfully!";
+                                }
                             }
                             manipulateEventDialogCloseListener.onDialogClosed(closeMessage);
                             dismiss();
@@ -203,9 +247,16 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     closeMessage = "Red card awarded successfully!";
                     saveEventDTO.setEventEnumId(4L);
                 }
-                eventApi.postEvent(saveEventDTO).enqueue(new Callback<>() {
+                Call<EventDTO> eventCall = eventApi.postEvent(saveEventDTO);
+                if (update) {
+                    eventCall = eventApi.putEvent(eventId.intValue(), saveEventDTO);
+                }
+                eventCall.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
+                        if (update) {
+                            closeMessage = "Event changed successfully!";
+                        }
                         if (!response.isSuccessful()) {
                             closeMessage = "error!";
                         }
@@ -247,6 +298,11 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private void configureMinutePicker() {
         minutePicker.setMinValue(1);
         minutePicker.setMaxValue(90);
+        if (minute == null) {
+            minutePicker.setValue(getGameMinute());
+        } else {
+            minutePicker.setValue(minute);
+        }
         minutePicker.setValue(getGameMinute());
         minutePicker.setWrapSelectorWheel(false);
     }
@@ -288,6 +344,13 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     assistAdapter = new ArrayAdapter<>(context, R.layout.players_spinner_item, playerFullNames);
                     assistAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     assistSpinner.setAdapter(assistAdapter);
+
+                    if (playerId != null) {
+                        authorSpinner.setSelection(getPlayerById(playerId));
+                    }
+                    if (assistDTO != null) {
+                        assistSpinner.setSelection(getPlayerById(assistDTO.getAssistPlayerId()));
+                    }
                 }
             }
 
@@ -334,5 +397,14 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                         .equals(playerFullName.substring(playerFullName.indexOf(" ") + 1))
         ).findFirst();
         return answer.orElse(null);
+    }
+
+    private int getPlayerById(Long playerId) {
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getPlayerId().equals(playerId)) {
+                return i + 1;
+            }
+        }
+        return 0;
     }
 }

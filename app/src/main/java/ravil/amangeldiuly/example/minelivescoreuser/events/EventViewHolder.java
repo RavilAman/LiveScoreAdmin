@@ -1,6 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.events;
 
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.R;
 
 public class EventViewHolder extends RecyclerView.ViewHolder {
 
+    ImageButton editEvent;
     TextView time;
     TextView team1Player;
     TextView team2Player;
@@ -31,5 +33,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
         team2Assist = itemView.findViewById(R.id.event_item_assist_team_2);
         eventLogoTeam1 = itemView.findViewById(R.id.event_item_event_logo_team_1);
         eventLogoTeam2 = itemView.findViewById(R.id.event_item_event_logo_team_2);
+        editEvent = itemView.findViewById(R.id.event_item_edit_event);
     }
 }

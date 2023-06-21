@@ -7,6 +7,8 @@ import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveGoalEventD
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface EventApi {
 
@@ -18,4 +20,13 @@ public interface EventApi {
 
     @POST(UrlConstants.POST_PENALTY)
     Call<EventDTO> postPenaltyEvent(@Body SaveEventDTO saveEventDTO);
+
+    @PUT(UrlConstants.PUT_EVENT)
+    Call<EventDTO> putEvent(@Path("id") int id, @Body SaveEventDTO saveEventDTO);
+
+    @PUT(UrlConstants.PUT_GOAL)
+    Call<EventDTO> putGoalEvent(@Path("id") int id, @Body SaveGoalEventDTO saveEventDTO);
+
+    @PUT(UrlConstants.PUT_PENALTY)
+    Call<EventDTO> putPenaltyEvent(@Path("id") int id, @Body SaveEventDTO saveEventDTO);
 }
