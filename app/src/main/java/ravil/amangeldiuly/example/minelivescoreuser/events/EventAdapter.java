@@ -44,6 +44,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         holder.time.setText(eventDTO.getMinute() + "°");
         switch (eventDTO.getEventName()) {
             case "GOAL":
+            case "PENALTY":
                 holder.gameScore.setText(gameScoreIntoDashFormat(eventDTO.getGameScore()));
                 if (Objects.equals(team1Id, eventDTO.getTeamId())) {
                     holder.eventLogoTeam1.setImageResource(R.drawable.soccer_ball);
@@ -96,6 +97,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                     holder.team2Player.setVisibility(View.GONE);
                 } else {
                     holder.eventLogoTeam2.setImageResource(R.drawable.red_card);
+                    holder.eventLogoTeam1.setVisibility(View.GONE);
+                    holder.team2Player.setText(eventDTO.getPlayerName());
+                    holder.team1Player.setVisibility(View.GONE);
+                }
+                break;
+            case "SECOND_YELLOW_CARD":
+                holder.team1Assist.setVisibility(View.GONE);
+                holder.team2Assist.setVisibility(View.GONE);
+                holder.gameScore.setText("     ");
+                if (Objects.equals(team1Id, eventDTO.getTeamId())) {
+                    holder.eventLogoTeam1.setImageResource(R.drawable.second_yellow);
+                    holder.eventLogoTeam2.setVisibility(View.GONE);
+                    holder.team1Player.setText(eventDTO.getPlayerName());
+                    holder.team2Player.setVisibility(View.GONE);
+                } else {
+                    holder.eventLogoTeam2.setImageResource(R.drawable.second_yellow);
                     holder.eventLogoTeam1.setVisibility(View.GONE);
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     holder.team1Player.setVisibility(View.GONE);

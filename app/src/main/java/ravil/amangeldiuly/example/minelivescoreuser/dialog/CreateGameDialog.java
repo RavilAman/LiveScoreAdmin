@@ -375,9 +375,9 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
                     public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Toast.makeText(context, "Game created successfully!", Toast.LENGTH_SHORT).show();
-                            createGameDialogCloseListener.onDialogClosed(matchTime.toLocalDate());
-                            dismiss();
                         }
+                        createGameDialogCloseListener.onDialogClosed(matchTime.toLocalDate());
+                        dismiss();
                     }
 
                     @Override
