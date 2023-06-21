@@ -3,9 +3,12 @@ package ravil.amangeldiuly.example.minelivescoreuser.web.apis;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveTournamentDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface TournamentApi {
@@ -27,4 +30,10 @@ public interface TournamentApi {
 
     @GET(UrlConstants.TOURNAMENT_BY_USER)
     Call<List<TournamentDto>> findTournamentsByUser(@Query("userId") int userId);
+
+    @POST(UrlConstants.CREATE_TOURNAMENT_LEAGUE)
+    Call<TournamentDto> createTournamentLeague(@Body SaveTournamentDTO saveTournamentDTO);
+
+    @POST(UrlConstants.CREATE_TOURNAMENT_CUP)
+    Call<TournamentDto> createTournamentCup(@Body SaveTournamentDTO saveTournamentDTO);
 }
