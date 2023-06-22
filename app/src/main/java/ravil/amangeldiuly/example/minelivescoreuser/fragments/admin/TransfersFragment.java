@@ -105,9 +105,6 @@ public class TransfersFragment extends Fragment implements TeamsAdapter.OnItemLi
                 if (response.body() != null) {
                     teamList = response.body();
                     createTeamCards(teamList);
-//                if (tournamentList.isEmpty()) {
-//                    noTournaments.setText(R.string.no_tournaments_with_name);
-//                }
                 }
             }
 

@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,6 +80,11 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private int monthFirstWeekDay;
     private boolean calendarButtonClicked = true;
     private int lastCheckedRadioButtonId;
+    private FragmentManager fragmentManager;
+
+    public ScoresFragment(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
 
     @Nullable
     @Override
@@ -302,7 +308,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
 
     private void setGames(List<NewGameDTO> games) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        GroupAdapter groupAdapter = new GroupAdapter(context, games);
+        GroupAdapter groupAdapter = new GroupAdapter(context, games, fragmentManager);
         groupRecyclerView.setLayoutManager(linearLayoutManager);
         groupRecyclerView.setAdapter(groupAdapter);
     }

@@ -95,7 +95,7 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentManager.popBackStack();
-            ScoresFragment scoreFragment = new ScoresFragment();
+            ScoresFragment scoreFragment = new ScoresFragment(fragmentManager);
             fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
 
 

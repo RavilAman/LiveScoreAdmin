@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,7 +98,6 @@ public class PlayersViewHolder extends RecyclerView.ViewHolder {
             }
         }
 
-        // Set the default selected item
         if (defaultSelectedIndex != -1) {
             spinner.setSelection(defaultSelectedIndex);
         }

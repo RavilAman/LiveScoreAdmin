@@ -96,6 +96,12 @@
     <string name="date_and_time">Date and time</string>
     <string name="create">Create</string>
     <string name="automatic_defeat">Automatic defeat</string>
+    <string name="create_tournament">Create Tournament</string>
+    <string name="enter_tournament_name">Enter tournament name</string>
+    <string name="paste_logo_link">Paste link here</string>
+    <string name="tournament_type">Tournament type</string>
+    <string name="team_number">Team number</string>
+    <string name="enter_tournament_location">Enter tournament locatiion</string>
     <string-array name="months">
         <item>Jan</item>
         <item>Feb</item>

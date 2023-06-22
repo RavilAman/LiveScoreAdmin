@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(navigationListener());
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new ScoresFragment())
+                .replace(R.id.fragment_container, new ScoresFragment(getSupportFragmentManager()))
                 .commit();
 
 
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         selectedButtomNavMenuItem = item;
                         item.setChecked(true);
-                        selectedFragment = new ScoresFragment();
+                        selectedFragment = new ScoresFragment(getSupportFragmentManager());
                         break;
                     case R.id.nav_menu_item:
                         selectedButtomNavMenuItem = item;

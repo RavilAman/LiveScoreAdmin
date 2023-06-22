@@ -7,12 +7,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.activities.StatisticsActivity;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentCupInfoFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentLeagueInfoFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 
 public class GroupViewHolder extends RecyclerView.ViewHolder {
 
@@ -24,6 +31,9 @@ public class GroupViewHolder extends RecyclerView.ViewHolder {
     RecyclerView gamesRecyclerView;
     long tournamentId;
     long groupId;
+
+    TournamentDto tournament;
+    FragmentManager fragmentManager;
 
     public GroupViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -39,10 +49,24 @@ public class GroupViewHolder extends RecyclerView.ViewHolder {
 
     private View.OnClickListener groupItemLayoutListener() {
         return view -> {
-            Intent statisticsIntent = new Intent(context, StatisticsActivity.class);
-            statisticsIntent.putExtra("tournamentId", tournamentId);
-            statisticsIntent.putExtra("groupId", groupId);
-            context.startActivity(statisticsIntent);
+            if (tournament.getTournamentType().equals("CUP")){
+                TournamentCupInfoFragment tournamentCupInfoFragment = new TournamentCupInfoFragment(fragmentManager,tournament);
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, tournamentCupInfoFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }else {
+                TournamentLeagueInfoFragment tournamentLeagueInfoFragment = new TournamentLeagueInfoFragment(fragmentManager,tournament);
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, tournamentLeagueInfoFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+//            Intent statisticsIntent = new Intent(context, StatisticsActivity.class);
+//            statisticsIntent.putExtra("tournamentId", tournamentId);
+//            statisticsIntent.putExtra("groupId", groupId);
+//            context.startActivity(statisticsIntent);
         };
     }
 }

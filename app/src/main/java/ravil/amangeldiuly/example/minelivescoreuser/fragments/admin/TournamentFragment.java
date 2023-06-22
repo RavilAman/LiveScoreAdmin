@@ -2,13 +2,25 @@ package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +29,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,12 +40,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
+import ravil.amangeldiuly.example.minelivescoreuser.fragments.tournament.FragmentSliderAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.slider.SliderAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveCupTournamentDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveTournamentDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreuser.web.tournament_type.TournamentType;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +70,18 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     private MenuItem selectedDrawerMenuItem;
     private MenuItem selectedBottomMenuItem;
     private BottomNavigationView bottomNavigationView;
+    private Button addButton;
+    private ImageView tab1, tab2, tab3;
+    private TextView teamNumberTextView;
+    private SaveTournamentDTO saveTournamentDTO;
+    private String selectedTournamentType = "Cup (Group Stage)";
+    private Integer teamNum;
+    private String tournamentName;
+    private String tournamentLogoLink;
+    private String tournamentLocation;
+
+
+    private int count = 4;
 
     public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem, MenuItem selectedBottomMenuItem, BottomNavigationView bottomNavigationView) {
         this.selectedDrawerMenuItem = menuItem;
@@ -68,15 +100,242 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
         tournamentsRecyclerView = currentView.findViewById(R.id.list_tournaments);
         imageButton = currentView.findViewById(R.id.game_back_button);
-
+        addButton = currentView.findViewById(R.id.add_button);
         fragmentManager = requireActivity().getSupportFragmentManager();
 
+        addButton.setOnClickListener(this::showPopUp);
         imageButton.setOnClickListener(backButtonListener());
         initializeRetrofit();
         findAllTournamentsByUser();
 
 
         return currentView;
+    }
+
+    private void showPopUp(View v) {
+        PopupWindow popupWindow = new PopupWindow(getContext());
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        Drawable background = getResources().getDrawable(R.drawable.create_game_background); // Replace with your desired background drawable
+        popupWindow.setBackgroundDrawable(background);
+
+
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popup_layout, null);
+        popupWindow.setContentView(popupView);
+
+
+        tab1 = popupView.findViewById(R.id.tab1);
+        tab2 = popupView.findViewById(R.id.tab2);
+        tab3 = popupView.findViewById(R.id.tab3);
+
+        tab1.setImageResource(R.drawable.circle_filled);
+        tab2.setImageResource(R.drawable.circle_empty);
+        tab3.setImageResource(R.drawable.circle_empty);
+
+
+        List<RelativeLayout> relativeLayoutList = new ArrayList<>();
+        RelativeLayout page1 = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.fragment1_layout, null);
+        EditText tournamentNameEdt = page1.findViewById(R.id.tournament_name_edittext);
+        EditText tournamentLogoEdt = page1.findViewById(R.id.logo_link_edittext);
+        EditText tournamentLocationEdt = page1.findViewById(R.id.tournament_location_edittext);
+
+        relativeLayoutList.add(page1);
+
+        RelativeLayout page2 = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.fragment2_layout, null);
+        page2Content(page2.findViewById(R.id.viewPager), page2.findViewById(R.id.btnPrevious), page2.findViewById(R.id.btnNext));
+        relativeLayoutList.add(page2);
+
+        RelativeLayout page3 = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.fragment3_layout, null);
+        page3content(page3);
+        Button create = page3.findViewById(R.id.create_button);
+
+        create.setOnClickListener(view -> createTournament(tournamentNameEdt, tournamentLogoEdt, tournamentLocationEdt,popupWindow));
+
+
+        popupWindow.setOnDismissListener(() -> {
+            count = 4;
+            updateTeamNumber(teamNumberTextView);
+        });
+
+
+        relativeLayoutList.add(page3);
+
+
+        ViewPager viewPager = popupView.findViewById(R.id.viewPager);
+        FragmentSliderAdapter pagerAdapter = new FragmentSliderAdapter(relativeLayoutList);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(0);
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Not needed for tab highlighting
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateTabHighlight(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Not needed for tab highlighting
+            }
+        });
+
+        tab1.setOnClickListener(a -> viewPager.setCurrentItem(0));
+        tab2.setOnClickListener(a -> viewPager.setCurrentItem(1));
+        tab3.setOnClickListener(a -> viewPager.setCurrentItem(2));
+
+        popupWindow.setAnimationStyle(R.style.PopupAnimation);
+        popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+    }
+
+    private void createTournament(EditText tournamentNameEdt, EditText tournamentLogoEdt, EditText tournamentLocationEdt, PopupWindow popupWindow) {
+        tournamentName = tournamentNameEdt.getText().toString();
+        tournamentLocation = tournamentLocationEdt.getText().toString();
+        tournamentLogoLink = tournamentLogoEdt.getText().toString();
+        teamNum = count;
+
+        if (tournamentName.length() == 0 || tournamentLocation.length() == 0 || tournamentLogoLink.length() == 0) {
+            Toast.makeText(getContext(), "Enter Tournament name, logo, and location", Toast.LENGTH_SHORT).show();
+        } else {
+            if (selectedTournamentType.equals("Cup (Group Stage)")) {
+                saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, false);
+                tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
+            } else if (selectedTournamentType.equals("Cup (Play Off)")) {
+                saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, true);
+                tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
+            } else {
+                saveTournamentDTO = new SaveTournamentDTO(tournamentName, "LEAGUE", tournamentLogoLink, tournamentLocation, teamNum);
+                tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
+            }
+
+        }
+    }
+
+    private Callback<TournamentDto> createTournamentCallBack(PopupWindow popupWindow) {
+        return new Callback<>() {
+            @Override
+            public void onResponse(Call<TournamentDto> call, Response<TournamentDto> response) {
+                assert response.body() != null;
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Tournament added", Toast.LENGTH_SHORT).show();
+                    findAllTournamentsByUser();
+                } else {
+                    Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+                }
+
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TournamentDto> call, Throwable t) {
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
+                Toast.makeText(getContext(), "Vse Ploho", Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+
+    private void page3content(RelativeLayout page3) {
+        ImageButton previous = page3.findViewById(R.id.btnPrevious);
+        ImageButton next = page3.findViewById(R.id.btnNext);
+        teamNumberTextView = page3.findViewById(R.id.team_count);
+
+        previous.setOnClickListener(v12 -> decrementTeamNumber(teamNumberTextView, (selectedTournamentType.equals("Cup (Group Stage)") || selectedTournamentType.equals("Cup (Play Off)"))));
+        next.setOnClickListener(v1 -> incrementTeamNumber(teamNumberTextView, (selectedTournamentType.equals("Cup (Group Stage)") || selectedTournamentType.equals("Cup (Play Off)"))));
+    }
+
+    private void decrementTeamNumber(TextView teamNumberTextView, boolean isCup) {
+        if (count > 1 && !isCup) {
+            count--;
+            updateTeamNumber(teamNumberTextView);
+        } else if (count > 1) {
+            count = count >> 1;
+            updateTeamNumber(teamNumberTextView);
+        }
+    }
+
+    private void incrementTeamNumber(TextView teamNumberTextView, boolean isCup) {
+        if (isCup) {
+            count = count << 1;
+        } else {
+            count++;
+        }
+        updateTeamNumber(teamNumberTextView);
+    }
+
+    private void updateTeamNumber(TextView teamNumberTextView) {
+        if (teamNumberTextView != null) {
+            teamNumberTextView.setText(String.valueOf(count));
+        }
+    }
+
+    private void page2Content(ViewPager page2, ImageButton page21, ImageButton page22) {
+        List<TournamentType> tournamentTypes = new ArrayList<>();
+        tournamentTypes.add(new TournamentType(R.drawable.cup, "Cup (Group Stage)"));
+        tournamentTypes.add(new TournamentType(R.drawable.league, "League"));
+        tournamentTypes.add(new TournamentType(R.drawable.cup_play_off, "Cup (Play Off)"));
+
+        page2.setCurrentItem(0);
+        page2.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Not needed for tab highlighting
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateTournamentType(position, tournamentTypes.get(position).getTournamentType());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Not needed for tab highlighting
+            }
+        });
+
+        SliderAdapter sliderAdapter = new SliderAdapter(getContext(), tournamentTypes);
+        page2.setAdapter(sliderAdapter);
+
+        page21.setOnClickListener(a -> {
+            int currentPosition = page2.getCurrentItem();
+            if (currentPosition > 0) {
+                page2.setCurrentItem(currentPosition - 1);
+            }
+        });
+
+        page22.setOnClickListener(a -> {
+            int currentPosition = page2.getCurrentItem();
+            int totalItems = sliderAdapter.getCount();
+            if (currentPosition < totalItems - 1) {
+                page2.setCurrentItem(currentPosition + 1);
+            }
+        });
+    }
+
+    private void updateTournamentType(int possition, String tournamentType) {
+
+        if (possition == 0) {
+            selectedTournamentType = tournamentType;
+        } else if (possition == 1) {
+            selectedTournamentType = tournamentType;
+        } else if (possition == 2) {
+            selectedTournamentType = tournamentType;
+        }
+    }
+
+    private void updateTabHighlight(int position) {
+        tab1.setImageResource(position == 0 ? R.drawable.circle_filled : R.drawable.circle_empty);
+        tab2.setImageResource(position == 1 ? R.drawable.circle_filled : R.drawable.circle_empty);
+        tab3.setImageResource(position == 2 ? R.drawable.circle_filled : R.drawable.circle_empty);
+        count = 4;
+        updateTeamNumber(teamNumberTextView);
     }
 
     private View.OnClickListener backButtonListener() {
@@ -91,7 +350,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentManager.popBackStack();
-            ScoresFragment scoreFragment = new ScoresFragment();
+            ScoresFragment scoreFragment = new ScoresFragment(fragmentManager);
             fragmentTransaction.replace(R.id.fragment_container, scoreFragment);
 
 
@@ -142,15 +401,15 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
 
     @Override
     public void onItemClick(TournamentDto tournament) {
-        if (tournament.getTournamentType().equals("CUP")){
-            TournamentCupInfoFragment tournamentCupInfoFragment = new TournamentCupInfoFragment(fragmentManager,tournament);
+        if (tournament.getTournamentType().equals("CUP")) {
+            TournamentCupInfoFragment tournamentCupInfoFragment = new TournamentCupInfoFragment(fragmentManager, tournament);
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, tournamentCupInfoFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        }else {
-            TournamentLeagueInfoFragment tournamentLeagueInfoFragment = new TournamentLeagueInfoFragment(fragmentManager,tournament);
+        } else {
+            TournamentLeagueInfoFragment tournamentLeagueInfoFragment = new TournamentLeagueInfoFragment(fragmentManager, tournament);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, tournamentLeagueInfoFragment);
             fragmentTransaction.addToBackStack(null);

@@ -20,6 +20,7 @@ public class GameDTO {
     public GameDTO() {
     }
 
+
     public GameDTO(Long gameId, Long groupId, String team1Name, String team2Name, String team1Logo, String team2Logo, String gameScore, GameState gameState, Long protocolId, LocalDateTime gameDateTime) {
         this.gameId = gameId;
         this.groupId = groupId;
