@@ -184,6 +184,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     }
 
     private void fillDataGameStateEnded() {
+        manipulateEvent.setVisibility(View.GONE);
         fullTime.setText(R.string.full_time);
         gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
     }
@@ -200,7 +201,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         yellowCardEventTeam2.setOnClickListener(createEventListener());
         redCardEventTeam2.setOnClickListener(createEventListener());
         penaltyEventTeam2.setOnClickListener(createEventListener());
-        endMatch.setOnClickListener(createEventListener());
+        endMatch.setOnClickListener(endMatchListener());
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -271,10 +272,31 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                             EventEnum.PENALTY
                     );
                     break;
-                case R.id.game_activity_end_match:
-                    break;
             }
         };
+    }
+
+    private View.OnClickListener endMatchListener() {
+        return view -> endMatch();
+    }
+
+    private void endMatch() {
+        gameApi.endGame(protocolDTO.getGameId().intValue()).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
+                if (response.isSuccessful()) {
+                    manipulateEvent.setVisibility(View.GONE);
+                    Toast.makeText(context, "Game finished successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "error: " + response + "; code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GameDTO> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void openEventDialogToCreate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum) {

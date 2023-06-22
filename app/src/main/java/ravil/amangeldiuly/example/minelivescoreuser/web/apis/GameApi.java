@@ -26,4 +26,7 @@ public interface GameApi {
 
     @POST(UrlConstants.START_GAME)
     Call<GameDTO> startGame(@Path("id") int id);
+
+    @POST(UrlConstants.END_GAME)
+    Call<GameDTO> endGame(@Path("id") int id);
 }

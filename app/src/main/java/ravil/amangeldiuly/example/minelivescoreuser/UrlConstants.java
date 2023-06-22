@@ -19,6 +19,7 @@ public class UrlConstants {
     public static final String GAME_LIVE = "game/live";
     public static final String POST_GAME = "game";
     public static final String START_GAME = "game/start/{id}";
+    public static final String END_GAME = "game/end/{id}";
 
     public static final String GROUP_BY_TOURNAMENT = "group/tournament";
     public static final String GROUP_TABS = "group/group_tabs";
