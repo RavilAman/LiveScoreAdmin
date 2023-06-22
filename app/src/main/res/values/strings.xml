@@ -98,7 +98,7 @@
     <string name="automatic_defeat">Automatic defeat</string>
     <string name="create_tournament">Create Tournament</string>
     <string name="enter_tournament_name">Enter tournament name</string>
-    <string name="paste_logo_link">Paste tournament logo link here</string>
+    <string name="paste_logo_link">Paste link here</string>
     <string name="tournament_type">Tournament type</string>
     <string name="team_number">Team number</string>
     <string name="enter_tournament_location">Enter tournament locatiion</string>

@@ -188,6 +188,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
         tab2.setOnClickListener(a -> viewPager.setCurrentItem(1));
         tab3.setOnClickListener(a -> viewPager.setCurrentItem(2));
 
+        popupWindow.setAnimationStyle(R.style.PopupAnimation);
         popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
     }
 
@@ -221,6 +222,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
                 assert response.body() != null;
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Tournament added", Toast.LENGTH_SHORT).show();
+                    findAllTournamentsByUser();
                 } else {
                     Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
                 }
@@ -305,8 +307,6 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
             int currentPosition = page2.getCurrentItem();
             if (currentPosition > 0) {
                 page2.setCurrentItem(currentPosition - 1);
-            } else {
-                Toast.makeText(getContext(), "Already at the first image", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -315,8 +315,6 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
             int totalItems = sliderAdapter.getCount();
             if (currentPosition < totalItems - 1) {
                 page2.setCurrentItem(currentPosition + 1);
-            } else {
-                Toast.makeText(getContext(), "Already at the last image", Toast.LENGTH_SHORT).show();
             }
         });
     }
