@@ -3,9 +3,9 @@ package ravil.amangeldiuly.example.minelivescoreuser.web.responses;
 
 public class AbstractSaveEventDTO {
 
-    private Long protocolId;
-    private Long playerId;
-    private Integer minute;
+    Long protocolId;
+    Long playerId;
+    Integer minute;
 
     public AbstractSaveEventDTO() {
     }
@@ -38,14 +38,5 @@ public class AbstractSaveEventDTO {
 
     public void setMinute(Integer minute) {
         this.minute = minute;
-    }
-
-    @Override
-    public String toString() {
-        return "AbstractSaveEventDTO{" +
-                "protocolId=" + protocolId +
-                ", playerId=" + playerId +
-                ", minute=" + minute +
-                '}';
     }
 }

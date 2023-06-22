@@ -11,7 +11,6 @@ public class UrlConstants {
     public static final String TOURNAMENTS_NOT_FINISHED_BY_USER = "tournament/user/no_finished?userId=1"; //TODO change endpoint via token
     public static final String TOURNAMENTS_CUP_BY_USER = "tournament/user/cup?userId=1"; //TODO change endpoint via token
 
-
     public static final String TOPIC_NAME = "notification/topic/tournament/{tournamentId}";
     public static final String CREATE_SUBSCRIPTION = "notification/subscriptions/{topic}";
     public static final String DELETE_SUBSCRIPTION = "notification/subscriptions/{topic}/{registrationToken}";
@@ -61,6 +60,6 @@ public class UrlConstants {
     public static final String POST_GOAL = "event/save_goal";
     public static final String POST_PENALTY = "event/save_penalty";
     public static final String PUT_EVENT = "event/{id}";
-    public static final String PUT_GOAL = "event/save_goal/{id}";
-    public static final String PUT_PENALTY = "event/save_penalty/{id}";
+    public static final String PUT_GOAL = "event/update_goal/{id}";
+    public static final String PUT_PENALTY = "event/update_penalty/{id}";
 }

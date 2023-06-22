@@ -23,7 +23,10 @@ public class SaveGoalEventDTO extends AbstractSaveEventDTO {
     @Override
     public String toString() {
         return "SaveGoalEventDTO{" +
-                "assistId=" + assistId +
+                "protocolId=" + protocolId +
+                ", playerId=" + playerId +
+                ", minute=" + minute +
+                ", assistId=" + assistId +
                 '}';
     }
 }

@@ -2,7 +2,6 @@ package ravil.amangeldiuly.example.minelivescoreuser.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.media.metrics.Event;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -181,11 +180,6 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 if (!Objects.equals(saveGoalEventDTO.getPlayerId(), saveGoalEventDTO.getAssistId())) {
                     Call<EventDTO> goalCall = eventApi.postGoalEvent(saveGoalEventDTO);
                     if (update) {
-                        System.out.println("event Id: " + eventId);
-                        System.out.println(saveGoalEventDTO.getProtocolId());
-                        System.out.println(saveGoalEventDTO.getPlayerId());
-                        System.out.println(saveGoalEventDTO.getAssistId());
-                        System.out.println(saveGoalEventDTO.getMinute());
                         goalCall = eventApi.putGoalEvent(eventId.intValue(), saveGoalEventDTO);
                     }
                     goalCall.enqueue(new Callback<>() {
@@ -197,7 +191,6 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                                     closeMessage = "Event changed successfully!";
                                 }
                             }
-                            System.out.println("response: " + response.body());
                             manipulateEventDialogCloseListener.onDialogClosed(closeMessage);
                             dismiss();
                         }
