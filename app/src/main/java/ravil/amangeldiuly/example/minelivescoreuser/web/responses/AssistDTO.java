@@ -28,4 +28,12 @@ public class AssistDTO {
     public void setAssistPlayerId(Long assistPlayerId) {
         this.assistPlayerId = assistPlayerId;
     }
+
+    @Override
+    public String toString() {
+        return "AssistDTO{" +
+                "assistPlayer='" + assistPlayer + '\'' +
+                ", assistPlayerId=" + assistPlayerId +
+                '}';
+    }
 }

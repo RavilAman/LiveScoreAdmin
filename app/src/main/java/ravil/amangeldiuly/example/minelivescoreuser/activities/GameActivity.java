@@ -25,12 +25,15 @@ import com.bumptech.glide.Glide;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import ravil.amangeldiuly.example.minelivescoreuser.ColorConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.dialog.ManipulateEventDialog;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreuser.events.EventAdapter;
+import ravil.amangeldiuly.example.minelivescoreuser.events.EventViewHolder;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
@@ -186,6 +189,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     private void fillDataGameStateEnded() {
         manipulateEvent.setVisibility(View.GONE);
         fullTime.setText(R.string.full_time);
+        fullTime.setTextColor(Color.parseColor(ColorConstants.LIGHT_GREY));
         gameScore.setText(gameScoreIntoDashFormat(protocolDTO.getGameScore()));
     }
 
@@ -285,7 +289,8 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
             @Override
             public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
                 if (response.isSuccessful()) {
-                    manipulateEvent.setVisibility(View.GONE);
+                    fillDataGameStateEnded();
+                    disableEventChange();
                     Toast.makeText(context, "Game finished successfully!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "error: " + response + "; code: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -345,9 +350,21 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     }
 
     private void setEvents(Long team1Id) {
-        EventAdapter eventAdapter = new EventAdapter(context, events, team1Id, this);
+        EventAdapter eventAdapter = new EventAdapter(context, events, team1Id, protocolDTO.getGameState(), this);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventsRecyclerView.setAdapter(eventAdapter);
+    }
+
+    private void disableEventChange() {
+        System.out.println("disableEventChange вызвали!");
+        RecyclerView.Adapter<EventViewHolder> adapter = eventsRecyclerView.getAdapter();
+        for (int i = 0; i < Objects.requireNonNull(adapter).getItemCount(); i++) {
+            RecyclerView.ViewHolder eventViewHolder = eventsRecyclerView.findViewHolderForAdapterPosition(i);
+            if (eventViewHolder instanceof EventViewHolder) {
+                EventViewHolder yourViewHolder = (EventViewHolder) eventViewHolder;
+                yourViewHolder.editEvent.setEnabled(false);
+            }
+        }
     }
 
     @Override

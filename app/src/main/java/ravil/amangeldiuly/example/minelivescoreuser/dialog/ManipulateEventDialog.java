@@ -233,7 +233,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                         }
                     });
                     return;
-                } else if (eventEnum.equals(EventEnum.YELLOW_CARD)) {
+                } else if (eventEnum.equals(EventEnum.YELLOW_CARD) || eventEnum.equals(EventEnum.SECOND_YELLOW_CARD)) {
                     closeMessage = "Yellow card awarded successfully!";
                     saveEventDTO.setEventEnumId(3L);
                 } else if (eventEnum.equals(EventEnum.RED_CARD)) {
@@ -271,6 +271,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private void bendLayoutUnderEvent() {
         switch (eventEnum) {
             case YELLOW_CARD:
+            case SECOND_YELLOW_CARD:
                 eventLabel.setText(R.string.yellow_card);
                 assistLabel.setVisibility(View.GONE);
                 assistSpinner.setVisibility(View.GONE);

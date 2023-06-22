@@ -12,7 +12,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.R;
 
 public class EventViewHolder extends RecyclerView.ViewHolder {
 
-    ImageButton editEvent;
+    public ImageButton editEvent;
     TextView time;
     TextView team1Player;
     TextView team2Player;

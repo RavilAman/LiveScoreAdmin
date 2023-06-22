@@ -4,6 +4,7 @@ import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.ga
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
+import ravil.amangeldiuly.example.minelivescoreuser.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AssistDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
@@ -25,13 +27,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
     private Context context;
     private List<EventDTO> events;
     private Long team1Id;
+    private GameState gameState;
     private ActionInterfaces.ManipulateEventDialogOpenListener manipulateEventDialogOpenListener;
 
-    public EventAdapter(Context context, List<EventDTO> events, Long team1Id,
+    public EventAdapter(Context context, List<EventDTO> events, Long team1Id, GameState gameState,
                         ActionInterfaces.ManipulateEventDialogOpenListener manipulateEventDialogOpenListener) {
         this.context = context;
         this.events = events;
         this.team1Id = team1Id;
+        this.gameState = gameState;
         this.manipulateEventDialogOpenListener = manipulateEventDialogOpenListener;
     }
 
@@ -134,6 +138,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                 }
                 eventEnum = EventEnum.SECOND_YELLOW_CARD;
                 break;
+        }
+        if (gameState.equals(GameState.ENDED)) {
+            holder.editEvent.setEnabled(false);
         }
         holder.editEvent.setOnClickListener(editEventListener(eventDTO.getTeamLogo(), eventDTO.getTeamId(),
                 eventEnum, eventDTO.getPlayerId(), eventDTO.getMinute(), eventDTO.getEventId(), eventDTO.getAssist()));
