@@ -177,8 +177,8 @@
             android:backgroundTint="@color/app_orange"
             android:fontFamily="@font/inter_medium"
             android:padding="10dp"
-            android:textAllCaps="false"
             android:text="@string/automatic_defeat"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -188,7 +188,7 @@
         android:id="@+id/game_activity_events_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/game_activity_manipulate_game"
+        android:layout_above="@id/game_activity_manipulate_event_layout"
         android:layout_below="@id/divider"
         android:layout_marginTop="5dp" />
 
@@ -197,8 +197,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:background="@color/calendar_black"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -357,7 +358,7 @@
             android:layout_height="35dp"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/squircle_button"
             android:backgroundTint="@color/app_orange"
             android:ems="8"
