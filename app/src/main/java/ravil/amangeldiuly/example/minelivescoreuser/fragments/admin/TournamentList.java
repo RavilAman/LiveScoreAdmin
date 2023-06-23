@@ -30,6 +30,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Call;
@@ -104,14 +105,8 @@ public class TournamentList extends Fragment implements TournamentListAdapter.On
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        RequestHandler requestHandler = new RequestHandler(getContext());
+        retrofit = requestHandler.getRetrofit();
         tournamentApi = retrofit.create(TournamentApi.class);
     }
 

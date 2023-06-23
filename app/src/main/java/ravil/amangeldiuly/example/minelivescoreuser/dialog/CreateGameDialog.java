@@ -274,7 +274,7 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
         tournaments.clear();
         tournamentNames.clear();
         // todo: убрать хардкод, юсер айди будет вшиваться в токен
-        tournamentApi.findTournamentsByUser(1).enqueue(new Callback<>() {
+        tournamentApi.findTournamentsByUser().enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<TournamentDto>> call, Response<List<TournamentDto>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {

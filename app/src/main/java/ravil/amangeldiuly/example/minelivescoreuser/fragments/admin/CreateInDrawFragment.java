@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupInfoApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PLayerApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TeamApi;
@@ -170,14 +171,8 @@ public class CreateInDrawFragment extends Fragment {
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        RequestHandler requestHandler = new RequestHandler(getContext());
+        retrofit = requestHandler.getRetrofit();
         groupInfoApi = retrofit.create(GroupInfoApi.class);
         teamApi = retrofit.create(TeamApi.class);
     }

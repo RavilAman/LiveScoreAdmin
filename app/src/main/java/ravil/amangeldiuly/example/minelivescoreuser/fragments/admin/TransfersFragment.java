@@ -27,6 +27,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.teams.TeamsAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TeamApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
@@ -84,14 +85,8 @@ public class TransfersFragment extends Fragment implements TeamsAdapter.OnItemLi
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        RequestHandler requestHandler = new RequestHandler(getContext());
+        retrofit = requestHandler.getRetrofit();
         teamApi = retrofit.create(TeamApi.class);
     }
 

@@ -35,6 +35,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.UploadTeamsApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
 import retrofit2.Retrofit;
@@ -89,16 +90,8 @@ public class LoadTeamsFragment extends Fragment {
                 .readTimeout(60, TimeUnit.SECONDS) // Set the read timeout to 30 seconds
                 .writeTimeout(60, TimeUnit.SECONDS); // Set the write timeout to 30 seconds
 
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BACKEND_URL)
-                .client(httpClientBuilder.build()) // Set the custom OkHttpClient
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
+        RequestHandler requestHandler = new RequestHandler(getContext());
+        retrofit = requestHandler.getRetrofit();
         tournamentApi = retrofit.create(UploadTeamsApi.class);
 
         Bundle args = getArguments();

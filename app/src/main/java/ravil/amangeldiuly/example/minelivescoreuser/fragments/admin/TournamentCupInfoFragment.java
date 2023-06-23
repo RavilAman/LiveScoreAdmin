@@ -31,6 +31,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentGroupS
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentInfoAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentPlayOfTabFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TournamentDto;
@@ -114,14 +115,8 @@ public class TournamentCupInfoFragment extends Fragment implements TabLayout.OnT
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        RequestHandler requestHandler = new RequestHandler(getContext());
+        retrofit = requestHandler.getRetrofit();
         groupApi = retrofit.create(GroupApi.class);
     }
 

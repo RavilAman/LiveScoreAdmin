@@ -47,6 +47,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.fragments.tournament.Fragmen
 import ravil.amangeldiuly.example.minelivescoreuser.slider.SliderAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TournamentApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveCupTournamentDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveTournamentDTO;
@@ -58,7 +59,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TournamentFragment extends Fragment implements TournamentListAdapter.OnItemListener {
+public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment implements TournamentListAdapter.OnItemListener {
     private View currentView;
     private Retrofit retrofit;
     private RecyclerView tournamentsRecyclerView;
@@ -73,7 +74,6 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     private Button addButton;
     private ImageView tab1, tab2, tab3;
     private TextView teamNumberTextView;
-    private SaveTournamentDTO saveTournamentDTO;
     private String selectedTournamentType = "Cup (Group Stage)";
     private Integer teamNum;
     private String tournamentName;
@@ -142,7 +142,8 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
         relativeLayoutList.add(page1);
 
         RelativeLayout page2 = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.fragment2_layout, null);
-        page2Content(page2.findViewById(R.id.viewPager), page2.findViewById(R.id.btnPrevious), page2.findViewById(R.id.btnNext));
+        ViewPager viewById = page2.findViewById(R.id.viewPager);
+        page2Content(viewById, page2.findViewById(R.id.btnPrevious), page2.findViewById(R.id.btnNext));
         relativeLayoutList.add(page2);
 
         RelativeLayout page3 = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.fragment3_layout, null);
@@ -155,6 +156,7 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
         popupWindow.setOnDismissListener(() -> {
             count = 4;
             updateTeamNumber(teamNumberTextView);
+            viewById.setCurrentItem(0);
         });
 
 
@@ -202,14 +204,18 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
             Toast.makeText(getContext(), "Enter Tournament name, logo, and location", Toast.LENGTH_SHORT).show();
         } else {
             if (selectedTournamentType.equals("Cup (Group Stage)")) {
-                saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, false);
+                SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, false);
+                Log.i("",saveTournamentDTO.toString());
                 tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             } else if (selectedTournamentType.equals("Cup (Play Off)")) {
-                saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, true);
+                SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, true);
+                saveTournamentDTO.setPlayOf(true);
+                Log.i("",saveTournamentDTO.toString());
                 tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             } else {
-                saveTournamentDTO = new SaveTournamentDTO(tournamentName, "LEAGUE", tournamentLogoLink, tournamentLocation, teamNum);
-                tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
+                SaveTournamentDTO saveTournamentDTO = new SaveTournamentDTO(tournamentName, "LEAGUE", tournamentLogoLink, tournamentLocation, teamNum);
+                Log.i("",saveTournamentDTO.toString());
+                tournamentApi.createTournamentLeague(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             }
 
         }
@@ -359,14 +365,8 @@ public class TournamentFragment extends Fragment implements TournamentListAdapte
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        RequestHandler requestHandler = new RequestHandler(getContext());
+        retrofit = requestHandler.getRetrofit();
         tournamentApi = retrofit.create(TournamentApi.class);
     }
 
