@@ -152,19 +152,19 @@
         android:layout_below="@id/divider"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/wave"
-        android:backgroundTint="@color/grey"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/game_activity_start_match"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/squircle_button"
+            android:backgroundTint="@color/app_orange"
             android:fontFamily="@font/inter_medium"
             android:text="@string/start"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -173,10 +173,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/squircle_button"
+            android:backgroundTint="@color/app_orange"
             android:fontFamily="@font/inter_medium"
             android:padding="10dp"
             android:text="@string/automatic_defeat"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -186,6 +188,187 @@
         android:id="@+id/game_activity_events_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/game_activity_manipulate_game"
-        android:layout_marginTop="10dp" />
+        android:layout_above="@id/game_activity_manipulate_event_layout"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="5dp" />
+
+    <LinearLayout
+        android:id="@+id/game_activity_manipulate_event_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/calendar_black"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/game_activity_goal_team_1"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/goal"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/game_activity_goal_team_2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/goal"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/game_activity_yellow_card_team_1"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/yellow_card"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/game_activity_yellow_card_team_2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/yellow_card"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/game_activity_red_card_team_1"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/red_card"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/game_activity_red_card_team_2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/red_card"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/game_activity_penalty_team_1"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/penalty"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/game_activity_penalty_team_2"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/squircle_button"
+                android:ems="8"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/penalty"
+                android:textAllCaps="false"
+                android:textSize="@dimen/event_manipulator_text_size"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/game_activity_end_match"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/squircle_button"
+            android:backgroundTint="@color/app_orange"
+            android:ems="8"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/end_match"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/event_manipulator_text_size"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 </RelativeLayout>

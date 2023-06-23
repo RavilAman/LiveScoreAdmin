@@ -1,18 +1,14 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
 import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
-import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.DELETE_SUBSCRIPTION;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,13 +32,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupInfoApi;
-import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PLayerApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.TeamApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AfterDrawDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.GroupInfoDTO;

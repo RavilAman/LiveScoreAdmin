@@ -17,11 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.google.android.gms.common.util.JsonUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
@@ -29,7 +24,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -37,9 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
-import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
-import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GroupApi;
@@ -54,7 +46,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CreateGameDialog extends AppCompatDialogFragment implements AdapterView.OnItemSelectedListener {
 
@@ -77,7 +68,7 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private NumberPicker minutePicker;
     private Button createGameButton;
 
-    private ActionInterfaces.DialogCloseListener dialogCloseListener;
+    private ActionInterfaces.CreateGameDialogCloseListener createGameDialogCloseListener;
     private TournamentDto selectedTournament;
     private GroupDTO selectedGroup;
     private List<TournamentDto> tournaments;
@@ -100,8 +91,8 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private TeamApi teamApi;
     private GameApi gameApi;
 
-    public CreateGameDialog(ActionInterfaces.DialogCloseListener dialogCloseListener) {
-        this.dialogCloseListener = dialogCloseListener;
+    public CreateGameDialog(ActionInterfaces.CreateGameDialogCloseListener createGameDialogCloseListener) {
+        this.createGameDialogCloseListener = createGameDialogCloseListener;
     }
 
     @NonNull
@@ -128,7 +119,8 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private void initializeViews() {
         context = requireContext();
         createGameDialog = new Dialog(context, R.style.CustomDialogTheme);
-        currentView = getActivity().getLayoutInflater().inflate(R.layout.create_game_window, null);
+        currentView = getActivity().getLayoutInflater()
+                .inflate(R.layout.create_game_dialog, null);
         createGameDialog.setContentView(currentView);
 
         tournamentSpinner = currentView.findViewById(R.id.create_game_tournaments_spinner);
@@ -383,9 +375,9 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
                     public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Toast.makeText(context, "Game created successfully!", Toast.LENGTH_SHORT).show();
-                            dialogCloseListener.onDialogClosed(matchTime.toLocalDate());
-                            dismiss();
                         }
+                        createGameDialogCloseListener.onDialogClosed(matchTime.toLocalDate());
+                        dismiss();
                     }
 
                     @Override

@@ -4,7 +4,6 @@ import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     private Retrofit retrofit;
     private RecyclerView playerRecyclerView;
     private List<PlayerDTO> playerList;
-    private PLayerApi pLayerApi;
+    private PlayerApi pLayerApi;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
     private ImageView teamLogo;
@@ -107,7 +106,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
                 updateRequests.add(request);
             }
 
-            PLayerApi playerApi = retrofit.create(PLayerApi.class);
+            PlayerApi playerApi = retrofit.create(PlayerApi.class);
 
             Call<List<PlayerDTO>> call = playerApi.updatePlayers(updateRequests);
             call.enqueue(new Callback<>() {
@@ -169,7 +168,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     private void initializeRetrofit() {
         RequestHandler requestHandler = new RequestHandler(getContext());
         retrofit = requestHandler.getRetrofit();
-        pLayerApi = retrofit.create(PLayerApi.class);
+        pLayerApi = retrofit.create(PlayerApi.class);
     }
 
     private View.OnClickListener backButtonListener() {

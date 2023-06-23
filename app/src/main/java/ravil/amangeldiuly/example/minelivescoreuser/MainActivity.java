@@ -21,11 +21,8 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.ScoresFragment;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.CreateInDrawFragment;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.LoadTeamsFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentFragment;
 import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TournamentList;
-import ravil.amangeldiuly.example.minelivescoreuser.fragments.admin.TransfersFragment;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -102,6 +102,16 @@
     <string name="tournament_type">Tournament type</string>
     <string name="team_number">Team number</string>
     <string name="enter_tournament_location">Enter tournament locatiion</string>
+    <string name="goal">Goal</string>
+    <string name="yellow_card">Yellow Card</string>
+    <string name="red_card">Red Card</string>
+    <string name="end_match">End Match</string>
+    <string name="penalty">Penalty</string>
+    <string name="goal_event">Goal</string>
+    <string name="author">Author</string>
+    <string name="assist_author">Assist author</string>
+    <string name="minute">Minute</string>
+    <string name="save">Save</string>
     <string-array name="months">
         <item>Jan</item>
         <item>Feb</item>

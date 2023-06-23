@@ -51,7 +51,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, ActionInterfaces.DialogCloseListener {
+public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, ActionInterfaces.CreateGameDialogCloseListener {
 
     private Context context;
 

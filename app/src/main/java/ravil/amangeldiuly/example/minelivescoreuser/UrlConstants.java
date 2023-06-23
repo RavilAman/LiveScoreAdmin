@@ -2,7 +2,7 @@ package ravil.amangeldiuly.example.minelivescoreuser;
 
 public class UrlConstants {
 
-    public static final String BACKEND_URL = "http://192.168.137.235:8081/";
+    public static final String BACKEND_URL = "http://192.168.139.76:8080/";
 
     public static final String TOURNAMENTS = "tournament";
     public static final String TOURNAMENT_BY_NAME = "tournament/tournament_name";
@@ -18,11 +18,14 @@ public class UrlConstants {
     public static final String TOPIC_NAME = "notification/topic/tournament/{tournamentId}";
     public static final String CREATE_SUBSCRIPTION = "notification/subscriptions/{topic}";
     public static final String DELETE_SUBSCRIPTION = "notification/subscriptions/{topic}/{registrationToken}";
+    public static final String POST_TO_TOPIC = "notification/topic/{topic}";
+    public static final String TOPIC_NAME_BY_PROTOCOL = "notification/topic/{protocolId}";
 
     public static final String GAME_BY_DATE = "game/new/date";
     public static final String GAME_LIVE = "game/live";
     public static final String POST_GAME = "game";
     public static final String START_GAME = "game/start/{id}";
+    public static final String END_GAME = "game/end/{id}";
 
     public static final String GROUP_BY_TOURNAMENT = "group/tournament";
     public static final String GROUP_TABS = "group/group_tabs";
@@ -59,4 +62,11 @@ public class UrlConstants {
 
     public static final String PLAYER_BY_TEAM = "player/team/{team_id}";
     public static final String UPDATE_PLAYER_TEAM = "player/update/players";
+
+    public static final String POST_EVENT = "event";
+    public static final String POST_GOAL = "event/save_goal";
+    public static final String POST_PENALTY = "event/save_penalty";
+    public static final String PUT_EVENT = "event/{id}";
+    public static final String PUT_GOAL = "event/update_goal/{id}";
+    public static final String PUT_PENALTY = "event/update_penalty/{id}";
 }

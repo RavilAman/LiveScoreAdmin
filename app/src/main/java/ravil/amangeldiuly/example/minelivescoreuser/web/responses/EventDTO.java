@@ -108,4 +108,20 @@ public class EventDTO {
     public void setAssist(AssistDTO assist) {
         this.assist = assist;
     }
+
+    @Override
+    public String toString() {
+        return "EventDTO{" +
+                "eventId=" + eventId +
+                ", minute=" + minute +
+                ", gameScore='" + gameScore + '\'' +
+                ", eventName='" + eventName + '\'' +
+                ", playerName='" + playerName + '\'' +
+                ", playerId=" + playerId +
+                ", teamId=" + teamId +
+                ", teamName='" + teamName + '\'' +
+                ", teamLogo='" + teamLogo + '\'' +
+                ", assist=" + assist +
+                '}';
+    }
 }
