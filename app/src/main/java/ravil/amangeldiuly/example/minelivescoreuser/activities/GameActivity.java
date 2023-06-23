@@ -37,6 +37,7 @@ import ravil.amangeldiuly.example.minelivescoreuser.events.EventViewHolder;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.GameApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.ProtocolApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AssistDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
@@ -56,6 +57,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     private Retrofit retrofit;
     private ProtocolApi protocolApi;
     private GameApi gameApi;
+    private NotificationApi notificationApi;
 
     private LinearLayout manipulateGame;
     private LinearLayout manipulateEvent;
@@ -82,6 +84,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     private List<EventDTO> events;
     private ProtocolDTO protocolDTO;
     private long protocolId;
+    private String topicName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         Intent intent = getIntent();
         protocolId = intent.getExtras().getLong("protocolId");
         setData();
+        getTopicName();
     }
 
     private void initializeRetrofit() {
@@ -103,6 +107,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         retrofit = requestHandler.getRetrofit();
         protocolApi = retrofit.create(ProtocolApi.class);
         gameApi = retrofit.create(GameApi.class);
+        notificationApi = retrofit.create(NotificationApi.class);
     }
 
     private void initializeViews() {
@@ -132,6 +137,26 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
 
     private void initializeObjects() {
         events = new ArrayList<>();
+    }
+
+    private void getTopicName() {
+        notificationApi.getTopicNameByProtocolId((int) protocolId).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    topicName = response.body();
+                } else {
+                    System.out.println("ne poluchil topic name!");
+                    System.out.println("responseCode: " + response.code());
+                    System.out.println("---------------------------------");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void setData() {
@@ -306,14 +331,14 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
 
     private void openEventDialogToCreate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum) {
         ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId,
-                teamLogo, teamId, eventEnum, this);
+                teamLogo, teamId, eventEnum, topicName, this, protocolDTO);
         manipulateEventDialog.setGameDateTime(protocolDTO.getDateAndTime());
         manipulateEventDialog.show(getSupportFragmentManager(), "");
     }
 
     private void openEventDialogToUpdate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
         ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId, teamLogo,
-                teamId, eventEnum, this, playerId, minute, eventId, assistDTO);
+                teamId, eventEnum, topicName, this, playerId, minute, eventId, assistDTO, protocolDTO);
         manipulateEventDialog.setGameDateTime(protocolDTO.getDateAndTime());
         manipulateEventDialog.show(getSupportFragmentManager(), "");
     }

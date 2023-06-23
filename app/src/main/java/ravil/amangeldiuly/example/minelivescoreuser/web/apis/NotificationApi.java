@@ -3,6 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreuser.web.apis;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.UrlConstants;
+import ravil.amangeldiuly.example.minelivescoreuser.web.requests.CustomNotificationDto;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -20,4 +21,10 @@ public interface NotificationApi {
 
     @DELETE(UrlConstants.DELETE_SUBSCRIPTION)
     Call<Void> deleteSubscription(@Path("topic") String topic, @Path("registrationToken") String registrationToken);
+
+    @POST(UrlConstants.POST_TO_TOPIC)
+    Call<String> postToTopic(@Path("topic") String topicName, @Body CustomNotificationDto customNotificationDto);
+
+    @GET(UrlConstants.TOPIC_NAME_BY_PROTOCOL)
+    Call<String> getTopicNameByProtocolId(@Path("protocolId") int protocolId);
 }

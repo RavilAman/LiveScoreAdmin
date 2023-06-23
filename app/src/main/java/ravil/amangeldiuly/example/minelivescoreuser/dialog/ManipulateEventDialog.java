@@ -1,5 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreuser.dialog;
 
+import static ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils.beautifyScoreForNotification;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -33,12 +35,16 @@ import java.util.stream.Collectors;
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.enums.EventEnum;
 import ravil.amangeldiuly.example.minelivescoreuser.utils.ActionInterfaces;
+import ravil.amangeldiuly.example.minelivescoreuser.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.EventApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.requests.CustomNotificationDto;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.AssistDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
+import ravil.amangeldiuly.example.minelivescoreuser.web.responses.ProtocolDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveEventDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.SaveGoalEventDTO;
 import retrofit2.Call;
@@ -63,8 +69,8 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener;
     private LocalDateTime gameDateTime;
     private long protocolId;
-    private String teamLogoLink;
-    private long teamId;
+    private String currentTeamLogoLink;
+    private long currentTeamId;
     private EventEnum eventEnum;
     private ArrayAdapter<String> authorsAdapter;
     private ArrayAdapter<String> assistAdapter;
@@ -76,33 +82,40 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private Long eventId;
     private AssistDTO assistDTO;
     private boolean update;
+    private String topicName;
+    private ProtocolDTO protocolDTO;
 
     private RequestHandler requestHandler;
     private Retrofit retrofit;
     private EventApi eventApi;
     private PlayerApi playerApi;
+    private NotificationApi notificationApi;
 
-    public ManipulateEventDialog(long protocolId, String teamLogoLink, long teamId, EventEnum eventEnum,
-                                 ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener) {
+    public ManipulateEventDialog(long protocolId, String currentTeamLogoLink, long currentTeamId, EventEnum eventEnum, String topicName,
+                                 ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener, ProtocolDTO protocolDTO) {
         this.protocolId = protocolId;
-        this.teamLogoLink = teamLogoLink;
-        this.teamId = teamId;
+        this.currentTeamLogoLink = currentTeamLogoLink;
+        this.currentTeamId = currentTeamId;
         this.eventEnum = eventEnum;
         this.manipulateEventDialogCloseListener = manipulateEventDialogCloseListener;
+        this.topicName = topicName;
+        this.protocolDTO = protocolDTO;
     }
 
-    public ManipulateEventDialog(long protocolId, String teamLogoLink, long teamId, EventEnum eventEnum,
+    public ManipulateEventDialog(long protocolId, String currentTeamLogoLink, long currentTeamId, EventEnum eventEnum, String topicName,
                                  ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener,
-                                 Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+                                 Long playerId, Integer minute, Long eventId, AssistDTO assistDTO, ProtocolDTO protocolDTO) {
         this.protocolId = protocolId;
-        this.teamLogoLink = teamLogoLink;
-        this.teamId = teamId;
+        this.currentTeamLogoLink = currentTeamLogoLink;
+        this.currentTeamId = currentTeamId;
         this.eventEnum = eventEnum;
         this.manipulateEventDialogCloseListener = manipulateEventDialogCloseListener;
         this.playerId = playerId;
         this.minute = minute;
         this.eventId = eventId;
         this.assistDTO = assistDTO;
+        this.topicName = topicName;
+        this.protocolDTO = protocolDTO;
         update = true;
     }
 
@@ -153,6 +166,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         retrofit = requestHandler.getRetrofit();
         eventApi = retrofit.create(EventApi.class);
         playerApi = retrofit.create(PlayerApi.class);
+        notificationApi = retrofit.create(NotificationApi.class);
     }
 
     private void setListeners() {
@@ -164,6 +178,9 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     }
 
     private void saveOrUpdateEvent() {
+        CustomNotificationDto customNotificationDto = new CustomNotificationDto();
+        customNotificationDto.setImage(currentTeamLogoLink);
+        StringBuilder messageBuilder = new StringBuilder();
         PlayerDTO player = identifyPlayer(authorSpinner.getSelectedItem().toString());
         if (player != null) {
             if (eventEnum.equals(EventEnum.GOAL)) {
@@ -182,10 +199,34 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     if (update) {
                         goalCall = eventApi.putGoalEvent(eventId.intValue(), saveGoalEventDTO);
                     }
+
+                    customNotificationDto.setTitle("Гол!");
+                    messageBuilder.append(protocolDTO.getTeam1());
+                    messageBuilder.append(" ");
+                    messageBuilder.append(beautifyScoreForNotification(protocolDTO.getGameScore(), protocolDTO.getTeam1Id().equals(currentTeamId)));
+                    messageBuilder.append(" ");
+                    messageBuilder.append(protocolDTO.getTeam2());
+                    messageBuilder.append("\n");
+                    messageBuilder.append(player.getSurname());
+                    messageBuilder.append(" ");
+                    messageBuilder.append(player.getName());
+                    messageBuilder.append(minute);
+                    messageBuilder.append("'");
+                    if (assistPlayer != null) {
+                        messageBuilder.append(" ");
+                        messageBuilder.append("(");
+                        messageBuilder.append(assistPlayer.getSurname());
+                        messageBuilder.append(" ");
+                        messageBuilder.append(assistPlayer.getName());
+                        messageBuilder.append(")");
+                    }
+                    customNotificationDto.setBody(messageBuilder.toString());
+
                     goalCall.enqueue(new Callback<>() {
                         @Override
                         public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                             if (response.isSuccessful()) {
+                                sendNotification(customNotificationDto);
                                 closeMessage = "Goal scored successfully!";
                                 if (update) {
                                     closeMessage = "Event changed successfully!";
@@ -209,6 +250,21 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 saveEventDTO.setMinute(minutePicker.getValue());
                 saveEventDTO.setPlayerId(player.getPlayerId());
                 if (eventEnum.equals(EventEnum.PENALTY)) {
+
+                    customNotificationDto.setTitle("Пенальти!");
+                    messageBuilder.append(protocolDTO.getTeam1());
+                    messageBuilder.append(" ");
+                    messageBuilder.append(beautifyScoreForNotification(protocolDTO.getGameScore(), protocolDTO.getTeam1Id().equals(currentTeamId)));
+                    messageBuilder.append(" ");
+                    messageBuilder.append(protocolDTO.getTeam2());
+                    messageBuilder.append("\n");
+                    messageBuilder.append(player.getSurname());
+                    messageBuilder.append(" ");
+                    messageBuilder.append(player.getName());
+                    messageBuilder.append(minute);
+                    messageBuilder.append("'");
+                    customNotificationDto.setBody(messageBuilder.toString());
+
                     saveEventDTO.setEventEnumId(5L);
                     Call<EventDTO> penaltyCall = eventApi.postPenaltyEvent(saveEventDTO);
                     if (update) {
@@ -218,6 +274,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                         @Override
                         public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                             if (response.isSuccessful()) {
+                                sendNotification(customNotificationDto);
                                 closeMessage = "Penalty scored successfully!";
                                 if (update) {
                                     closeMessage = "Event changed successfully!";
@@ -236,18 +293,36 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 } else if (eventEnum.equals(EventEnum.YELLOW_CARD) || eventEnum.equals(EventEnum.SECOND_YELLOW_CARD)) {
                     closeMessage = "Yellow card awarded successfully!";
                     saveEventDTO.setEventEnumId(3L);
+                    customNotificationDto.setTitle("Желтая карточка");
                 } else if (eventEnum.equals(EventEnum.RED_CARD)) {
                     closeMessage = "Red card awarded successfully!";
                     saveEventDTO.setEventEnumId(4L);
+                    customNotificationDto.setTitle("Красная карточка");
                 }
                 Call<EventDTO> eventCall = eventApi.postEvent(saveEventDTO);
                 if (update) {
                     eventCall = eventApi.putEvent(eventId.intValue(), saveEventDTO);
                 }
+
+                messageBuilder.append(minute);
+                messageBuilder.append("'");
+                messageBuilder.append(player.getSurname());
+                messageBuilder.append(" ");
+                messageBuilder.append(player.getName());
+                messageBuilder.append(" ");
+                messageBuilder.append("(");
+                messageBuilder.append(
+                        protocolDTO.getTeam1Id().equals(currentTeamId)
+                                ? protocolDTO.getTeam1()
+                                : protocolDTO.getTeam2());
+                messageBuilder.append(")");
+                customNotificationDto.setBody(messageBuilder.toString());
+
                 eventCall.enqueue(new Callback<>() {
                     @Override
                     public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                         if (update) {
+                            sendNotification(customNotificationDto);
                             closeMessage = "Event changed successfully!";
                         }
                         if (!response.isSuccessful()) {
@@ -315,7 +390,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         bendLayoutUnderEvent();
         configureMinutePicker();
         Glide.with(context)
-                .load(teamLogoLink)
+                .load(currentTeamLogoLink)
                 .into(teamLogo);
         getPlayers();
     }
@@ -323,7 +398,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private void getPlayers() {
         players.clear();
         playerFullNames.clear();
-        playerApi.findAllPlayerByTeamId(teamId).enqueue(new Callback<>() {
+        playerApi.findAllPlayerByTeamId(currentTeamId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<PlayerDTO>> call, Response<List<PlayerDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
@@ -350,6 +425,26 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
 
             @Override
             public void onFailure(Call<List<PlayerDTO>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void sendNotification(CustomNotificationDto customNotificationDto) {
+        notificationApi.postToTopic(topicName, customNotificationDto).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Success!");
+                } else {
+                    System.out.println("Fail!");
+                    System.out.println("responseCode: " + response.code());
+                    System.out.println("----------------------------------");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
                 t.printStackTrace();
             }
         });

@@ -40,6 +40,16 @@ public class GeneralUtils {
                 + gameScore.substring(gameScore.indexOf(":") + 1);
     }
 
+    public static String beautifyScoreForNotification(String score, boolean first) {
+        if (first) {
+            return "[" + score.substring(0, score.indexOf(':')) + "]"
+                    + ":" + score.substring(score.indexOf(':') + 1);
+        } else {
+            return score.substring(0, score.indexOf(':')) + ":"
+                    + "[" + score.substring(score.indexOf(':') + 1) + "]";
+        }
+    }
+
     // todo: починить, не работает
 //    public static boolean isConnected(FragmentActivity fragmentActivity) {
 //        ConnectivityManager connectivityManager = (ConnectivityManager) fragmentActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
