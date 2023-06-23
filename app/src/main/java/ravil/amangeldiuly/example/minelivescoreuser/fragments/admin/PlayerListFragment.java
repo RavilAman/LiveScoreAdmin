@@ -1,7 +1,5 @@
 package ravil.amangeldiuly.example.minelivescoreuser.fragments.admin;
 
-import static ravil.amangeldiuly.example.minelivescoreuser.UrlConstants.BACKEND_URL;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,18 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreuser.R;
 import ravil.amangeldiuly.example.minelivescoreuser.players.PlayerAdapter;
-import ravil.amangeldiuly.example.minelivescoreuser.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreuser.web.RequestHandler;
-import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PLayerApi;
+import ravil.amangeldiuly.example.minelivescoreuser.web.apis.PlayerApi;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.PlayerDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.TeamDTO;
 import ravil.amangeldiuly.example.minelivescoreuser.web.responses.UpdatePlayerRequestDTO;
@@ -41,7 +35,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItemListener {
 
@@ -51,7 +44,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     private Retrofit retrofit;
     private RecyclerView playerRecyclerView;
     private List<PlayerDTO> playerList;
-    private PlayerApi pLayerApi;
+    private PlayerApi playerApi;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
     private ImageView teamLogo;
@@ -155,7 +148,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
                 t.printStackTrace();
             }
         };
-        pLayerApi.findAllPlayerByTeamId(teamDTO.getTeamId()).enqueue(callback);
+        playerApi.findAllPlayerByTeamId(teamDTO.getTeamId()).enqueue(callback);
 
     }
 
@@ -168,7 +161,7 @@ public class PlayerListFragment extends Fragment implements PlayerAdapter.OnItem
     private void initializeRetrofit() {
         RequestHandler requestHandler = new RequestHandler(getContext());
         retrofit = requestHandler.getRetrofit();
-        pLayerApi = retrofit.create(PlayerApi.class);
+        playerApi = retrofit.create(PlayerApi.class);
     }
 
     private View.OnClickListener backButtonListener() {

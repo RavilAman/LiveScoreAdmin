@@ -13,8 +13,6 @@ public class UrlConstants {
     public static final String CREATE_TOURNAMENT_LEAGUE = "tournament/league";
     public static final String CREATE_TOURNAMENT_CUP = "tournament/cup";
 
-
-
     public static final String TOPIC_NAME = "notification/topic/tournament/{tournamentId}";
     public static final String CREATE_SUBSCRIPTION = "notification/subscriptions/{topic}";
     public static final String DELETE_SUBSCRIPTION = "notification/subscriptions/{topic}/{registrationToken}";
