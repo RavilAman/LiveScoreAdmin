@@ -19,6 +19,17 @@ public class PlayerDTO {
         this.role = role;
     }
 
+    public static PlayerDTO defaultBuilder() {
+        return new PlayerDTO(
+                0L,
+                "",
+                "",
+                "",
+                0,
+                ""
+        );
+    }
+
     public Long getPlayerId() {
         return playerId;
     }
@@ -73,6 +84,22 @@ public class PlayerDTO {
 
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
+    }
+
+    public String playerFullNameSurnameFirst() {
+        StringBuilder fullNameBuilder = new StringBuilder();
+        fullNameBuilder.append(surname);
+        fullNameBuilder.append(" ");
+        fullNameBuilder.append(name);
+        return fullNameBuilder.toString();
+    }
+
+    public String playerFullNameNameFirst() {
+        StringBuilder fullNameBuilder = new StringBuilder();
+        fullNameBuilder.append(name);
+        fullNameBuilder.append(" ");
+        fullNameBuilder.append(surname);
+        return fullNameBuilder.toString();
     }
 
     @Override

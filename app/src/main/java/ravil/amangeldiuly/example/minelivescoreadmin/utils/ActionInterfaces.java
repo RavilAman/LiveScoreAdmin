@@ -16,6 +16,7 @@ public interface ActionInterfaces {
     }
 
     interface ManipulateEventDialogOpenListener {
-        void onDialogOpen(String teamLogo, long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO);
+        void onDialogOpen(String teamLogo, long teamId, EventEnum eventEnum, Long playerId,
+                          Integer minute, Long eventId, AssistDTO assistDTO);
     }
 }

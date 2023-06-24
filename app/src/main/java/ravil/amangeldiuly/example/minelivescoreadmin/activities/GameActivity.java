@@ -137,6 +137,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
 
     private void initializeObjects() {
         events = new ArrayList<>();
+        topicName = "";
     }
 
     private void getTopicName() {
@@ -145,10 +146,6 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     topicName = response.body();
-                } else {
-                    System.out.println("ne poluchil topic name!");
-                    System.out.println("responseCode: " + response.code());
-                    System.out.println("---------------------------------");
                 }
             }
 
@@ -336,9 +333,11 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         manipulateEventDialog.show(getSupportFragmentManager(), "");
     }
 
-    private void openEventDialogToUpdate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+    private void openEventDialogToUpdate(long protocolId, String teamLogo, long teamId, EventEnum eventEnum,
+                                         Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
         ManipulateEventDialog manipulateEventDialog = new ManipulateEventDialog(protocolId, teamLogo,
-                teamId, eventEnum, topicName, this, playerId, minute, eventId, assistDTO, protocolDTO);
+                teamId, eventEnum, topicName, this, playerId, minute,
+                eventId, assistDTO, protocolDTO);
         manipulateEventDialog.setGameDateTime(protocolDTO.getDateAndTime());
         manipulateEventDialog.show(getSupportFragmentManager(), "");
     }
@@ -381,7 +380,6 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     }
 
     private void disableEventChange() {
-        System.out.println("disableEventChange вызвали!");
         RecyclerView.Adapter<EventViewHolder> adapter = eventsRecyclerView.getAdapter();
         for (int i = 0; i < Objects.requireNonNull(adapter).getItemCount(); i++) {
             RecyclerView.ViewHolder eventViewHolder = eventsRecyclerView.findViewHolderForAdapterPosition(i);
@@ -399,7 +397,8 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     }
 
     @Override
-    public void onDialogOpen(String teamLogo, long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+    public void onDialogOpen(String teamLogo, long teamId, EventEnum eventEnum, Long playerId,
+                             Integer minute, Long eventId, AssistDTO assistDTO) {
         openEventDialogToUpdate(protocolId, teamLogo, teamId, eventEnum, playerId, minute, eventId, assistDTO);
     }
 }

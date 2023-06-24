@@ -141,12 +141,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         if (gameState.equals(GameState.ENDED)) {
             holder.editEvent.setEnabled(false);
         }
-        holder.editEvent.setOnClickListener(editEventListener(eventDTO.getTeamLogo(), eventDTO.getTeamId(),
-                eventEnum, eventDTO.getPlayerId(), eventDTO.getMinute(), eventDTO.getEventId(), eventDTO.getAssist()));
+        holder.editEvent.setOnClickListener(
+                editEventListener(
+                        eventDTO.getTeamLogo(), eventDTO.getTeamId(),
+                        eventEnum, eventDTO.getPlayerId(), eventDTO.getMinute(),
+                        eventDTO.getEventId(), eventDTO.getAssist())
+        );
     }
 
-    private View.OnClickListener editEventListener(String teamLogo, Long teamId, EventEnum eventEnum, Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
-        return view -> manipulateEventDialogOpenListener.onDialogOpen(teamLogo, teamId, eventEnum, playerId, minute, eventId, assistDTO);
+    private View.OnClickListener editEventListener(String teamLogo, Long teamId, EventEnum eventEnum,
+                                                   Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
+        return view -> manipulateEventDialogOpenListener.onDialogOpen(teamLogo, teamId, eventEnum,
+                playerId, minute, eventId, assistDTO);
     }
 
     @Override

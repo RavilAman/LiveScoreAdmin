@@ -1,6 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreadmin.dialog;
 
 import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.FCM_TOKEN;
+import static ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected.PLAYER;
 import static ravil.amangeldiuly.example.minelivescoreadmin.utils.GeneralUtils.beautifyScoreForNotification;
 import static ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil.getValue;
 
@@ -33,10 +34,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.EventEnum;
+import ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected;
+import ravil.amangeldiuly.example.minelivescoreadmin.spinner.UniversalSpinnerAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
@@ -68,6 +72,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private Spinner assistSpinner;
     private NumberPicker minutePicker;
     private Button saveButton;
+    private UniversalSpinnerAdapter spinnerAdapter;
 
     private ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener;
     private LocalDateTime gameDateTime;
@@ -75,10 +80,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private String currentTeamLogoLink;
     private long currentTeamId;
     private EventEnum eventEnum;
-    private ArrayAdapter<String> authorsAdapter;
-    private ArrayAdapter<String> assistAdapter;
     private List<PlayerDTO> players;
-    private List<String> playerFullNames;
     private String closeMessage;
     private Long playerId;
     private Integer minute;
@@ -136,7 +138,6 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
 
     private void initializeObjects() {
         players = new ArrayList<>();
-        playerFullNames = new ArrayList<>();
         closeMessage = "error!";
     }
 
@@ -185,19 +186,15 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         customNotificationDto.setImage(currentTeamLogoLink);
         customNotificationDto.setRegistrationTokens(List.of(getValue(context, FCM_TOKEN)));
         StringBuilder messageBuilder = new StringBuilder();
-        PlayerDTO player = identifyPlayer(authorSpinner.getSelectedItem().toString());
-        if (player != null) {
+        int selectedPlayerIndex = (int) authorSpinner.getSelectedItem();
+        PlayerDTO player = players.get(selectedPlayerIndex);
+        if (selectedPlayerIndex > 0) {
             if (eventEnum.equals(EventEnum.GOAL)) {
                 SaveGoalEventDTO saveGoalEventDTO = new SaveGoalEventDTO();
                 saveGoalEventDTO.setProtocolId(protocolId);
                 saveGoalEventDTO.setPlayerId(player.getPlayerId());
                 saveGoalEventDTO.setMinute(minutePicker.getValue());
-                PlayerDTO assistPlayer = identifyPlayer(assistSpinner.getSelectedItem().toString());
-                if (assistPlayer != null) {
-                    saveGoalEventDTO.setAssistId(assistPlayer.getPlayerId());
-                } else {
-                    saveGoalEventDTO.setAssistId(0L);
-                }
+                PlayerDTO assistPlayer = players.get((int) assistSpinner.getSelectedItem());
                 if (!Objects.equals(saveGoalEventDTO.getPlayerId(), saveGoalEventDTO.getAssistId())) {
                     Call<EventDTO> goalCall = eventApi.postGoalEvent(saveGoalEventDTO);
                     if (update) {
@@ -405,22 +402,17 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
 
     private void getPlayers() {
         players.clear();
-        playerFullNames.clear();
+        players.add(PlayerDTO.defaultBuilder());
         playerApi.findAllPlayerByTeamId(currentTeamId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<PlayerDTO>> call, Response<List<PlayerDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    players = response.body();
-                    deleteSpaceFromNames();
-                    setPlayerNames();
+                    players.addAll(response.body());
 
-                    authorsAdapter = new ArrayAdapter<>(context, R.layout.players_spinner_item, playerFullNames);
-                    authorsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    authorSpinner.setAdapter(authorsAdapter);
-
-                    assistAdapter = new ArrayAdapter<>(context, R.layout.players_spinner_item, playerFullNames);
-                    assistAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    assistSpinner.setAdapter(assistAdapter);
+                    spinnerAdapter = new UniversalSpinnerAdapter(context, PLAYER);
+                    spinnerAdapter.setPlayers(players);
+                    authorSpinner.setAdapter(spinnerAdapter);
+                    assistSpinner.setAdapter(spinnerAdapter);
 
                     if (playerId != null) {
                         authorSpinner.setSelection(getPlayerById(playerId));
@@ -443,11 +435,6 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("Success!");
-                } else {
-                    System.out.println("Fail!");
-                    System.out.println("responseCode: " + response.code());
-                    System.out.println("----------------------------------");
                 }
             }
 
@@ -458,50 +445,14 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         });
     }
 
-    private void setPlayerNames() {
-        playerFullNames.add("");
-        playerFullNames.addAll(
-                players.stream()
-                        .map(playerDTO ->
-                                playerDTO.getName() + " " + playerDTO.getSurname())
-                        .collect(Collectors.toList())
-        );
-    }
-
-    private void deleteSpaceFromNames() {
-        players.forEach(playerDTO -> {
-            playerDTO.setSurname(
-                    playerDTO.getSurname().replaceAll("\\s", "")
-            );
-            playerDTO.setName(
-                    playerDTO.getName().replaceAll("\\s", "")
-            );
-        });
-    }
-
     public void setGameDateTime(LocalDateTime gameDateTime) {
         this.gameDateTime = gameDateTime;
     }
 
-    private PlayerDTO identifyPlayer(String playerFullName) {
-        if (playerFullName.isEmpty()) {
-            return null;
-        }
-        Optional<PlayerDTO> answer = players.stream().filter(playerDTO ->
-                playerDTO.getName()
-                        .equals(playerFullName.substring(0, playerFullName.indexOf(" ")))
-                        && playerDTO.getSurname()
-                        .equals(playerFullName.substring(playerFullName.indexOf(" ") + 1))
-        ).findFirst();
-        return answer.orElse(null);
-    }
-
     private int getPlayerById(Long playerId) {
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getPlayerId().equals(playerId)) {
-                return i + 1;
-            }
-        }
-        return 0;
+        return IntStream.range(0, players.size())
+                .filter(i -> players.get(i).getPlayerId().equals(playerId))
+                .findFirst()
+                .orElse(0);
     }
 }

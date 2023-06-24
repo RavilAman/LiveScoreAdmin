@@ -1,5 +1,9 @@
 package ravil.amangeldiuly.example.minelivescoreadmin.dialog;
 
+import static ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected.GROUP;
+import static ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected.TEAM;
+import static ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected.TOURNAMENT;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +36,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
+import ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected;
+import ravil.amangeldiuly.example.minelivescoreadmin.spinner.UniversalSpinnerAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.GameApi;
@@ -57,26 +64,20 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private Spinner groupSpinner;
     private Spinner homeTeamsSpinner;
     private Spinner awayTeamsSpinner;
-    private ArrayAdapter<String> tournamentsAdapter;
-    private ArrayAdapter<String> groupsAdapter;
-    private ArrayAdapter<String> homeTeamsAdapter;
-    private ArrayAdapter<String> awayTeamsAdapter;
     private NumberPicker monthPicker;
     private NumberPicker dayPicker;
     private NumberPicker yearPicker;
     private NumberPicker hourPicker;
     private NumberPicker minutePicker;
     private Button createGameButton;
+    private UniversalSpinnerAdapter spinnerAdapter;
 
     private ActionInterfaces.CreateGameDialogCloseListener createGameDialogCloseListener;
     private TournamentDto selectedTournament;
     private GroupDTO selectedGroup;
     private List<TournamentDto> tournaments;
-    private List<String> tournamentNames;
     private List<GroupDTO> groups;
-    private List<String> groupNames;
     private List<TeamDTO> teams;
-    private List<String> teamNames;
     private String[] months;
     private String[] days;
     private String[] hours;
@@ -242,11 +243,8 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
 
     private void initializeObjects() {
         tournaments = new ArrayList<>();
-        tournamentNames = new ArrayList<>();
         groups = new ArrayList<>();
-        groupNames = new ArrayList<>();
         teams = new ArrayList<>();
-        teamNames = new ArrayList<>();
         getTournaments();
         months = getResources().getStringArray(R.array.months);
         saveGameDTO = new SaveGameDTO();
@@ -264,17 +262,14 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
 
     private void getTournaments() {
         tournaments.clear();
-        tournamentNames.clear();
-        // todo: убрать хардкод, юсер айди будет вшиваться в токен
         tournamentApi.findTournamentsByUser().enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<TournamentDto>> call, Response<List<TournamentDto>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     tournaments = response.body();
-                    setTournamentNames();
-                    tournamentsAdapter = new ArrayAdapter<>(context, R.layout.tournaments_spinner_item, tournamentNames);
-                    tournamentsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    tournamentSpinner.setAdapter(tournamentsAdapter);
+                    spinnerAdapter = new UniversalSpinnerAdapter(context, TOURNAMENT);
+                    spinnerAdapter.setTournaments(tournaments);
+                    tournamentSpinner.setAdapter(spinnerAdapter);
                 }
             }
 
@@ -287,16 +282,14 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
 
     private void getGroups() {
         groups.clear();
-        groupNames.clear();
         groupApi.findGroupsByTournament(selectedTournament.getTournamentId().intValue()).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<GroupDTO>> call, Response<List<GroupDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     groups = response.body();
-                    setGroupNames();
-                    groupsAdapter = new ArrayAdapter<>(context, R.layout.groups_spinner_item, groupNames);
-                    groupsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    groupSpinner.setAdapter(groupsAdapter);
+                    spinnerAdapter = new UniversalSpinnerAdapter(context, GROUP);
+                    spinnerAdapter.setGroups(groups);
+                    groupSpinner.setAdapter(spinnerAdapter);
                 }
             }
 
@@ -309,7 +302,6 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
 
     private void getTeams() {
         teams.clear();
-        teamNames.clear();
         teamApi.findTeamsByTournamentAndGroups(
                 selectedTournament.getTournamentId().intValue(),
                 selectedGroup.getGroupId().intValue()
@@ -318,15 +310,11 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
             public void onResponse(Call<List<TeamDTO>> call, Response<List<TeamDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     teams = response.body();
-                    setTeamNames();
                 }
-                homeTeamsAdapter = new ArrayAdapter<>(context, R.layout.groups_spinner_item, teamNames);
-                homeTeamsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                homeTeamsSpinner.setAdapter(homeTeamsAdapter);
-
-                awayTeamsAdapter = new ArrayAdapter<>(context, R.layout.groups_spinner_item, teamNames);
-                awayTeamsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                awayTeamsSpinner.setAdapter(awayTeamsAdapter);
+                spinnerAdapter = new UniversalSpinnerAdapter(context, TEAM);
+                spinnerAdapter.setTeams(teams);
+                homeTeamsSpinner.setAdapter(spinnerAdapter);
+                awayTeamsSpinner.setAdapter(spinnerAdapter);
             }
 
             @Override
@@ -339,11 +327,11 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == R.id.create_game_tournaments_spinner) {
-            selectedTournament = identifyTournament(tournamentSpinner.getSelectedItem().toString());
+            selectedTournament = tournaments.get((int) tournamentSpinner.getSelectedItem());
             getGroups();
         }
         if (parent.getId() == R.id.create_game_group_spinner) {
-            selectedGroup = identifyGroup(groupSpinner.getSelectedItem().toString());
+            selectedGroup = groups.get((int) groupSpinner.getSelectedItem());
             getTeams();
         }
     }
@@ -408,23 +396,5 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
                 .filter(teamDTO -> teamDTO.getTeamName().equals(teamName))
                 .findFirst();
         return answer.orElse(null);
-    }
-
-    private void setTournamentNames() {
-        tournamentNames = tournaments.stream()
-                .map(TournamentDto::getTournamentName)
-                .collect(Collectors.toList());
-    }
-
-    private void setGroupNames() {
-        groupNames = groups.stream()
-                .map(GroupDTO::getGroupName)
-                .collect(Collectors.toList());
-    }
-
-    private void setTeamNames() {
-        teamNames = teams.stream()
-                .map(TeamDTO::getTeamName)
-                .collect(Collectors.toList());
     }
 }
