@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -32,26 +31,21 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.EventEnum;
-import ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected;
 import ravil.amangeldiuly.example.minelivescoreadmin.spinner.UniversalSpinnerAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
-import ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.EventApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.PlayerApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.CustomNotificationDto;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.AssistDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.EventDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.PlayerDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.ProtocolDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.AssistDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.EventDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.PlayerDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.ProtocolDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveEventDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveGoalEventDTO;
 import retrofit2.Call;
@@ -204,22 +198,19 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     customNotificationDto.setTitle("Гол!");
                     messageBuilder.append(protocolDTO.getTeam1());
                     messageBuilder.append(" ");
-                    messageBuilder.append(beautifyScoreForNotification(protocolDTO.getGameScore(), protocolDTO.getTeam1Id().equals(currentTeamId)));
+                    messageBuilder.append(beautifyScoreForNotification(protocolDTO.getGameScore(),
+                            protocolDTO.getTeam1Id().equals(currentTeamId)));
                     messageBuilder.append(" ");
                     messageBuilder.append(protocolDTO.getTeam2());
                     messageBuilder.append("\n");
-                    messageBuilder.append(player.getSurname());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(player.getName());
+                    messageBuilder.append(player.fullNameNameFirst());
                     messageBuilder.append(" ");
                     messageBuilder.append(minutePicker.getValue());
                     messageBuilder.append("'");
                     if (assistPlayer != null) {
                         messageBuilder.append(" ");
                         messageBuilder.append("(");
-                        messageBuilder.append(assistPlayer.getSurname());
-                        messageBuilder.append(" ");
-                        messageBuilder.append(assistPlayer.getName());
+                        messageBuilder.append(player.fullNameNameFirst());
                         messageBuilder.append(")");
                     }
                     customNotificationDto.setBody(messageBuilder.toString());
@@ -260,9 +251,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     messageBuilder.append(" ");
                     messageBuilder.append(protocolDTO.getTeam2());
                     messageBuilder.append("\n");
-                    messageBuilder.append(player.getSurname());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(player.getName());
+                    messageBuilder.append(player.fullNameNameFirst());
                     messageBuilder.append(" ");
                     messageBuilder.append(minutePicker.getValue());
                     messageBuilder.append("'");
@@ -310,9 +299,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 messageBuilder.append(minutePicker.getValue());
                 messageBuilder.append("'");
                 messageBuilder.append(" ");
-                messageBuilder.append(player.getSurname());
-                messageBuilder.append(" ");
-                messageBuilder.append(player.getName());
+                messageBuilder.append(player.fullNameNameFirst());
                 messageBuilder.append(" ");
                 messageBuilder.append("(");
                 messageBuilder.append(

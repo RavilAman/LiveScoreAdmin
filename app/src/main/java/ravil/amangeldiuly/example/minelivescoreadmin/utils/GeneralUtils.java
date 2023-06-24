@@ -3,7 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreadmin.utils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 
 public class GeneralUtils {
 

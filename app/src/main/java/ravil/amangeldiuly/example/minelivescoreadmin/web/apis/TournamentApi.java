@@ -5,7 +5,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreadmin.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveCupTournamentDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveTournamentDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

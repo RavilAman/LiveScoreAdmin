@@ -2,6 +2,8 @@ package ravil.amangeldiuly.example.minelivescoreadmin.web.responses;
 
 import java.util.List;
 
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TeamDTO;
+
 public class AfterDrawDTO {
 
     Long groupId;

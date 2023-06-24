@@ -8,8 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GroupDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GroupDTO;
 
 public class TournamentInfoAdapter extends FragmentPagerAdapter {
 

@@ -19,7 +19,7 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.GameState;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GameDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GameDTO;
 
 public class GameAdapter extends RecyclerView.Adapter<GameViewHolder> {
 

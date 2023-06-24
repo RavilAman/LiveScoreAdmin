@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

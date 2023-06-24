@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.PlayerDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TeamDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.PlayerDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TeamDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.UpdatePlayerRequestDTO;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayersViewHolder> {
@@ -45,7 +45,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayersViewHolder> {
     public void onBindViewHolder(@NonNull PlayersViewHolder holder, int position) {
         PlayerDTO currentPlayer = players.get(position);
         holder.playerDTO = currentPlayer;
-        holder.playerName.setText(currentPlayer.getName() + " " + currentPlayer.getSurname());
+        holder.playerName.setText(currentPlayer.fullNameNameFirst());
         holder.playerNumber.setText("#" + currentPlayer.getPlayerNumber());
         holder.setDefaultSelectedItem(currentPlayer.getTeamId());
 

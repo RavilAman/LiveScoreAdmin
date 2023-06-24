@@ -15,10 +15,10 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.SpinnerSelected;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GroupDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.PlayerDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TeamDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GroupDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.PlayerDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TeamDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 
 public class UniversalSpinnerAdapter extends BaseAdapter {
 
@@ -89,7 +89,7 @@ public class UniversalSpinnerAdapter extends BaseAdapter {
                 number.setText(position != 0
                         ? String.valueOf(player.getPlayerNumber())
                         : "");
-                name.setText(player.playerFullNameNameFirst());
+                name.setText(player.fullNameNameFirst());
                 break;
             case TEAM:
                 number.setVisibility(View.GONE);

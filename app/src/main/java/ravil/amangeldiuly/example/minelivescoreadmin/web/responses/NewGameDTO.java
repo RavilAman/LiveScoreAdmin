@@ -2,6 +2,8 @@ package ravil.amangeldiuly.example.minelivescoreadmin.web.responses;
 
 import java.util.List;
 
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GameDTO;
+
 public class NewGameDTO {
 
     private Long tournamentId;

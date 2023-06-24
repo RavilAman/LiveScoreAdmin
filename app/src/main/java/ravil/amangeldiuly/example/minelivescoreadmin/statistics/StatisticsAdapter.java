@@ -14,11 +14,11 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.StatisticsType;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.DistinctPlayerStatisticsDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.DistinctTeamStatisticsDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GroupInfoListDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.PlayerStatisticsAllDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TeamStatisticsAllDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.DistinctTeamStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GroupInfoListDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.PlayerStatisticsAllDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TeamStatisticsAllDTO;
 
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder> {
 

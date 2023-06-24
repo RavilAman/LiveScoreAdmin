@@ -42,11 +42,11 @@ import ravil.amangeldiuly.example.minelivescoreadmin.utils.LocalDateTimeDeserial
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.GroupStatisticsApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.PlayerStatisticsApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.TeamStatisticsApi;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.DistinctPlayerStatisticsDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.DistinctTeamStatisticsDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GroupInfoListDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.PlayerStatisticsAllDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TeamStatisticsAllDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.DistinctTeamStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GroupInfoListDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.PlayerStatisticsAllDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TeamStatisticsAllDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

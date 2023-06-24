@@ -3,7 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreadmin.utils;
 import java.time.LocalDate;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.EventEnum;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.AssistDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.AssistDTO;
 
 public interface ActionInterfaces {
 

@@ -17,7 +17,7 @@ import java.util.List;
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.games.GameAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.NewGameDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
 

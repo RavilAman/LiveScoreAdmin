@@ -1,7 +1,7 @@
 package ravil.amangeldiuly.example.minelivescoreadmin.web.apis;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.UrlConstants;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.EventDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveEventDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveGoalEventDTO;
 import retrofit2.Call;

@@ -3,7 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreadmin.web.apis;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.UrlConstants;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GroupDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GroupDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

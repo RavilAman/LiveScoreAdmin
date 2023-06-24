@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 
 public class TournamentListAdapter extends RecyclerView.Adapter<TournamentListViewHolder> {
 

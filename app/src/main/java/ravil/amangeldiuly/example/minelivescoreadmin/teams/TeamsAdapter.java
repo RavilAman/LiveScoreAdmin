@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TeamDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TeamDTO;
 
 public class TeamsAdapter extends RecyclerView.Adapter<TeamsViewHolder> {
 

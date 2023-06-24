@@ -14,9 +14,9 @@ import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.StatisticsType;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.DistinctPlayerStatisticsDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.DistinctTeamStatisticsDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.GroupInfoDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.DistinctPlayerStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.DistinctTeamStatisticsDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GroupInfoDTO;
 
 public class TableAdapter extends RecyclerView.Adapter<TableViewHolder> {
 

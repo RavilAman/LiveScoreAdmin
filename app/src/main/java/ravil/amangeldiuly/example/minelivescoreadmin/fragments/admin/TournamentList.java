@@ -26,7 +26,7 @@ import ravil.amangeldiuly.example.minelivescoreadmin.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreadmin.tournaments.TournamentListAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.TournamentApi;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

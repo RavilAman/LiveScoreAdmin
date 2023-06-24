@@ -15,7 +15,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.admin.TournamentCupInfoFragment;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.admin.TournamentLeagueInfoFragment;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.TournamentDto;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
 
 public class GroupViewHolder extends RecyclerView.ViewHolder {
 

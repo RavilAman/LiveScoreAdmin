@@ -1,4 +1,4 @@
-package ravil.amangeldiuly.example.minelivescoreadmin.web.responses;
+package ravil.amangeldiuly.example.minelivescoreadmin.web.requests;
 
 import java.util.List;
 

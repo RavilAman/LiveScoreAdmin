@@ -1,4 +1,4 @@
-package ravil.amangeldiuly.example.minelivescoreadmin.web.responses;
+package ravil.amangeldiuly.example.minelivescoreadmin.web.requests;
 
 public class PlayerDTO {
 
@@ -86,7 +86,7 @@ public class PlayerDTO {
         this.teamId = teamId;
     }
 
-    public String playerFullNameSurnameFirst() {
+    public String fullNameSurnameFirst() {
         StringBuilder fullNameBuilder = new StringBuilder();
         fullNameBuilder.append(surname);
         fullNameBuilder.append(" ");
@@ -94,7 +94,7 @@ public class PlayerDTO {
         return fullNameBuilder.toString();
     }
 
-    public String playerFullNameNameFirst() {
+    public String fullNameNameFirst() {
         StringBuilder fullNameBuilder = new StringBuilder();
         fullNameBuilder.append(name);
         fullNameBuilder.append(" ");

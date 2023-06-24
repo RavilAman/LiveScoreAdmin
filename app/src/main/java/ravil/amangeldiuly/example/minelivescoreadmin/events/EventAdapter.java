@@ -18,8 +18,8 @@ import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.EventEnum;
 import ravil.amangeldiuly.example.minelivescoreadmin.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.AssistDTO;
-import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.EventDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.AssistDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.EventDTO;
 
 public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
