@@ -9,6 +9,7 @@ public class PlayerDTO {
     private String surname;
     private Integer playerNumber;
     private String role;
+    private boolean empty;
 
     public PlayerDTO(Long playerId, String teamName, String name, String surname, Integer playerNumber, String role) {
         this.playerId = playerId;
@@ -19,8 +20,19 @@ public class PlayerDTO {
         this.role = role;
     }
 
+    public PlayerDTO(Long playerId, Long teamId, String teamName, String name, String surname, Integer playerNumber, String role) {
+        this.playerId = playerId;
+        this.teamId = teamId;
+        this.teamName = teamName;
+        this.name = name;
+        this.surname = surname;
+        this.playerNumber = playerNumber;
+        this.role = role;
+    }
+
     public static PlayerDTO defaultBuilder() {
-        return new PlayerDTO(
+        PlayerDTO playerDTO = new PlayerDTO(
+                0L,
                 0L,
                 "",
                 "",
@@ -28,6 +40,16 @@ public class PlayerDTO {
                 0,
                 ""
         );
+        playerDTO.setEmpty(true);
+        return playerDTO;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 
     public Long getPlayerId() {

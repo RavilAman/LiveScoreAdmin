@@ -189,7 +189,8 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 saveGoalEventDTO.setPlayerId(player.getPlayerId());
                 saveGoalEventDTO.setMinute(minutePicker.getValue());
                 PlayerDTO assistPlayer = players.get((int) assistSpinner.getSelectedItem());
-                if (!Objects.equals(saveGoalEventDTO.getPlayerId(), saveGoalEventDTO.getAssistId())) {
+                if (!player.getPlayerId().equals(assistPlayer.getPlayerId())) {
+                    saveGoalEventDTO.setAssistId(assistPlayer.getPlayerId());
                     Call<EventDTO> goalCall = eventApi.postGoalEvent(saveGoalEventDTO);
                     if (update) {
                         goalCall = eventApi.putGoalEvent(eventId.intValue(), saveGoalEventDTO);
@@ -207,7 +208,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     messageBuilder.append(" ");
                     messageBuilder.append(minutePicker.getValue());
                     messageBuilder.append("'");
-                    if (assistPlayer != null) {
+                    if (!assistPlayer.isEmpty()) {
                         messageBuilder.append(" ");
                         messageBuilder.append("(");
                         messageBuilder.append(player.fullNameNameFirst());
