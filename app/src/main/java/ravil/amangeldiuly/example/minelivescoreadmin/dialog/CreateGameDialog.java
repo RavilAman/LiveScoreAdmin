@@ -119,7 +119,6 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
         currentView = getActivity().getLayoutInflater()
                 .inflate(R.layout.create_game_dialog, null);
         createGameDialog.setContentView(currentView);
-
         tournamentSpinner = currentView.findViewById(R.id.create_game_tournaments_spinner);
         groupSpinner = currentView.findViewById(R.id.create_game_group_spinner);
         homeTeamsSpinner = currentView.findViewById(R.id.create_game_home_teams_spinner);
@@ -339,18 +338,16 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
     private void createGame() {
         LocalDateTime matchTime = getCurrentDateFromPicker(days[dayPicker.getValue() - 1]);
         saveGameDTO.setGroupId(selectedGroup.getGroupId());
-        Object selectedHomeTeam = homeTeamsSpinner.getSelectedItem();
-        Object selectedAwayTeam = awayTeamsSpinner.getSelectedItem();
+        Object homeTeamIndex = homeTeamsSpinner.getSelectedItem();
+        Object awayTeamIndex = awayTeamsSpinner.getSelectedItem();
         saveGameDTO.setDateTime(matchTime);
-        if (selectedAwayTeam == null || selectedHomeTeam == null) {
+        if (homeTeamIndex == null || awayTeamIndex == null) {
             Toast.makeText(context, "You should select all fields!", Toast.LENGTH_SHORT).show();
         } else {
-            saveGameDTO.setTeam1Id(
-                    identifyTeam(selectedHomeTeam.toString()).getTeamId()
-            );
-            saveGameDTO.setTeam2Id(
-                    identifyTeam(selectedAwayTeam.toString()).getTeamId()
-            );
+            TeamDTO selectedHomeTeam = teams.get((int) homeTeamIndex);
+            TeamDTO selectedAwayTeam = teams.get((int) awayTeamIndex);
+            saveGameDTO.setTeam1Id(selectedHomeTeam.getTeamId());
+            saveGameDTO.setTeam2Id(selectedAwayTeam.getTeamId());
             if (Objects.equals(saveGameDTO.getTeam1Id(), saveGameDTO.getTeam2Id())) {
                 Toast.makeText(context, "Same teams selected!", Toast.LENGTH_SHORT).show();
             } else {
@@ -371,26 +368,5 @@ public class CreateGameDialog extends AppCompatDialogFragment implements Adapter
                 });
             }
         }
-    }
-
-    private TournamentDto identifyTournament(String tournamentName) {
-        Optional<TournamentDto> answer = tournaments.stream()
-                .filter(tournamentDto -> tournamentDto.getTournamentName().equals(tournamentName))
-                .findFirst();
-        return answer.orElse(null);
-    }
-
-    private GroupDTO identifyGroup(String groupName) {
-        Optional<GroupDTO> answer = groups.stream()
-                .filter(groupDTO -> groupDTO.getGroupName().equals(groupName))
-                .findFirst();
-        return answer.orElse(null);
-    }
-
-    private TeamDTO identifyTeam(String teamName) {
-        Optional<TeamDTO> answer = teams.stream()
-                .filter(teamDTO -> teamDTO.getTeamName().equals(teamName))
-                .findFirst();
-        return answer.orElse(null);
     }
 }
