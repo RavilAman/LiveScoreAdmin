@@ -65,7 +65,6 @@ public class StatisticsActivity extends AppCompatActivity {
     private ImageView tournamentLogo;
     private TextView tournamentName;
     private TextView groupName;
-    private TextView matches;
     private TextView table;
     private TextView playerStatistics;
     private TextView teamStatistics;
@@ -130,7 +129,6 @@ public class StatisticsActivity extends AppCompatActivity {
         tournamentName = findViewById(R.id.activity_statistics_tournament_name);
         groupName = findViewById(R.id.activity_statistics_group_name);
         groupStatisticsRecyclerView = findViewById(R.id.activity_statistics_statistics_recycler_vew);
-        matches = findViewById(R.id.activity_statistics_matches);
         table = findViewById(R.id.activity_statistics_table);
         playerStatistics = findViewById(R.id.activity_statistics_player_statistics);
         teamStatistics = findViewById(R.id.activity_statistics_team_statistics);
@@ -161,7 +159,6 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void setOnClickListeners() {
         backButton.setOnClickListener(backButtonListener());
-        matches.setOnClickListener(matchesListener());
         table.setOnClickListener(tableListener());
         playerStatistics.setOnClickListener(playerStatisticsListener());
         teamStatistics.setOnClickListener(teamStatisticsListener());
@@ -350,15 +347,6 @@ public class StatisticsActivity extends AppCompatActivity {
         return view -> finish();
     }
 
-    private View.OnClickListener matchesListener() {
-        return view -> {
-            deSelectLastSelectedCategory();
-            lastSelectedCategoryNumber = 0;
-            matches.setTextColor(Color.parseColor(APP_ORANGE));
-            statisticTypes.setVisibility(View.GONE);
-        };
-    }
-
     private View.OnClickListener tableListener() {
         return view -> {
             currentlySelectedStatisticType = GROUP;
@@ -473,9 +461,6 @@ public class StatisticsActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void deSelectLastSelectedCategory() {
         switch (lastSelectedCategoryNumber) {
-            case 0:
-                matches.setTextColor(Color.parseColor(ColorConstants.WHITE));
-                break;
             case 1:
                 groupStatistics.clear();
                 statisticsAdapter.notifyDataSetChanged();
