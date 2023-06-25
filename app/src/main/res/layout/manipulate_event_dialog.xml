@@ -110,6 +110,18 @@
 
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/manipulate_event_missed_penalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/app_orange"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/missed"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/manipulate_event_save_button"
         android:layout_width="wrap_content"

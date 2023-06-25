@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -67,6 +68,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private NumberPicker minutePicker;
     private Button saveButton;
     private UniversalSpinnerAdapter spinnerAdapter;
+    private CheckBox missedPenalty;
 
     private ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener;
     private LocalDateTime gameDateTime;
@@ -77,7 +79,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private List<PlayerDTO> players;
     private String closeMessage;
     private Long playerId;
-    private Integer minute;
+    private int minute;
     private Long eventId;
     private AssistDTO assistDTO;
     private boolean update;
@@ -103,7 +105,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
 
     public ManipulateEventDialog(long protocolId, String currentTeamLogoLink, long currentTeamId, EventEnum eventEnum, String topicName,
                                  ActionInterfaces.ManipulateEventDialogCloseListener manipulateEventDialogCloseListener,
-                                 Long playerId, Integer minute, Long eventId, AssistDTO assistDTO, ProtocolDTO protocolDTO) {
+                                 Long playerId, int minute, Long eventId, AssistDTO assistDTO, ProtocolDTO protocolDTO) {
         this.protocolId = protocolId;
         this.currentTeamLogoLink = currentTeamLogoLink;
         this.currentTeamId = currentTeamId;
@@ -148,6 +150,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
         assistSpinner = currentView.findViewById(R.id.manipulate_event_assist_spinner);
         minutePicker = currentView.findViewById(R.id.manipulate_event_minute_picker);
         saveButton = currentView.findViewById(R.id.manipulate_event_save_button);
+        missedPenalty = currentView.findViewById(R.id.manipulate_event_missed_penalty);
     }
 
     private void setFullWidth() {
@@ -195,31 +198,33 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     if (update) {
                         goalCall = eventApi.putGoalEvent(eventId.intValue(), saveGoalEventDTO);
                     }
-
-                    customNotificationDto.setTitle("Гол!");
-                    messageBuilder.append(protocolDTO.getTeam1());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(beautifyScoreForNotification(protocolDTO.getGameScore(),
-                            protocolDTO.getTeam1Id().equals(currentTeamId)));
-                    messageBuilder.append(" ");
-                    messageBuilder.append(protocolDTO.getTeam2());
-                    messageBuilder.append("\n");
-                    messageBuilder.append(player.fullNameNameFirst());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(minutePicker.getValue());
-                    messageBuilder.append("'");
-                    if (!assistPlayer.isEmpty()) {
-                        messageBuilder.append(" ");
-                        messageBuilder.append("(");
-                        messageBuilder.append(player.fullNameNameFirst());
-                        messageBuilder.append(")");
-                    }
-                    customNotificationDto.setBody(messageBuilder.toString());
-
                     goalCall.enqueue(new Callback<>() {
                         @Override
                         public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                             if (response.isSuccessful()) {
+                                EventDTO scoredGoal = response.body();
+                                customNotificationDto.setTitle("Гол!");
+                                messageBuilder.append(protocolDTO.getTeam1());
+                                messageBuilder.append(" ");
+                                messageBuilder.append(beautifyScoreForNotification(
+                                        scoredGoal.getGameScore(),
+                                        protocolDTO.getTeam1Id().equals(currentTeamId))
+                                );
+                                messageBuilder.append(" ");
+                                messageBuilder.append(protocolDTO.getTeam2());
+                                messageBuilder.append("\n");
+                                messageBuilder.append(player.fullNameNameFirst());
+                                messageBuilder.append(" ");
+                                messageBuilder.append(minutePicker.getValue());
+                                messageBuilder.append("'");
+                                if (!assistPlayer.isEmpty()) {
+                                    messageBuilder.append(" ");
+                                    messageBuilder.append("(");
+                                    messageBuilder.append(player.fullNameNameFirst());
+                                    messageBuilder.append(")");
+                                }
+                                customNotificationDto.setBody(messageBuilder.toString());
+
                                 sendNotification(customNotificationDto);
                                 closeMessage = "Goal scored successfully!";
                                 if (update) {
@@ -243,30 +248,36 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 saveEventDTO.setProtocolId(protocolId);
                 saveEventDTO.setMinute(minutePicker.getValue());
                 saveEventDTO.setPlayerId(player.getPlayerId());
-                if (eventEnum.equals(EventEnum.PENALTY)) {
-
-                    customNotificationDto.setTitle("Пенальти!");
-                    messageBuilder.append(protocolDTO.getTeam1());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(beautifyScoreForNotification(protocolDTO.getGameScore(), protocolDTO.getTeam1Id().equals(currentTeamId)));
-                    messageBuilder.append(" ");
-                    messageBuilder.append(protocolDTO.getTeam2());
-                    messageBuilder.append("\n");
-                    messageBuilder.append(player.fullNameNameFirst());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(minutePicker.getValue());
-                    messageBuilder.append("'");
-                    customNotificationDto.setBody(messageBuilder.toString());
-
-                    saveEventDTO.setEventEnumId(5L);
+                if (eventEnum.equals(EventEnum.PENALTY) || eventEnum.equals(EventEnum.SCORE_PENALTY) || eventEnum.equals(EventEnum.MISS_PENALTY)) {
+                    saveEventDTO.setEventEnumId(missedPenalty.isChecked() ? 7L : 6L);
                     Call<EventDTO> penaltyCall = eventApi.postPenaltyEvent(saveEventDTO);
                     if (update) {
-                        eventApi.putPenaltyEvent(eventId.intValue(), saveEventDTO);
+                        System.out.println("------------------------------------");
+                        System.out.println(saveEventDTO);
+                        System.out.println("------------------------------------");
+                        penaltyCall = eventApi.putPenaltyEvent(eventId.intValue(), saveEventDTO);
                     }
                     penaltyCall.enqueue(new Callback<>() {
                         @Override
                         public void onResponse(Call<EventDTO> call, Response<EventDTO> response) {
                             if (response.isSuccessful()) {
+                                EventDTO scoredPenalty = response.body();
+                                customNotificationDto.setTitle("Пенальти!");
+                                messageBuilder.append(protocolDTO.getTeam1());
+                                messageBuilder.append(" ");
+                                messageBuilder.append(beautifyScoreForNotification(
+                                        scoredPenalty.getGameScore(),
+                                        protocolDTO.getTeam1Id().equals(currentTeamId))
+                                );
+                                messageBuilder.append(" ");
+                                messageBuilder.append(protocolDTO.getTeam2());
+                                messageBuilder.append("\n");
+                                messageBuilder.append(player.fullNameNameFirst());
+                                messageBuilder.append(" ");
+                                messageBuilder.append(minutePicker.getValue());
+                                messageBuilder.append("'");
+                                customNotificationDto.setBody(messageBuilder.toString());
+
                                 sendNotification(customNotificationDto);
                                 closeMessage = "Penalty scored successfully!";
                                 if (update) {
@@ -350,9 +361,18 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 assistSpinner.setVisibility(View.GONE);
                 break;
             case PENALTY:
+            case SCORE_PENALTY:
+                missedPenalty.setVisibility(View.VISIBLE);
                 eventLabel.setText(R.string.penalty);
                 assistLabel.setVisibility(View.GONE);
                 assistSpinner.setVisibility(View.GONE);
+                break;
+            case MISS_PENALTY:
+                missedPenalty.setVisibility(View.VISIBLE);
+                eventLabel.setText(R.string.penalty);
+                assistLabel.setVisibility(View.GONE);
+                assistSpinner.setVisibility(View.GONE);
+                missedPenalty.setChecked(true);
                 break;
         }
     }
@@ -360,12 +380,11 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     private void configureMinutePicker() {
         minutePicker.setMinValue(1);
         minutePicker.setMaxValue(90);
-        if (minute == null) {
+        if (minute == 0) {
             minutePicker.setValue(getGameMinute());
         } else {
             minutePicker.setValue(minute);
         }
-        minutePicker.setValue(getGameMinute());
         minutePicker.setWrapSelectorWheel(false);
     }
 

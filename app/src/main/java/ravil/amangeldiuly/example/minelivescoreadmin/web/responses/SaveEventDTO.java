@@ -19,4 +19,14 @@ public class SaveEventDTO extends AbstractSaveEventDTO {
     public void setEventEnumId(Long eventEnumId) {
         this.eventEnumId = eventEnumId;
     }
+
+    @Override
+    public String toString() {
+        return "SaveEventDTO{" +
+                "protocolId=" + protocolId +
+                ", playerId=" + playerId +
+                ", minute=" + minute +
+                ", eventEnumId=" + eventEnumId +
+                '}';
+    }
 }

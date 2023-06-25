@@ -53,17 +53,28 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         EventEnum eventEnum = null;
         holder.time.setText(eventDTO.getMinute() + "°");
         String eventName = eventDTO.getEventName();
-        if (eventName.equals("GOAL")) {
-            eventEnum = EventEnum.GOAL;
-        } else if (eventName.equals("PENALTY")) {
-            eventEnum = EventEnum.PENALTY;
+        int goalImageResource = 0;
+        switch (eventName) {
+            case "GOAL":
+                goalImageResource = R.drawable.goal;
+                eventEnum = EventEnum.GOAL;
+                break;
+            case "SCORE_PENALTY":
+                goalImageResource = R.drawable.scored_penalty;
+                eventEnum = EventEnum.SCORE_PENALTY;
+                break;
+            case "MISS_PENALTY":
+                goalImageResource = R.drawable.not_scored_penalty;
+                eventEnum = EventEnum.MISS_PENALTY;
+                break;
         }
         switch (eventDTO.getEventName()) {
             case "GOAL":
-            case "PENALTY":
+            case "SCORE_PENALTY":
+            case "MISS_PENALTY":
                 holder.gameScore.setText(gameScoreIntoDashFormat(eventDTO.getGameScore()));
                 if (Objects.equals(team1Id, eventDTO.getTeamId())) {
-                    holder.eventLogoTeam1.setImageResource(R.drawable.soccer_ball);
+                    holder.eventLogoTeam1.setImageResource(goalImageResource);
                     holder.eventLogoTeam2.setVisibility(View.GONE);
                     holder.team1Player.setText(eventDTO.getPlayerName());
                     if (eventDTO.getAssist() != null) {
@@ -75,7 +86,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                     holder.team2Assist.setVisibility(View.GONE);
                 } else {
                     holder.eventLogoTeam1.setVisibility(View.GONE);
-                    holder.eventLogoTeam2.setImageResource(R.drawable.soccer_ball);
+                    holder.eventLogoTeam2.setImageResource(goalImageResource);
                     holder.team2Player.setText(eventDTO.getPlayerName());
                     if (eventDTO.getAssist() != null) {
                         holder.team2Assist.setText(eventDTO.getAssist().getAssistPlayer());
@@ -145,7 +156,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                 editEventListener(
                         eventDTO.getTeamLogo(), eventDTO.getTeamId(),
                         eventEnum, eventDTO.getPlayerId(), eventDTO.getMinute(),
-                        eventDTO.getEventId(), eventDTO.getAssist())
+                        eventDTO.getEventId(), eventDTO.getAssist()
+                )
         );
     }
 
