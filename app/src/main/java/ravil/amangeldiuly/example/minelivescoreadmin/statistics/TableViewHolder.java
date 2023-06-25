@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
+
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 
 public class TableViewHolder extends RecyclerView.ViewHolder {
@@ -21,7 +23,7 @@ public class TableViewHolder extends RecyclerView.ViewHolder {
     TextView points;
     TextView total;
     TextView perGame;
-    ImageView teamLogo;
+    ShapeableImageView teamLogo;
 
     public TableViewHolder(@NonNull View itemView) {
         super(itemView);

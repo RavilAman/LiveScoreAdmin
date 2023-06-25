@@ -43,11 +43,14 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/game_activity_team_1_logo"
                     android:layout_width="@dimen/game_activity_tournament_logo_size"
                     android:layout_height="@dimen/game_activity_tournament_logo_size"
-                    android:src="@drawable/real_madrid" />
+                    android:src="@drawable/real_madrid"
+                    app:shapeAppearanceOverlay="@style/rounded_image_view"
+                    app:strokeColor="@null"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/game_activity_team_1_name"
@@ -101,11 +104,14 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/game_activity_team_2_logo"
                     android:layout_width="@dimen/game_activity_tournament_logo_size"
                     android:layout_height="@dimen/game_activity_tournament_logo_size"
-                    android:src="@drawable/barcelona" />
+                    android:src="@drawable/barcelona"
+                    app:shapeAppearanceOverlay="@style/rounded_image_view"
+                    app:strokeColor="@null"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/game_activity_team_2_name"

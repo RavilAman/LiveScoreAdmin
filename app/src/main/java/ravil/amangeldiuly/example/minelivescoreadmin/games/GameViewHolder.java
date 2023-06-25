@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
+
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.activities.GameActivity;
 
@@ -22,8 +24,8 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
     TextView team2Name;
     TextView team1Score;
     TextView team2Score;
-    ImageView team1Logo;
-    ImageView team2Logo;
+    ShapeableImageView team1Logo;
+    ShapeableImageView team2Logo;
     long protocolId;
 
     public GameViewHolder(@NonNull View itemView) {

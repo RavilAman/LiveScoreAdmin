@@ -26,7 +26,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     private List<NewGameDTO> gamesInGroups;
     private FragmentManager fragmentManager;
 
-    public GroupAdapter(Context context, List<NewGameDTO> gamesInGroups,FragmentManager fragmentManager) {
+    public GroupAdapter(Context context, List<NewGameDTO> gamesInGroups, FragmentManager fragmentManager) {
         recycledViewPool = new RecyclerView.RecycledViewPool();
         this.gamesInGroups = gamesInGroups;
         this.context = context;
@@ -45,7 +45,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         holder.context = context;
         NewGameDTO newGameDTO = gamesInGroups.get(position);
-        holder.tournament =  new TournamentDto(newGameDTO.getTournamentId(),newGameDTO.getTournamentName(),newGameDTO.getTournamentLogo(),newGameDTO.getTournamentType(),newGameDTO.getTournamentLocation(),newGameDTO.getTournamentStatus());
+        holder.tournament = new TournamentDto(newGameDTO.getTournamentId(),
+                newGameDTO.getTournamentName(), newGameDTO.getTournamentLogo(),
+                newGameDTO.getTournamentType(), newGameDTO.getTournamentLocation(),
+                newGameDTO.getTournamentStatus());
         Glide.with(context)
                 .load(newGameDTO.getTournamentLogo())
                 .into(holder.tournamentLogo);

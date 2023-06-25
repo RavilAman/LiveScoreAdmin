@@ -46,7 +46,25 @@
                 android:text="@string/group"
                 android:textColor="@color/white"
                 android:textSize="@dimen/tournament_location_text_size" />
+
         </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/group_item_statistics_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="5dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_baseline_query_stats_24"
+            app:tint="@color/white" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

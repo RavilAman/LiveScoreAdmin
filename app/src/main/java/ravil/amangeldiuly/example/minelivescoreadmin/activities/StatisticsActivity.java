@@ -523,12 +523,10 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void makeStatisticSelected(TextView statisticType) {
         statisticType.setBackgroundResource(R.drawable.statistics_category_background);
-        statisticType.setTextColor(Color.parseColor(ColorConstants.BLACK));
     }
 
     private void makeStatisticDefault(TextView statisticType) {
         statisticType.setBackground(null);
-        statisticType.setTextColor(Color.parseColor(ColorConstants.WHITE));
     }
 
     private void getTeamStatisticsAll() {
