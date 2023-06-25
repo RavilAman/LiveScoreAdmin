@@ -28,6 +28,7 @@ import ravil.amangeldiuly.example.minelivescoreadmin.R;
 import ravil.amangeldiuly.example.minelivescoreadmin.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.LocalDateTimeDeserializer;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.AuthApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.AuthRequest;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.AuthResponse;
@@ -47,6 +48,7 @@ public class AuthActivity extends AppCompatActivity {
     private ImageButton passwordToggle;
     private TextView invalidCredentials;
 
+    private RequestHandler requestHandler;
     private Retrofit retrofit;
     private AuthApi authApi;
 
@@ -76,14 +78,8 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(UrlConstants.BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        requestHandler = new RequestHandler(context);
+        retrofit = requestHandler.getRetrofit();
         authApi = retrofit.create(AuthApi.class);
     }
 
@@ -127,11 +123,9 @@ public class AuthActivity extends AppCompatActivity {
                     SharedPreferencesUtil.putValue(context,
                             AUTH_TOKEN,
                             BEARER_PREFIX + response.body().getToken());
-
                     SharedPreferencesUtil.putValue(context,
                             LOGGED_IN,
                             TRUE);
-
                     goToMainEvent();
                 } else if (response.code() == 403) {
                     invalidCredentials.setVisibility(View.VISIBLE);

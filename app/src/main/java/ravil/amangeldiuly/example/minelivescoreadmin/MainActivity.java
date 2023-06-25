@@ -2,9 +2,13 @@ package ravil.amangeldiuly.example.minelivescoreadmin;
 
 
 import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.EMPTY;
+import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.FALSE;
 import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.FCM_TOKEN;
+import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.LOGGED_IN;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,6 +29,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import ravil.amangeldiuly.example.minelivescoreadmin.activities.AuthActivity;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.admin.TournamentFragment;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.admin.TournamentList;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     // todo: как нибудь добавить чек на токен, если заекспайрился, взять новый, и переподписаться на все топики в базе локальной
 
+    private Context context;
     private TextView noInternetTextView;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
 
         getToken();
 
@@ -100,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_create_in_draw:
                 replaceFragment(fragmentManager, new TournamentList(fragmentManager, item, selectedButtomNavMenuItem, bottomNavigationView, R.string.create_in_draw), item);
                 selectedButtomNavMenuItem.setChecked(true);
+                break;
+            case R.id.log_out:
+                SharedPreferencesUtil.putValue(context, LOGGED_IN, FALSE);
+                Intent authIntent = new Intent(context, AuthActivity.class);
+                authIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(authIntent);
                 break;
         }
 
