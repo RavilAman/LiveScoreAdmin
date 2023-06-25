@@ -419,7 +419,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
     }
 
     private void sendNotification(CustomNotificationDto customNotificationDto) {
-        notificationApi.postToTopic(topicName, customNotificationDto).enqueue(new Callback<String>() {
+        notificationApi.postToTopic(topicName, customNotificationDto).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
