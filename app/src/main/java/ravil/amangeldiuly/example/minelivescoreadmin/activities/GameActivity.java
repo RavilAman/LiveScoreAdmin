@@ -21,9 +21,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.internal.ServiceSpecificExtraArgs;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,7 +38,6 @@ import ravil.amangeldiuly.example.minelivescoreadmin.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreadmin.events.EventAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.events.EventViewHolder;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
-import ravil.amangeldiuly.example.minelivescoreadmin.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.NotificationApi;
@@ -63,6 +62,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     private ProtocolApi protocolApi;
     private GameApi gameApi;
     private NotificationApi notificationApi;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private LinearLayout manipulateGame;
     private LinearLayout manipulateEvent;
@@ -102,6 +102,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
 
         Intent intent = getIntent();
         protocolId = intent.getExtras().getLong("protocolId");
+
         setData();
         getTopicName();
     }
@@ -116,6 +117,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
 
     private void initializeViews() {
         context = getApplicationContext();
+        swipeRefreshLayout = findViewById(R.id.game_activity_swipe_refresh_layout);
         backButton = findViewById(R.id.game_back_button);
         team1Logo = findViewById(R.id.game_activity_team_1_logo);
         team2Logo = findViewById(R.id.game_activity_team_2_logo);
@@ -163,6 +165,7 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         protocolApi.getProtocolById(protocolId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ProtocolDTO> call, Response<ProtocolDTO> response) {
+                swipeRefreshLayout.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null) {
                     protocolDTO = response.body();
                     Glide.with(context)
@@ -230,6 +233,11 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         redCardEventTeam2.setOnClickListener(createEventListener());
         penaltyEventTeam2.setOnClickListener(createEventListener());
         endMatch.setOnClickListener(endMatchListener());
+        swipeRefreshLayout.setOnRefreshListener(swipeRefreshLayoutListener());
+    }
+
+    private SwipeRefreshLayout.OnRefreshListener swipeRefreshLayoutListener() {
+        return this::setData;
     }
 
     @SuppressLint("NonConstantResourceId")

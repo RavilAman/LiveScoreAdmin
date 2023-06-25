@@ -150,9 +150,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
     }
 
     private View.OnClickListener editEventListener(String teamLogo, Long teamId, EventEnum eventEnum,
-                                                   Long playerId, Integer minute, Long eventId, AssistDTO assistDTO) {
-        return view -> manipulateEventDialogOpenListener.onDialogOpen(teamLogo, teamId, eventEnum,
-                playerId, minute, eventId, assistDTO);
+                                                   Long playerId, Integer minute, Long eventId,
+                                                   AssistDTO assistDTO) {
+        return view -> manipulateEventDialogOpenListener.onDialogOpen(
+                teamLogo, teamId, eventEnum, playerId, minute, eventId, assistDTO);
     }
 
     @Override
