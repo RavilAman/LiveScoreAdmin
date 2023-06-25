@@ -136,10 +136,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/activity_statistics_divider"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="10dp">
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/activity_statistics_type_red_cards"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:gravity="center"
+            android:padding="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="@string/player_statistics_red_cards"
+            android:textColor="@color/white"
+            android:textSize="@dimen/statistics_label_sizes" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/activity_statistics_type_assists"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:gravity="center"
+            android:padding="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="@string/player_statistics_assists"
+            android:textColor="@color/white"
+            android:textSize="@dimen/statistics_label_sizes" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/activity_statistics_type_all"
@@ -160,45 +193,15 @@
             android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/activity_statistics_type_assists"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_medium"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/player_statistics_assists"
-            android:textColor="@color/white"
-            android:textSize="@dimen/statistics_label_sizes" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
             android:id="@+id/activity_statistics_type_goals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:padding="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="@string/player_statistics_goals"
-            android:textColor="@color/white"
-            android:textSize="@dimen/statistics_label_sizes" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/activity_statistics_type_red_cards"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_medium"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/player_statistics_red_cards"
             android:textColor="@color/white"
             android:textSize="@dimen/statistics_label_sizes" />
 
@@ -214,6 +217,8 @@
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:padding="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:text="@string/player_statistics_yellow_cards"
             android:textColor="@color/white"
             android:textSize="@dimen/statistics_label_sizes" />
@@ -225,8 +230,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/activity_statistics_statistics_types"
-        android:paddingStart="10dp"
         android:layout_marginBottom="20dp"
+        android:paddingStart="10dp"
         android:paddingEnd="10dp" />
 
 </RelativeLayout>
