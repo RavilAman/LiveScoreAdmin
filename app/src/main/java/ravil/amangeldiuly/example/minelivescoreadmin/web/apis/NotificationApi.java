@@ -3,6 +3,7 @@ package ravil.amangeldiuly.example.minelivescoreadmin.web.apis;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.UrlConstants;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.CreateTopicDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.CustomNotificationDto;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -27,4 +28,7 @@ public interface NotificationApi {
 
     @GET(UrlConstants.TOPIC_NAME_BY_PROTOCOL)
     Call<String> getTopicNameByProtocolId(@Path("protocolId") int protocolId);
+
+    @POST(UrlConstants.CREATE_TOPIC)
+    Call<Void> createTopic(@Body CreateTopicDTO createTopicDTO);
 }

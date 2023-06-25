@@ -1,5 +1,8 @@
 package ravil.amangeldiuly.example.minelivescoreadmin.fragments.admin;
 
+import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.FCM_TOKEN;
+import static ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil.getValue;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,16 +31,25 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
+import ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.ScoresFragment;
 import ravil.amangeldiuly.example.minelivescoreadmin.fragments.tournament.FragmentSliderAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.slider.SliderAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.tournaments.TournamentListAdapter;
+import ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.TournamentApi;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.CreateTopicDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.CustomNotificationDto;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveCupTournamentDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.SaveTournamentDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.TournamentDto;
@@ -48,11 +60,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment implements TournamentListAdapter.OnItemListener {
+
     private View currentView;
     private Retrofit retrofit;
     private RecyclerView tournamentsRecyclerView;
     private List<TournamentDto> tournamentList;
     private TournamentApi tournamentApi;
+    private NotificationApi notificationApi;
     private TextView noTournaments;
     private ImageButton imageButton;
     private FragmentManager fragmentManager;
@@ -68,7 +82,6 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
     private String tournamentLogoLink;
     private String tournamentLocation;
 
-
     private int count = 4;
 
     public TournamentFragment(FragmentManager fragmentManager, MenuItem menuItem, MenuItem selectedBottomMenuItem, BottomNavigationView bottomNavigationView) {
@@ -77,7 +90,6 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
         this.selectedBottomMenuItem = selectedBottomMenuItem;
         this.bottomNavigationView = bottomNavigationView;
     }
-
 
     @Nullable
     @Override
@@ -138,7 +150,7 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
         page3content(page3);
         Button create = page3.findViewById(R.id.create_button);
 
-        create.setOnClickListener(view -> createTournament(tournamentNameEdt, tournamentLogoEdt, tournamentLocationEdt,popupWindow));
+        create.setOnClickListener(view -> createTournament(tournamentNameEdt, tournamentLogoEdt, tournamentLocationEdt, popupWindow));
 
 
         popupWindow.setOnDismissListener(() -> {
@@ -193,16 +205,16 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
         } else {
             if (selectedTournamentType.equals("Cup (Group Stage)")) {
                 SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, false);
-                Log.i("",saveTournamentDTO.toString());
+                Log.i("", saveTournamentDTO.toString());
                 tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             } else if (selectedTournamentType.equals("Cup (Play Off)")) {
                 SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, true);
                 saveTournamentDTO.setPlayOf(true);
-                Log.i("",saveTournamentDTO.toString());
+                Log.i("", saveTournamentDTO.toString());
                 tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             } else {
                 SaveTournamentDTO saveTournamentDTO = new SaveTournamentDTO(tournamentName, "LEAGUE", tournamentLogoLink, tournamentLocation, teamNum);
-                Log.i("",saveTournamentDTO.toString());
+                Log.i("", saveTournamentDTO.toString());
                 tournamentApi.createTournamentLeague(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             }
 
@@ -215,6 +227,18 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
             public void onResponse(Call<TournamentDto> call, Response<TournamentDto> response) {
                 assert response.body() != null;
                 if (response.isSuccessful()) {
+                    TournamentDto tournamentDto = response.body();
+                    CreateTopicDTO createTopicDTO = new CreateTopicDTO();
+                    StringBuilder topicName = new StringBuilder();
+                    topicName.append(tournamentDto.getTournamentName());
+                    topicName.append("_");
+                    topicName.append(tournamentDto.getTournamentLocation());
+                    topicName.append("_");
+                    topicName.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd")));
+                    createTopicDTO.setTopicName(topicName.toString());
+                    createTopicDTO.setTournamentId(tournamentDto.getTournamentId());
+                    createTopicDTO.setRegistrationToken(getValue(requireContext(), FCM_TOKEN));
+                    createTopic(createTopicDTO);
                     Toast.makeText(getContext(), "Tournament added", Toast.LENGTH_SHORT).show();
                     findAllTournamentsByUser();
                 } else {
@@ -234,6 +258,21 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
                 Toast.makeText(getContext(), "Vse Ploho", Toast.LENGTH_SHORT).show();
             }
         };
+    }
+
+    private void createTopic(CreateTopicDTO createTopicDTO) {
+        notificationApi.createTopic(createTopicDTO).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void page3content(RelativeLayout page3) {
@@ -356,6 +395,7 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
         RequestHandler requestHandler = new RequestHandler(getContext());
         retrofit = requestHandler.getRetrofit();
         tournamentApi = retrofit.create(TournamentApi.class);
+        notificationApi = retrofit.create(NotificationApi.class);
     }
 
 

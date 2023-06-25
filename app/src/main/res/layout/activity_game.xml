@@ -168,20 +168,6 @@
             android:textColor="@color/white"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/game_activity_auto_defeat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/squircle_button"
-            android:backgroundTint="@color/app_orange"
-            android:fontFamily="@font/inter_medium"
-            android:padding="10dp"
-            android:text="@string/automatic_defeat"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

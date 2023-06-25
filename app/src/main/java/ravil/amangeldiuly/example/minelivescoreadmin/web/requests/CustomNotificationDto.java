@@ -7,7 +7,7 @@ public class CustomNotificationDto {
 
     private String title;
     private String body;
-    private String image = "https://cdn-icons-png.flaticon.com/512/53/53283.png";
+    private String image = "";
     private List<String> registrationTokens;
 
     public CustomNotificationDto() {

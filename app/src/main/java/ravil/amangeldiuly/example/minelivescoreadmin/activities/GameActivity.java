@@ -1,7 +1,9 @@
 package ravil.amangeldiuly.example.minelivescoreadmin.activities;
 
 import static ravil.amangeldiuly.example.minelivescoreadmin.ColorConstants.APP_ORANGE;
+import static ravil.amangeldiuly.example.minelivescoreadmin.SharedPreferencesConstants.FCM_TOKEN;
 import static ravil.amangeldiuly.example.minelivescoreadmin.utils.GeneralUtils.gameScoreIntoDashFormat;
+import static ravil.amangeldiuly.example.minelivescoreadmin.utils.SharedPreferencesUtil.getValue;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.internal.ServiceSpecificExtraArgs;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,11 +38,13 @@ import ravil.amangeldiuly.example.minelivescoreadmin.enums.GameState;
 import ravil.amangeldiuly.example.minelivescoreadmin.events.EventAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.events.EventViewHolder;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
+import ravil.amangeldiuly.example.minelivescoreadmin.utils.GeneralUtils;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.NotificationApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.ProtocolApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.AssistDTO;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.CustomNotificationDto;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.EventDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.GameDTO;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.requests.ProtocolDTO;
@@ -70,7 +75,6 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     private TextView fullTime;
     private RecyclerView eventsRecyclerView;
     private Button startGame;
-    private Button autoDefeat;
     private Button goalEventTeam1;
     private Button yellowCardEventTeam1;
     private Button redCardEventTeam1;
@@ -122,7 +126,6 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         eventsRecyclerView = findViewById(R.id.game_activity_events_recycler_view);
         manipulateGame = findViewById(R.id.game_activity_manipulate_game);
         startGame = findViewById(R.id.game_activity_start_match);
-        autoDefeat = findViewById(R.id.game_activity_auto_defeat);
         manipulateEvent = findViewById(R.id.game_activity_manipulate_event_layout);
         goalEventTeam1 = findViewById(R.id.game_activity_goal_team_1);
         yellowCardEventTeam1 = findViewById(R.id.game_activity_yellow_card_team_1);
@@ -218,7 +221,6 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
     private void setOnClickListeners() {
         backButton.setOnClickListener(backButtonOnClickListener());
         startGame.setOnClickListener(startGameListener());
-        autoDefeat.setOnClickListener(autoDefeatListener());
         goalEventTeam1.setOnClickListener(createEventListener());
         yellowCardEventTeam1.setOnClickListener(createEventListener());
         redCardEventTeam1.setOnClickListener(createEventListener());
@@ -310,9 +312,23 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         gameApi.endGame(protocolDTO.getGameId().intValue()).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<GameDTO> call, Response<GameDTO> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GameDTO finishedGame = response.body();
                     fillDataGameStateEnded();
                     disableEventChange();
+
+                    CustomNotificationDto customNotificationDto = new CustomNotificationDto();
+                    StringBuilder messageBuilder = new StringBuilder();
+                    customNotificationDto.setRegistrationTokens(List.of(getValue(context, FCM_TOKEN)));
+                    customNotificationDto.setTitle("Match ended");
+                    messageBuilder.append(finishedGame.getTeam1Name());
+                    messageBuilder.append(" ");
+                    messageBuilder.append(gameScoreIntoDashFormat(finishedGame.getGameScore()));
+                    messageBuilder.append(" ");
+                    messageBuilder.append(finishedGame.getTeam2Name());
+                    customNotificationDto.setBody(messageBuilder.toString());
+                    sendNotification(customNotificationDto);
+
                     Toast.makeText(context, "Game finished successfully!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "error: " + response + "; code: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -346,11 +362,6 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
         return view -> startGame();
     }
 
-    private View.OnClickListener autoDefeatListener() {
-        return view -> {
-        };
-    }
-
     private void startGame() {
         gameApi.startGame(protocolDTO.getGameId().intValue()).enqueue(new Callback<>() {
             @Override
@@ -359,11 +370,36 @@ public class GameActivity extends AppCompatActivity implements ActionInterfaces.
                     protocolDTO.setGameState(GameState.STARTED);
                     manipulateGame.setVisibility(View.GONE);
                     fillDataGameStateStart();
+
+                    CustomNotificationDto customNotificationDto = new CustomNotificationDto();
+                    StringBuilder messageBuilder = new StringBuilder();
+                    customNotificationDto.setRegistrationTokens(List.of(getValue(context, FCM_TOKEN)));
+                    customNotificationDto.setTitle("Match started!");
+                    messageBuilder.append(protocolDTO.getTeam1());
+                    messageBuilder.append(" vs ");
+                    messageBuilder.append(protocolDTO.getTeam2());
+                    customNotificationDto.setBody(messageBuilder.toString());
+                    sendNotification(customNotificationDto);
                 }
             }
 
             @Override
             public void onFailure(Call<GameDTO> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void sendNotification(CustomNotificationDto customNotificationDto) {
+        notificationApi.postToTopic(topicName, customNotificationDto).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
                 t.printStackTrace();
             }
         });

@@ -18,6 +18,7 @@ public class UrlConstants {
     public static final String DELETE_SUBSCRIPTION = "notification/subscriptions/{topic}/{registrationToken}";
     public static final String POST_TO_TOPIC = "notification/topic/{topic}";
     public static final String TOPIC_NAME_BY_PROTOCOL = "notification/topic/{protocolId}";
+    public static final String CREATE_TOPIC = "notification/topic/create";
 
     public static final String GAME_BY_DATE = "game/new/date";
     public static final String GAME_LIVE = "game/live";
