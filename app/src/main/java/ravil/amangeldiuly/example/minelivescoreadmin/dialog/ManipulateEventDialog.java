@@ -220,7 +220,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                                 if (!assistPlayer.isEmpty()) {
                                     messageBuilder.append(" ");
                                     messageBuilder.append("(");
-                                    messageBuilder.append(player.fullNameNameFirst());
+                                    messageBuilder.append(assistPlayer.fullNameNameFirst());
                                     messageBuilder.append(")");
                                 }
                                 customNotificationDto.setBody(messageBuilder.toString());
@@ -252,9 +252,6 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                     saveEventDTO.setEventEnumId(missedPenalty.isChecked() ? 7L : 6L);
                     Call<EventDTO> penaltyCall = eventApi.postPenaltyEvent(saveEventDTO);
                     if (update) {
-                        System.out.println("------------------------------------");
-                        System.out.println(saveEventDTO);
-                        System.out.println("------------------------------------");
                         penaltyCall = eventApi.putPenaltyEvent(eventId.intValue(), saveEventDTO);
                     }
                     penaltyCall.enqueue(new Callback<>() {

@@ -41,18 +41,11 @@ public class GeneralUtils {
     }
 
     public static String beautifyScoreForNotification(String score, boolean first) {
-        Integer team1Score = Integer.parseInt(score.substring(0, score.indexOf(':')));
-        Integer team2Score = Integer.parseInt(score.substring(score.indexOf(':') + 1));
-
-        if (first) {
-            team1Score++;
-            return "[" + team1Score + "]"
-                    + ":" + team2Score;
-        } else {
-            team2Score++;
-            return team1Score + ":" +
-                    "[" + team2Score + "]";
-        }
+        return first
+                ? "[" + score.substring(0, score.indexOf(':')) + "]"
+                + ":" + score.substring(score.indexOf(':') + 1)
+                : score.substring(0, score.indexOf(':')) + ":" +
+                "[" + score.substring(score.indexOf(':') + 1) + "]";
     }
 
     // todo: починить, не работает
