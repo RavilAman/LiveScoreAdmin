@@ -340,7 +340,7 @@ public class ManipulateEventDialog extends AppCompatDialogFragment {
                 });
             }
         } else {
-            Toast.makeText(context, "Please, select player!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please, select author!", Toast.LENGTH_SHORT).show();
         }
     }
 
