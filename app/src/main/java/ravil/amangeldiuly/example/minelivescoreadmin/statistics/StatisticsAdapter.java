@@ -65,26 +65,26 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsViewHolder
             case GENERAL_PLAYER:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
                 PlayerStatisticsAllDTO playerStatistics = generalPlayerStatistics.get(position);
-                holder.groupOrCategoryName.setText(playerStatistics.getStatName());
+                holder.groupOrCategoryName.setText(playerStatistics.getStatName().replace("_", " "));
                 linearLayoutManager.setInitialPrefetchItemCount(playerStatistics.getStatistics().size());
                 tableAdapter.setPlayerStatistics(playerStatistics.getStatistics());
                 break;
             case GENERAL_TEAM:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
                 TeamStatisticsAllDTO teamStatistics = generalTeamStatistic.get(position);
-                holder.groupOrCategoryName.setText(teamStatistics.getStatName());
+                holder.groupOrCategoryName.setText(teamStatistics.getStatName().replace("_", " "));
                 linearLayoutManager.setInitialPrefetchItemCount(teamStatistics.getStatisticsDTOS().size());
                 tableAdapter.setTeamStatistics(teamStatistics.getStatisticsDTOS());
                 break;
             case INDIVIDUAL_PLAYER:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
-                holder.groupOrCategoryName.setText(individualCategoryName);
+                holder.groupOrCategoryName.setText(individualCategoryName.replace("_", " "));
                 linearLayoutManager.setInitialPrefetchItemCount(individualPlayerStatistics.size());
                 tableAdapter.setPlayerStatistics(individualPlayerStatistics);
                 break;
             case INDIVIDUAL_TEAM:
                 holder.groupStatisticsItemLabel.setVisibility(View.GONE);
-                holder.groupOrCategoryName.setText(individualCategoryName);
+                holder.groupOrCategoryName.setText(individualCategoryName.replace("_", " "));
                 linearLayoutManager.setInitialPrefetchItemCount(individualTeamStatistics.size());
                 tableAdapter.setTeamStatistics(individualTeamStatistics);
                 break;
