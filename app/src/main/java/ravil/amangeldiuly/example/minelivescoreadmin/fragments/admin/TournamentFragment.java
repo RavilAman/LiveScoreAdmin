@@ -229,7 +229,11 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
                     TournamentDto tournamentDto = response.body();
                     CreateTopicDTO createTopicDTO = new CreateTopicDTO();
                     StringBuilder topicName = new StringBuilder();
-                    topicName.append(tournamentDto.getTournamentName());
+                    topicName.append(
+                            tournamentDto.getTournamentName()
+                                    .toLowerCase()
+                                    .replace(" ", "_")
+                    );
                     topicName.append("_");
                     topicName.append(tournamentDto.getTournamentLocation());
                     topicName.append("_");
