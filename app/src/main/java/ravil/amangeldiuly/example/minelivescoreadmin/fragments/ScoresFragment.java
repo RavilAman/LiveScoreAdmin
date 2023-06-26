@@ -26,30 +26,24 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import ravil.amangeldiuly.example.minelivescoreadmin.R;
-import ravil.amangeldiuly.example.minelivescoreadmin.UrlConstants;
 import ravil.amangeldiuly.example.minelivescoreadmin.calendar.CalendarAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.dialog.CreateGameDialog;
 import ravil.amangeldiuly.example.minelivescoreadmin.groups.GroupAdapter;
 import ravil.amangeldiuly.example.minelivescoreadmin.utils.ActionInterfaces;
-import ravil.amangeldiuly.example.minelivescoreadmin.utils.LocalDateTimeDeserializer;
+import ravil.amangeldiuly.example.minelivescoreadmin.web.RequestHandler;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.apis.GameApi;
 import ravil.amangeldiuly.example.minelivescoreadmin.web.responses.NewGameDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemListener, ActionInterfaces.CreateGameDialogCloseListener {
 
@@ -71,6 +65,7 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     private Button createGameButton;
     private Drawable liveButtonBackground;
 
+    private RequestHandler requestHandler;
     private Retrofit retrofit;
     private GameApi gameApi;
 
@@ -91,8 +86,8 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         currentView = inflater.inflate(R.layout.fragment_scores, container, false);
         initializeObjects();
-        initializeRetrofit();
         initializeViews();
+        initializeRetrofit();
         setListeners();
 
         getDays(lastSelectedDate);
@@ -122,14 +117,8 @@ public class ScoresFragment extends Fragment implements CalendarAdapter.OnItemLi
     }
 
     private void initializeRetrofit() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(UrlConstants.BACKEND_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        requestHandler = new RequestHandler(context);
+        retrofit = requestHandler.getRetrofit();
         gameApi = retrofit.create(GameApi.class);
     }
 
