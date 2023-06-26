@@ -68,7 +68,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                 eventEnum = EventEnum.MISS_PENALTY;
                 break;
         }
-        switch (eventDTO.getEventName()) {
+        switch (eventName) {
             case "GOAL":
             case "SCORE_PENALTY":
             case "MISS_PENALTY":
