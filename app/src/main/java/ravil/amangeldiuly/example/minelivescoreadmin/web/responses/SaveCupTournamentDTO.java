@@ -7,9 +7,9 @@ public class SaveCupTournamentDTO {
     private String tournamentLogo;
     private String location;
     private Integer teamsNum;
-    private boolean isPlayOf;
+    private String isPlayOf;
 
-    public SaveCupTournamentDTO(String tournamentName, String tournamentType, String tournamentLogo, String location, Integer teamsNum, boolean isPlayOf) {
+    public SaveCupTournamentDTO(String tournamentName, String tournamentType, String tournamentLogo, String location, Integer teamsNum, String isPlayOf) {
         this.tournamentName = tournamentName;
         this.tournamentType = tournamentType;
         this.tournamentLogo = tournamentLogo;
@@ -38,9 +38,6 @@ public class SaveCupTournamentDTO {
         return teamsNum;
     }
 
-    public boolean isPlayOf() {
-        return isPlayOf;
-    }
 
     public void setTournamentName(String tournamentName) {
         this.tournamentName = tournamentName;
@@ -62,8 +59,12 @@ public class SaveCupTournamentDTO {
         this.teamsNum = teamsNum;
     }
 
-    public void setPlayOf(boolean playOf) {
-        isPlayOf = playOf;
+    public String getIsPlayOf() {
+        return isPlayOf;
+    }
+
+    public void setIsPlayOf(String isPlayOf) {
+        this.isPlayOf = isPlayOf;
     }
 
     @Override

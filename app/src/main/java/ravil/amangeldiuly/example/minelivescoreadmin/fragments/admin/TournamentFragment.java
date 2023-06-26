@@ -204,12 +204,11 @@ public class TournamentFragment<T extends SaveTournamentDTO> extends Fragment im
             Toast.makeText(getContext(), "Enter Tournament name, logo, and location", Toast.LENGTH_SHORT).show();
         } else {
             if (selectedTournamentType.equals("Cup (Group Stage)")) {
-                SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, false);
+                SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, "FALSE");
                 Log.i("", saveTournamentDTO.toString());
                 tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             } else if (selectedTournamentType.equals("Cup (Play Off)")) {
-                SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, true);
-                saveTournamentDTO.setPlayOf(true);
+                SaveCupTournamentDTO saveTournamentDTO = new SaveCupTournamentDTO(tournamentName, "CUP", tournamentLogoLink, tournamentLocation, teamNum, "TRUE");
                 Log.i("", saveTournamentDTO.toString());
                 tournamentApi.createTournamentCup(saveTournamentDTO).enqueue(createTournamentCallBack(popupWindow));
             } else {
