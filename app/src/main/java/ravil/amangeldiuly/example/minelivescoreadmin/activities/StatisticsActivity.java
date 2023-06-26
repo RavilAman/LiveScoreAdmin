@@ -268,7 +268,7 @@ public class StatisticsActivity extends AppCompatActivity {
         playerStatisticsApi.getAssists(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     playerAssistStatistics = response.body();
                     setStatistics(playerAssistStatistics, null, "ASSIST");
                 }
@@ -286,7 +286,7 @@ public class StatisticsActivity extends AppCompatActivity {
         playerStatisticsApi.getGoals(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     playerGoalStatistics = response.body();
                     setStatistics(playerGoalStatistics, null, "GOAL");
                 }
@@ -304,7 +304,7 @@ public class StatisticsActivity extends AppCompatActivity {
         playerStatisticsApi.getRedCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     playerRedCardStatistics = response.body();
                     setStatistics(playerRedCardStatistics, null, "RED CARD");
                 }
@@ -322,7 +322,7 @@ public class StatisticsActivity extends AppCompatActivity {
         playerStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctPlayerStatisticsDTO>> call, Response<List<DistinctPlayerStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     playerYellowCardStatistics = response.body();
                     setStatistics(playerYellowCardStatistics, null, "YELLOW CARD");
                 }
@@ -537,7 +537,7 @@ public class StatisticsActivity extends AppCompatActivity {
         teamStatisticsApi.getGoals(tournamentId).enqueue(new Callback<List<DistinctTeamStatisticsDTO>>() {
             @Override
             public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     teamGoalStatistics = response.body();
                     setStatistics(null, teamGoalStatistics, "GOALS");
                 }
@@ -555,7 +555,7 @@ public class StatisticsActivity extends AppCompatActivity {
         teamStatisticsApi.getRedCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     teamRedCardStatistics = response.body();
                     setStatistics(null, teamRedCardStatistics, "RED CARDS");
                 }
@@ -573,7 +573,7 @@ public class StatisticsActivity extends AppCompatActivity {
         teamStatisticsApi.getYellowCards(tournamentId).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<List<DistinctTeamStatisticsDTO>> call, Response<List<DistinctTeamStatisticsDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     teamYellowCardStatistics = response.body();
                     setStatistics(null, teamYellowCardStatistics, "YELLOW CARDS");
                 }
