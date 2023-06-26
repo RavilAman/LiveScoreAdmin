@@ -63,8 +63,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
             android:ems="1"
             android:fontFamily="@font/inter_medium"
             android:text="@string/number_symbol"
@@ -74,7 +74,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="9"
+            android:ems="10"
+            android:layout_marginEnd="5dp"
             android:fontFamily="@font/inter_medium"
             android:text="@string/team"
             android:textColor="@color/white"
